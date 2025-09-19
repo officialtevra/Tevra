@@ -167,6 +167,7 @@
     
     .formula {
       margin-top: 20px;
+      margin-bottom: 20px;
       font-size: 1rem;
       opacity: 0.8;
       color: #cbd5e1;
@@ -288,6 +289,10 @@
     <h1>Right Angle Calculator</h1>
     <p>Enter two sides (a, b) to calculate the hypotenuse</p>
     
+    <div class="result" id="result">Result will be shown here</div>
+    
+    <div class="formula">Formula: c = √(a² + b²)</div>
+    
     <div class="input-group">
       <input type="number" id="a" placeholder="Enter side (a)...." step="any">
       <input type="number" id="b" placeholder="Enter side (b)...." step="any">
@@ -303,9 +308,7 @@
       </button>
     </div>
     
-    <div class="result" id="result">Result will be shown here</div>
     
-    <div class="formula">Formula: c = √(a² + b²)</div>
     
     <div class="history-section">
       <h2>Calculation History</h2>
@@ -321,7 +324,7 @@
     </div>
   </div>
 
-  <script>
+<script>
     // Load calculations from localStorage
     let calculations = JSON.parse(localStorage.getItem('calculations')) || [];
     
@@ -374,8 +377,14 @@
       resultElement.classList.add("highlight");
       setTimeout(() => resultElement.classList.remove("highlight"), 1000);
       
-      // Save to history
-      calculations.push({ a, b, c: c.toFixed(2) });
+      // Save to history - limit to 10 items
+      calculations.unshift({ a, b, c: c.toFixed(2) }); // Add to beginning of array
+      
+      // Remove oldest item if more than 10
+      if (calculations.length > 10) {
+        calculations.pop(); // Remove last (oldest) item
+      }
+      
       localStorage.setItem('calculations', JSON.stringify(calculations));
       
       // Update history display
@@ -430,6 +439,6 @@
     
     // Initial render of history
     renderHistory();
-  </script>
+</script>
 </body>
 </html>
