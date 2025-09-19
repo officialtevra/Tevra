@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Megastore</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #007acc 0%, #0066b3 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 450px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+        
+        .profile-container {
+            padding: 25px;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .logo i {
+            font-size: 2.5rem;
+            color: #007acc;
+            margin-bottom: 8px;
+        }
+        
+        .logo h1 {
+            color: #007acc;
+            font-size: 1.6rem;
+        }
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .profile-pic {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #007acc;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        
+        .profile-pic img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .edit-icon {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: #007acc;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.7rem;
+        }
+        
+        .edit-icon:hover {
+            background: #0066b3;
+            transform: scale(1.1);
+        }
+        
+        .profile-title {
+            margin-left: 15px;
+        }
+        
+        .profile-title h2 {
+            color: #007acc;
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+        
+        .profile-title p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .profile-info {
+            margin-bottom: 20px;
+            text-align: left;
+            background: #f9f9f9;
+            padding: 18px;
+            border-radius: 10px;
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #eee;
+            font-size: 0.95rem;
+        }
+        
+        .info-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #555;
+            flex: 1;
+        }
+        
+        .info-value {
+            color: #333;
+            flex: 1;
+            text-align: right;
+            word-break: break-word;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 10px;
+            background: #007acc;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 12px;
+        }
+        
+        .btn:hover {
+            background: #0066b3;
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(0, 122, 204, 0.2);
+        }
+        
+        .logout-btn {
+            background: #dc3545;
+        }
+        
+        .logout-btn:hover {
+            background: #c82333;
+        }
+        
+        .message {
+            padding: 8px;
+            margin: 12px 0;
+            border-radius: 6px;
+            text-align: center;
+            display: none;
+            font-size: 0.9rem;
+        }
+        
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+        
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            font-size: 1.3rem;
+            cursor: pointer;
+            color: #777;
+        }
+        
+        .close-modal:hover {
+            color: #333;
+        }
+        
+        .form-group {
+            margin-bottom: 18px;
+            text-align: left;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #555;
+            font-size: 0.9rem;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #007acc;
+            box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.2);
+        }
+        
+        .modal-title {
+            color: #007acc;
+            margin-bottom: 18px;
+            text-align: center;
+            font-size: 1.3rem;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* Loading spinner for image upload */
+        .spinner {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #007acc;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            animation: spin 1s linear infinite;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-top: -12.5px;
+            margin-left: -12.5px;
+            display: none;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 480px) {
+            .profile-container {
+                padding: 20px;
+            }
+            
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-title {
+                margin: 15px 0 0 0;
+            }
+            
+            .info-item {
+                flex-direction: column;
+            }
+            
+            .info-value {
+                margin-top: 4px;
+                text-align: left;
+            }
+            
+            .modal-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="profile-container">
+            <div class="logo">
+                
+            </div>
+            
+            <div id="message" class="message"></div>
+            
+            <div class="profile-header">
+                <div class="profile-pic">
+                    <i class="fas fa-user" id="default-icon"></i>
+                    <img id="profile-image" src="" alt="Profile Image" class="hidden">
+                    <div class="edit-icon" id="upload-trigger">
+                        <i class="fas fa-pencil-alt"></i>
+                    </div>
+                    <div class="spinner" id="upload-spinner"></div>
+                    <input type="file" id="photo-upload" accept="image/*" class="hidden">
+                </div>
+                
+                <div class="profile-title">
+                    <h2 id="profile-display-name">Loading...</h2>
+                    <p>Megastore Member</p>
+                </div>
+            </div>
+            
+            <div class="profile-info">
+                <div class="info-item">
+                    <span class="info-label">Email:</span>
+                    <span class="info-value" id="profile-email">Loading...</span>
+                </div>
+                
+                <div class="info-item">
+                    <span class="info-label">User ID:</span>
+                    <span class="info-value" id="profile-uid">Loading...</span>
+                </div>
+                
+                <div class="info-item">
+                    <span class="info-label">Account Created:</span>
+                    <span class="info-value" id="profile-created">Loading...</span>
+                </div>
+                
+                <div class="info-item">
+                    <span class="info-label">Last Login:</span>
+                    <span class="info-value" id="profile-last-login">Loading...</span>
+                </div>
+            </div>
+            
+            <button class="btn" id="edit-profile-btn">Edit Profile</button>
+            <button class="btn logout-btn" id="logout-btn">Logout</button>
+            <button class="btn" onclick="window.location.href='index.html'">Go to Home Page</button>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal" id="edit-modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-modal">&times;</span>
+            <h2 class="modal-title">Edit Profile</h2>
+            
+            <div class="form-group">
+                <label for="edit-name">Name</label>
+                <input type="text" id="edit-name" placeholder="Enter your name">
+            </div>
+            
+            <div class="form-group">
+                <label for="edit-email">Email</label>
+                <input type="email" id="edit-email" placeholder="Enter your email">
+            </div>
+            
+            <button class="btn" id="save-profile-btn">Save Changes</button>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+        import { 
+            getAuth, 
+            signOut,
+            onAuthStateChanged 
+        } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+        import { 
+            getFirestore, 
+            doc, 
+            getDoc,
+            updateDoc
+        } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+        import { 
+            getDatabase,
+            ref,
+            set,
+            get,
+            child
+        } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCi5n-L_ogUif2Bsq7l8qfU9Yoq9h7J6VE",
+            authDomain: "cryptonix-67333.firebaseapp.com",
+            databaseURL: "https://cryptonix-67333-default-rtdb.firebaseio.com",
+            projectId: "cryptonix-67333",
+            storageBucket: "cryptonix-67333.firebasestorage.app",
+            messagingSenderId: "701360318410",
+            appId: "1:701360318410:web:050c6ced8857cc0d2b5133",
+            measurementId: "G-Y131E5B1QF"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const realtimeDb = getDatabase(app);
+
+        // DOM elements
+        const messageDiv = document.getElementById('message');
+        const logoutBtn = document.getElementById('logout-btn');
+        const editProfileBtn = document.getElementById('edit-profile-btn');
+        const saveProfileBtn = document.getElementById('save-profile-btn');
+        const closeModalBtn = document.getElementById('close-modal');
+        const editModal = document.getElementById('edit-modal');
+        const profileName = document.getElementById('profile-display-name');
+        const profileEmail = document.getElementById('profile-email');
+        const profileUid = document.getElementById('profile-uid');
+        const profileCreated = document.getElementById('profile-created');
+        const profileLastLogin = document.getElementById('profile-last-login');
+        const editNameInput = document.getElementById('edit-name');
+        const editEmailInput = document.getElementById('edit-email');
+        const uploadTrigger = document.getElementById('upload-trigger');
+        const photoUpload = document.getElementById('photo-upload');
+        const profileImage = document.getElementById('profile-image');
+        const defaultIcon = document.getElementById('default-icon');
+        const uploadSpinner = document.getElementById('upload-spinner');
+        
+        // Show message
+        function showMessage(message, type) {
+            messageDiv.textContent = message;
+            messageDiv.className = `message ${type}`;
+            
+            // Auto hide after 3 seconds
+            if (type === 'success') {
+                setTimeout(() => {
+                    messageDiv.style.display = 'none';
+                }, 3000);
+            }
+        }
+        
+        // Format date
+        function formatDate(date) {
+            if (!date) return 'Unknown';
+            
+            return new Date(date).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+        
+        // Logout function
+        function logout() {
+            signOut(auth)
+                .then(() => {
+                    // Sign-out successful
+                    window.location.href = "login.html";
+                })
+                .catch((error) => {
+                    showMessage('Logout failed', 'error');
+                });
+        }
+        
+        // Open edit modal
+        function openEditModal() {
+            // Fill the form with current data
+            editNameInput.value = profileName.textContent;
+            editEmailInput.value = profileEmail.textContent;
+            
+            // Show the modal
+            editModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+        
+        // Close edit modal
+        function closeEditModal() {
+            editModal.style.display = 'none';
+            document.body.style.overflow = 'auto'; // Re-enable scrolling
+        }
+        
+        // Save profile changes
+        function saveProfileChanges() {
+            const newName = editNameInput.value.trim();
+            const newEmail = editEmailInput.value.trim();
+            
+            if (!newName) {
+                showMessage('Name cannot be empty', 'error');
+                return;
+            }
+            
+            if (!newEmail) {
+                showMessage('Email cannot be empty', 'error');
+                return;
+            }
+            
+            const user = auth.currentUser;
+            if (!user) {
+                showMessage('User not authenticated', 'error');
+                return;
+            }
+            
+            // Update user data in Firestore
+            updateDoc(doc(db, "users", user.uid), {
+                name: newName,
+                email: newEmail
+            })
+            .then(() => {
+                // Update UI
+                profileName.textContent = newName;
+                profileEmail.textContent = newEmail;
+                
+                showMessage('Profile updated successfully', 'success');
+                closeEditModal();
+            })
+            .catch((error) => {
+                console.error("Error updating profile:", error);
+                showMessage('Failed to update profile', 'error');
+            });
+        }
+        
+        // Handle photo upload
+        function handlePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (!file.type.match('image.*')) {
+                showMessage('Please select an image file', 'error');
+                return;
+            }
+            
+            // Check file size (max 2MB)
+            if (file.size > 2 * 1024 * 1024) {
+                showMessage('Image must be less than 2MB', 'error');
+                return;
+            }
+            
+            // Show loading spinner
+            uploadSpinner.style.display = 'block';
+            uploadTrigger.style.display = 'none';
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64Image = e.target.result;
+                
+                // Store image in Realtime Database
+                const user = auth.currentUser;
+                if (user) {
+                    set(ref(realtimeDb, 'userImages/' + user.uid), {
+                        image: base64Image,
+                        timestamp: Date.now()
+                    })
+                    .then(() => {
+                        // Update profile image display
+                        profileImage.src = base64Image;
+                        profileImage.classList.remove('hidden');
+                        defaultIcon.classList.add('hidden');
+                        
+                        showMessage('Profile picture updated successfully', 'success');
+                        
+                        // Hide spinner and show edit icon again
+                        uploadSpinner.style.display = 'none';
+                        uploadTrigger.style.display = 'flex';
+                    })
+                    .catch((error) => {
+                        console.error("Error uploading image:", error);
+                        showMessage('Failed to upload profile picture. Please try again.', 'error');
+                        
+                        // Hide spinner and show edit icon again
+                        uploadSpinner.style.display = 'none';
+                        uploadTrigger.style.display = 'flex';
+                    });
+                }
+            };
+            
+            reader.onerror = function() {
+                showMessage('Error reading image file', 'error');
+                uploadSpinner.style.display = 'none';
+                uploadTrigger.style.display = 'flex';
+            };
+            
+            reader.readAsDataURL(file);
+        }
+        
+        // Load profile image from Realtime Database
+        function loadProfileImage(uid) {
+            get(child(ref(realtimeDb), `userImages/${uid}`))
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const data = snapshot.val();
+                        profileImage.src = data.image;
+                        profileImage.classList.remove('hidden');
+                        defaultIcon.classList.add('hidden');
+                    } else {
+                        // No profile image found, show default icon
+                        profileImage.classList.add('hidden');
+                        defaultIcon.classList.remove('hidden');
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error loading profile image:", error);
+                    profileImage.classList.add('hidden');
+                    defaultIcon.classList.remove('hidden');
+                });
+        }
+        
+        // Check auth state and load user data
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User is signed in
+                const uid = user.uid;
+                
+                // Load profile image
+                loadProfileImage(uid);
+                
+                // Get user data from Firestore
+                getDoc(doc(db, "users", uid))
+                    .then((docSnap) => {
+                        if (docSnap.exists()) {
+                            const userData = docSnap.data();
+                            
+                            // Update profile UI
+                            profileName.textContent = userData.name || 'Name not set';
+                            profileEmail.textContent = user.email;
+                            profileUid.textContent = uid;
+                            
+                            if (userData.createdAt) {
+                                profileCreated.textContent = formatDate(userData.createdAt.toDate());
+                            }
+                            
+                            if (userData.lastLogin) {
+                                profileLastLogin.textContent = formatDate(userData.lastLogin.toDate());
+                            }
+                        } else {
+                            // Document doesn't exist
+                            profileName.textContent = 'Data not found';
+                            profileEmail.textContent = user.email;
+                            profileUid.textContent = uid;
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error getting user data:", error);
+                        profileName.textContent = 'Error loading data';
+                        profileEmail.textContent = user.email;
+                        profileUid.textContent = uid;
+                    });
+            } else {
+                // User is signed out, redirect to login page
+                window.location.href = "login.html";
+            }
+        });
+        
+        // Add event listeners
+        logoutBtn.addEventListener('click', logout);
+        editProfileBtn.addEventListener('click', openEditModal);
+        closeModalBtn.addEventListener('click', closeEditModal);
+        saveProfileBtn.addEventListener('click', saveProfileChanges);
+        uploadTrigger.addEventListener('click', () => photoUpload.click());
+        photoUpload.addEventListener('change', handlePhotoUpload);
+        
+        // Close modal when clicking outside the content
+        window.addEventListener('click', (event) => {
+            if (event.target === editModal) {
+                closeEditModal();
+            }
+        });
+
+        // Enable scrolling for the page
+        document.body.style.overflowY = 'auto';
+    </script>
+</body>
+</html>

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - MegaStore</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #007acc 0%, #0066b3 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        .form-container {
+            padding: 30px;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo i {
+            font-size: 3rem;
+            color: #007acc;
+            margin-bottom: 10px;
+        }
+        
+        .logo h1 {
+            color: #007acc;
+            font-size: 1.8rem;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+        }
+        
+        .input-with-icon input {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .input-with-icon input:focus {
+            border-color: #007acc;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.2);
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #007acc;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+        
+        .btn:hover {
+            background: #0066b3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 122, 204, 0.3);
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .link {
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        .link a {
+            color: #007acc;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .link a:hover {
+            text-decoration: underline;
+        }
+        
+        .message {
+            padding: 10px;
+            margin: 15px 0;
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+        }
+        
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+        
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+        
+        .message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            display: block;
+        }
+        
+        .verification-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .resend-btn {
+            background: transparent;
+            border: none;
+            color: #007acc;
+            cursor: pointer;
+            text-decoration: underline;
+            font-size: 0.9rem;
+        }
+        
+        .resend-btn:hover {
+            color: #0066b3;
+        }
+        
+        .resend-btn:disabled {
+            color: #999;
+            cursor: not-allowed;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                border-radius: 10px;
+            }
+            
+            .form-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <div class="logo">
+                <i class="fas fa-store"></i>
+                <h1>MegaStore</h1>
+            </div>
+            
+            <div id="message" class="message"></div>
+            
+            <div class="form-group">
+                <label for="login-email">Email</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="login-email" placeholder="Your email address">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="login-password">Password</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="login-password" placeholder="Your password">
+                </div>
+            </div>
+            
+            <button class="btn" id="login-btn">Login</button>
+            
+            <div id="verification-section" style="display: none;">
+                <div class="message info">
+                    Please verify your email to login. Check your inbox for the verification link.
+                </div>
+                <div class="verification-actions">
+                    <button id="resend-btn" class="resend-btn">Resend verification email</button>
+                </div>
+            </div>
+            
+            <div class="link">
+                Don't have an account? <a href="register.html">Register here</a>
+            </div>
+            
+            <div class="link">
+                <a href="forgot-password.html">Forgot your password?</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+        import { 
+            getAuth, 
+            signInWithEmailAndPassword,
+            sendEmailVerification,
+            onAuthStateChanged
+        } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCi5n-L_ogUif2Bsq7l8qfU9Yoq9h7J6VE",
+            authDomain: "cryptonix-67333.firebaseapp.com",
+            databaseURL: "https://cryptonix-67333-default-rtdb.firebaseio.com",
+            projectId: "cryptonix-67333",
+            storageBucket: "cryptonix-67333.firebasestorage.app",
+            messagingSenderId: "701360318410",
+            appId: "1:701360318410:web:050c6ced8857cc0d2b5133",
+            measurementId: "G-Y131E5B1QF"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // DOM elements
+        const messageDiv = document.getElementById('message');
+        const loginBtn = document.getElementById('login-btn');
+        const verificationSection = document.getElementById('verification-section');
+        const resendBtn = document.getElementById('resend-btn');
+        
+        // Show message
+        function showMessage(message, type) {
+            messageDiv.textContent = message;
+            messageDiv.className = `message ${type}`;
+        }
+        
+        // Clear message
+        function clearMessage() {
+            messageDiv.textContent = '';
+            messageDiv.className = 'message';
+        }
+        
+        // Login function
+        function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            // Validation
+            if (!email || !password) {
+                showMessage('Please provide email and password', 'error');
+                return;
+            }
+            
+            // Disable login button during process
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Logging in...';
+            
+            // Sign in user
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    // Signed in
+                    const user = userCredential.user;
+                    
+                    // Check if email is verified
+                    if (!user.emailVerified) {
+                        // Show verification message and options
+                        verificationSection.style.display = 'block';
+                        showMessage('Please verify your email address before logging in.', 'error');
+                        
+                        // Sign out the user since email is not verified
+                        return auth.signOut();
+                    } else {
+                        // Email is verified, save user data to localStorage
+                        const userData = {
+                            uid: user.uid,
+                            email: user.email,
+                            displayName: user.displayName,
+                            emailVerified: user.emailVerified
+                        };
+                        localStorage.setItem('user', JSON.stringify(userData));
+                        
+                        // Redirect to dashboard or home page
+                        showMessage('Login successful! Redirecting...', 'success');
+                        setTimeout(() => {
+                            window.location.href = "app_upload.html";
+                        }, 1500);
+                    }
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    let errorMessage = 'Login failed';
+                    
+                    if (errorCode === 'auth/invalid-email') {
+                        errorMessage = 'Invalid email address';
+                    } else if (errorCode === 'auth/user-disabled') {
+                        errorMessage = 'This account has been disabled';
+                    } else if (errorCode === 'auth/user-not-found') {
+                        errorMessage = 'No account found with this email';
+                    } else if (errorCode === 'auth/wrong-password') {
+                        errorMessage = 'Incorrect password';
+                    } else if (errorCode === 'auth/too-many-requests') {
+                        errorMessage = 'Too many failed attempts. Please try again later';
+                    }
+                    
+                    showMessage(errorMessage, 'error');
+                })
+                .finally(() => {
+                    // Re-enable login button
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = 'Login';
+                });
+        }
+        
+        // Resend verification email
+        function resendVerification() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (!email || !password) {
+                showMessage('Please enter your email and password first', 'error');
+                return;
+            }
+            
+            // Disable resend button to prevent spamming
+            resendBtn.disabled = true;
+            resendBtn.textContent = 'Sending...';
+            
+            // Sign in user first (required to send verification)
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    
+                    // Send verification email
+                    return sendEmailVerification(user);
+                })
+                .then(() => {
+                    showMessage('Verification email sent! Please check your inbox.', 'success');
+                    
+                    // Sign out the user after sending verification
+                    return auth.signOut();
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    let errorMessage = 'Failed to send verification email';
+                    
+                    if (errorCode === 'auth/too-many-requests') {
+                        errorMessage = 'Too many requests. Please try again later';
+                    }
+                    
+                    showMessage(errorMessage, 'error');
+                })
+                .finally(() => {
+                    // Re-enable resend button after 60 seconds
+                    setTimeout(() => {
+                        resendBtn.disabled = false;
+                        resendBtn.textContent = 'Resend verification email';
+                    }, 60000); // 60 seconds cooldown
+                });
+        }
+        
+        // Add event listeners
+        loginBtn.addEventListener('click', login);
+        resendBtn.addEventListener('click', resendVerification);
+        
+        // Add Enter key support
+        document.getElementById('login-password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                login();
+            }
+        });
+
+        // Check if user is already logged in
+        onAuthStateChanged(auth, (user) => {
+            if (user && user.emailVerified) {
+                // User is signed in and email is verified
+                const userData = {
+                    uid: user.uid,
+                    email: user.email,
+                    displayName: user.displayName,
+                    emailVerified: user.emailVerified
+                };
+                localStorage.setItem('user', JSON.stringify(userData));
+                window.location.href = "app_upload.html";
+            }
+        });
+    </script>
+</body>
+</html>

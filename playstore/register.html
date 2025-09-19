@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - MegaStore</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #007acc 0%, #0066b3 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        .form-container {
+            padding: 30px;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo i {
+            font-size: 3rem;
+            color: #007acc;
+            margin-bottom: 10px;
+        }
+        
+        .logo h1 {
+            color: #007acc;
+            font-size: 1.8rem;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+        }
+        
+        .input-with-icon input {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .input-with-icon input:focus {
+            border-color: #007acc;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.2);
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #007acc;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+        
+        .btn:hover {
+            background: #0066b3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 122, 204, 0.3);
+        }
+        
+        .link {
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        .link a {
+            color: #007acc;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .link a:hover {
+            text-decoration: underline;
+        }
+        
+        .message {
+            padding: 10px;
+            margin: 15px 0;
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+        }
+        
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+        
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+        
+        .message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            display: block;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                border-radius: 10px;
+            }
+            
+            .form-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <div class="logo">
+                <i class="fas fa-store"></i>
+                <h1>MegaStore</h1>
+            </div>
+            
+            <div id="message" class="message"></div>
+            
+            <div class="form-group">
+                <label for="register-name">Full Name</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="register-name" placeholder="Your full name">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="register-email">Email</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="register-email" placeholder="Your email address">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="register-password">Password</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="register-password" placeholder="At least 6 characters">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="register-confirm-password">Confirm Password</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="register-confirm-password" placeholder="Re-enter your password">
+                </div>
+            </div>
+            
+            <button class="btn" id="register-btn">Register</button>
+            
+            <div class="link">
+                Already have an account? <a href="login.html">Login here</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+        import { 
+            getAuth, 
+            createUserWithEmailAndPassword,
+            sendEmailVerification,
+            signOut
+        } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+        import { 
+            getFirestore, 
+            doc, 
+            setDoc, 
+            serverTimestamp 
+        } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCi5n-L_ogUif2Bsq7l8qfU9Yoq9h7J6VE",
+            authDomain: "cryptonix-67333.firebaseapp.com",
+            databaseURL: "https://cryptonix-67333-default-rtdb.firebaseio.com",
+            projectId: "cryptonix-67333",
+            storageBucket: "cryptonix-67333.firebasestorage.app",
+            messagingSenderId: "701360318410",
+            appId: "1:701360318410:web:050c6ced8857cc0d2b5133",
+            measurementId: "G-Y131E5B1QF"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // DOM elements
+        const messageDiv = document.getElementById('message');
+        const registerBtn = document.getElementById('register-btn');
+        
+        // Show message
+        function showMessage(message, type) {
+            messageDiv.textContent = message;
+            messageDiv.className = `message ${type}`;
+        }
+        
+        // Clear message
+        function clearMessage() {
+            messageDiv.textContent = '';
+            messageDiv.className = 'message';
+        }
+        
+        // Register function
+        function register() {
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm-password').value;
+            
+            // Validation
+            if (!name || !email || !password || !confirmPassword) {
+                showMessage('Please provide all information', 'error');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showMessage('Passwords do not match', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showMessage('Password must be at least 6 characters', 'error');
+                return;
+            }
+            
+            // Create user
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    // Signed up
+                    const user = userCredential.user;
+                    
+                    // Send email verification
+                    return sendEmailVerification(user)
+                        .then(() => {
+                            // Save user data to Firestore
+                            return setDoc(doc(db, "users", user.uid), {
+                                name: name,
+                                email: email,
+                                emailVerified: false,
+                                createdAt: serverTimestamp(),
+                                lastLogin: serverTimestamp()
+                            });
+                        })
+                        .then(() => {
+                            // Sign out the user until they verify their email
+                            return signOut(auth);
+                        })
+                        .then(() => {
+                            showMessage('Registration successful! Please check your email for verification link. The link will expire in 10 minutes.', 'info');
+                        });
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    let errorMessage = 'Registration failed';
+                    
+                    if (errorCode === 'auth/email-already-in-use') {
+                        errorMessage = 'This email is already in use';
+                    } else if (errorCode === 'auth/invalid-email') {
+                        errorMessage = 'Invalid email address';
+                    } else if (errorCode === 'auth/weak-password') {
+                        errorMessage = 'Password is too weak';
+                    }
+                    
+                    showMessage(errorMessage, 'error');
+                });
+        }
+        
+        // Add event listener to register button
+        registerBtn.addEventListener('click', register);
+    </script>
+</body>
+</html>

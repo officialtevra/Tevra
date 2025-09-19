@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Megastore</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #003366, #0066cc, #007acc);
+            color: #fff;
+            margin-top: 20px;
+            margin-bottom: 40px;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px 20px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #007acc, #ffffff, #007acc);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textShine 3s ease infinite;
+        }
+
+        @keyframes textShine {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* About Section Styles */
+        .about-section {
+            padding: 30px 0;
+        }
+
+        .about-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+            align-items: center;
+        }
+
+        .about-text {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(0, 122, 204, 0.2);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .about-text h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #ffffff;
+            border-bottom: 2px solid #4f46e5;
+            padding-bottom: 10px;
+        }
+
+        .about-text p {
+            line-height: 1.8;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .about-image {
+            flex: 1;
+            min-width: 300px;
+            text-align: center;
+        }
+
+        .about-image img {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Mission Section */
+        .mission-section {
+            background: rgba(0, 122, 204, 0.15);
+            padding: 40px;
+            border-radius: 15px;
+            margin: 40px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .mission-section h2 {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            color: #ffffff;
+        }
+
+        .mission-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .mission-card {
+            background: rgba(0, 122, 204, 0.25);
+            padding: 25px;
+            border-radius: 15px;
+            flex: 1;
+            min-width: 250px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .mission-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .mission-card i {
+            font-size: 3rem;
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+
+        .mission-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+
+        .mission-card p {
+            line-height: 1.6;
+        }
+
+        /* Team Section */
+        .team-section {
+            padding: 40px 0;
+        }
+
+        .team-section h2 {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 40px;
+            color: #ffffff;
+        }
+
+        .team-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+        }
+
+        .team-card {
+            background: rgba(0, 122, 204, 0.2);
+            border-radius: 15px;
+            overflow: hidden;
+            width: 280px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .team-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .team-img {
+            height: 250px;
+            overflow: hidden;
+        }
+
+        .team-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .team-card:hover .team-img img {
+            transform: scale(1.1);
+        }
+
+        .team-info {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .team-info h3 {
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+            color: #ffffff;
+        }
+
+        .team-info p {
+            color: #ffffff;
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+
+        .team-social {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .team-social a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: rgba(79, 70, 229, 0.2);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .team-social a:hover {
+            background: #4f46e5;
+            transform: translateY(-3px);
+        }
+        
+      
+
+        /* Stats Section */
+        .stats-section {
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .stats-section h2 {
+            font-size: 2.2rem;
+            margin-bottom: 40px;
+            color: #ffffff;
+        }
+
+        .stats-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+        }
+
+        .stat-item {
+            background: rgba(0, 122, 204, 0.2);
+            padding: 30px;
+            border-radius: 15px;
+            width: 200px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ffcc00;
+            margin-bottom: 10px;
+        }
+
+        .stat-text {
+            font-size: 1.1rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .about-text h2, .mission-section h2, .team-section h2, .stats-section h2 {
+                font-size: 1.8rem;
+            }
+            
+            .mission-card, .team-card, .stat-item {
+                width: 100%;
+                max-width: 350px;
+            }
+            
+            .about-content {
+                flex-direction: column;
+            }
+            
+            .about-image {
+                order: -1;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .about-text, .mission-card, .team-card, .stat-item {
+                padding: 20px;
+            }
+            
+            .mission-section {
+                padding: 30px 20px;
+            }
+        }
+
+        /* Navigation */
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 25px;
+            background: rgba(79, 70, 229, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .back-button:hover {
+            background: #4f46e5;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Footer */
+        .site-footer {
+            background: rgba(0, 122, 204, 0.3);
+            padding: 30px 20px;
+            margin-top: 50px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .footer-bottom {
+            color: #ffffff;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>About Us</h1>
+            <p>Megastore - Your Digital Partner's Trusted Companion</p>
+        </header>
+
+        <section class="about-section">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2>Our Story</h2>
+                    <p>Megastore started in 2020 with a simple idea - to provide quality and affordable digital content for everyone. Today, we are proudly one of the leading digital content provider platforms in India.</p>
+                    <p>Our team consists of dedicated professionals who work every day to provide the best service for our users through innovation and creativity.</p>
+                    <p>We believe that technology should be accessible and available to everyone, and this philosophy guides every decision and product development.</p>
+                </div>
+                <div class="about-image">
+                    <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Megastore Team">
+                </div>
+            </div>
+        </section>
+
+        <section class="mission-section">
+            <h2>Our Mission and Vision</h2>
+            <div class="mission-cards">
+                <div class="mission-card">
+                    <i class="fas fa-bullseye"></i>
+                    <h3>Our Mission</h3>
+                    <p>To provide quality digital content and services to all Indian users so they can enhance their lives through technology.</p>
+                </div>
+                <div class="mission-card">
+                    <i class="fas fa-eye"></i>
+                    <h3>Our Vision</h3>
+                    <p>To transform Indian digital ecosystem and make technology accessible to everyone.</p>
+                </div>
+                <div class="mission-card">
+                    <i class="fas fa-handshake"></i>
+                    <h3>Our Values</h3>
+                    <p>Innovation, integrity, user satisfaction and community development - these values are the foundation of everything we do.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="team-section">
+            <h2>Our Leadership Team</h2>
+            <div class="team-cards">
+                <div class="team-card">
+                    <div class="team-img">
+                        <img src="image/Palash.jpg" alt="Team Member">
+                    </div>
+                    <div class="team-info">
+                        <h3>Palash Mondal</h3>
+                        <p>Founder & CEO</p>
+                        <div class="team-social">
+                            <a href="https://www.facebook.com/share/1CJTUUcZ3v/"><i class="fab fa-facebook-f"></i></a>
+                            <a href="https://x.com/soulfultunes77?t=py7T4c01QDR2r-W4EG4cVw&s=09"><i class="fab fa-twitter"></i></a>
+                            <a href="https://www.linkedin.com/in/palash-mondal-ab8226385?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="team-card">
+                    <div class="team-img">
+                        <img src="image/1752213369588.jpg" alt="Team Member">
+                    </div>
+                    <div class="team-info">
+                        <h3>Gita Mondal</h3>
+                        <p>Technology Director</p>
+                        <div class="team-social">
+                            <a href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="team-card">
+                    <div class="team-img">
+                        <img src="image/IMG-20250917-WA0002.jpg" alt="Team Member">
+                    </div>
+                    <div class="team-info">
+                        <h3>Suvhankar Gayen</h3>
+                        <p>Technology Director</p>
+                        <div class="team-social">
+                            <a href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="stats-section">
+            <h2>Our Achievements</h2>
+            <div class="stats-container">
+                <div class="stat-item">
+                    <div class="stat-number">50,000+</div>
+                    <div class="stat-text">Active Users</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">1,200+</div>
+                    <div class="stat-text">Digital Content</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">95%</div>
+                    <div class="stat-text">Satisfied Customers</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">5</div>
+                    <div class="stat-text">Years of Experience</div>
+                </div>
+            </div>
+        </section>
+
+        <div style="text-align: center; margin: 40px 0;">
+            <a href="main.html" class="back-button"><i class="fas fa-arrow-left"></i> Return to Home Page</a>
+        </div>
+
+        <footer class="site-footer">
+            <div class="footer-bottom">
+                <p>© 2025 Megastore | All Rights Reserved</p>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

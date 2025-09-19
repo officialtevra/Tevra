@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Teams - Megastore</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #003366, #0066cc, #007acc);
+            color: #fff;
+            margin-top: 20px;
+            margin-bottom: 40px;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px 20px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #007acc, #ffffff, #007acc);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textShine 3s ease infinite;
+        }
+
+        @keyframes textShine {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Introduction Section */
+        .intro-section {
+            padding: 30px 0;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .intro-section p {
+            line-height: 1.8;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            background: rgba(0, 122, 204, 0.2);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Teams Section */
+        .teams-section {
+            padding: 40px 0;
+        }
+
+        .teams-section h2 {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 40px;
+            color: #ffffff;
+        }
+
+        .team-category {
+            margin-bottom: 60px;
+        }
+
+        .team-category h3 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #4f46e5;
+            color: #ffffff;
+        }
+
+        .team-members {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+        }
+
+        .team-member {
+            background: rgba(0, 122, 204, 0.2);
+            border-radius: 15px;
+            overflow: hidden;
+            width: 280px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .team-member:hover {
+            transform: translateY(-10px);
+        }
+
+        .member-img {
+            height: 250px;
+            overflow: hidden;
+        }
+
+        .member-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .team-member:hover .member-img img {
+            transform: scale(1.1);
+        }
+
+        .member-info {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .member-info h4 {
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+            color: #ffffff;
+        }
+
+        .member-info p {
+            color: #ffffff;
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+
+        .member-social {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .member-social a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: rgba(79, 70, 229, 0.2);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .member-social a:hover {
+            background: #4f46e5;
+            transform: translateY(-3px);
+        }
+
+        /* Department Highlights */
+        .dept-highlights {
+            background: rgba(0, 122, 204, 0.15);
+            padding: 40px;
+            border-radius: 15px;
+            margin: 40px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .dept-highlights h2 {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            color: #ffffff;
+        }
+
+        .highlight-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .highlight-card {
+            background: rgba(0, 122, 204, 0.25);
+            padding: 25px;
+            border-radius: 15px;
+            flex: 1;
+            min-width: 250px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .highlight-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .highlight-card i {
+            font-size: 3rem;
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+
+        .highlight-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+
+        .highlight-card p {
+            line-height: 1.6;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .teams-section h2, .dept-highlights h2 {
+                font-size: 1.8rem;
+            }
+            
+            .team-member, .highlight-card {
+                width: 100%;
+                max-width: 350px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .team-member, .highlight-card {
+                padding: 20px;
+            }
+            
+            .dept-highlights {
+                padding: 30px 20px;
+            }
+        }
+
+        /* Navigation */
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 25px;
+            background: rgba(79, 70, 229, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .back-button:hover {
+            background: #4f46e5;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Footer */
+        .site-footer {
+            background: rgba(0, 122, 204, 0.3);
+            padding: 30px 20px;
+            margin-top: 50px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .footer-bottom {
+            color: #ffffff;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Our Teams</h1>
+            <p>Meet the Talented People Behind Megastore</p>
+        </header>
+
+        <section class="intro-section">
+            <p>At Megastore, our strength lies in our diverse and dedicated teams. Each department plays a crucial role in delivering exceptional digital experiences to our customers. Get to know the talented individuals who make it all possible.</p>
+        </section>
+
+        <section class="teams-section">
+            <h2>Department Teams</h2>
+            
+            <div class="team-category">
+                <h3>Technology & Development</h3>
+                <div class="team-members">
+                    <div class="team-member">
+                        <div class="member-img">
+                            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Tech Lead">
+                        </div>
+                        <div class="member-info">
+                            <h4>Rajesh Kumar</h4>
+                            <p>Senior Tech Lead</p>
+                            <div class="member-social">
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-github"></i></a>
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="team-member">
+                        <div class="member-img">
+                            <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Developer">
+                        </div>
+                        <div class="member-info">
+                            <h4>Priya Sharma</h4>
+                            <p>Full Stack Developer</p>
+                            <div class="member-social">
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-github"></i></a>
+                                <a href="#"><i class="fab fa-medium"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="team-member">
+                        <div class="member-img">
+                            <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Developer">
+                        </div>
+                        <div class="member-info">
+                            <h4>Amit Patel</h4>
+                            <p>Frontend Developer</p>
+                            <div class="member-social">
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-dribbble"></i></a>
+                                <a href="#"><i class="fab fa-behance"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="team-category">
+                <h3>Design & User Experience</h3>
+                <div class="team-members">
+                    <div class="team-member">
+                        <div class="member-img">
+                            <img src="https://images.unsplash.com/photo-1479936343636-73cdc5aae0c3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Design Lead">
+                        </div>
+                        <div class="member-info">
+                            <h4>Neha Gupta</h4>
+                            <p>Creative Director</p>
+                            <div class="member-social">
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-dribbble"></i></a>
+                                <a href="#"><i class="fab fa-behance"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="team-member">
+                        <div class="member-img">
+                            <img src="https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Designer">
+                        </div>
+                        <div class="member-info">
+                            <h4>Sunita Reddy</h4>
+                            <p>UI/UX Designer</p>
+                            <div class="member-social">
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-dribbble"></i></a>
+                                <a href="#"><i class="fab fa-instagram"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="team-member">
+                        <div class="member-img">
+                            <img src="https://images.unsplash.com/photo-1567532939604-b6b5b0db1604?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Designer">
+                        </div>
+                        <div class="member-info">
+                            <h4>Vikram Singh</h4>
+                            <p>Graphic Designer</p>
+                            <div class="member-social">
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-behance"></i></a>
+                                <a href="#"><i class="fab fa-instagram"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="team-category">
+                <h3>Marketing & Growth</h3>
+                <div class="team-members">
+                    <div class="team-member">
+                        <div class="member-img">
+                            <img src="https://images.unsplash.com/photo-1519345182560-3f2917c472ef?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Marketing Head">
+                        </div>
+                        <div class="member-info">
+                            <h4>Rahul Mehta</h4>
+                            <p>Marketing Director</p>
+                            <div class="member-social">
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                                <a href="#"><i class="fab fa-medium"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="team-member">
+                        <div class="member-img">
+                            <img src="https://images.unsplash.com/photo-1544717275-e2d5fca5f6ba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Marketing Specialist">
+                        </div>
+                        <div class="member-info">
+                            <h4>Anjali Desai</h4>
+                            <p>Digital Marketing Specialist</p>
+                            <div class="member-social">
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                                <a href="#"><i class="fab fa-instagram"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="team-member">
+                        <div class="member-img">
+                            <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Content Strategist">
+                        </div>
+                        <div class="member-info">
+                            <h4>Sanjana Iyer</h4>
+                            <p>Content Strategist</p>
+                            <div class="member-social">
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-medium"></i></a>
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="dept-highlights">
+            <h2>Department Highlights</h2>
+            <div class="highlight-cards">
+                <div class="highlight-card">
+                    <i class="fas fa-code"></i>
+                    <h3>Technology</h3>
+                    <p>Our tech team builds scalable solutions using cutting-edge technologies to deliver seamless digital experiences.</p>
+                </div>
+                <div class="highlight-card">
+                    <i class="fas fa-paint-brush"></i>
+                    <h3>Design</h3>
+                    <p>Our designers create intuitive and beautiful interfaces that prioritize user experience and accessibility.</p>
+                </div>
+                <div class="highlight-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Marketing</h3>
+                    <p>Our marketing team develops innovative strategies to connect with our audience and drive growth.</p>
+                </div>
+            </div>
+        </section>
+
+        <div style="text-align: center; margin: 40px 0;">
+            <a href="main.html" class="back-button"><i class="fas fa-arrow-left"></i> Return to Home Page</a>
+            <a href="about.html" class="back-button" style="margin-left: 15px;"><i class="fas fa-info-circle"></i> About Us</a>
+        </div>
+
+        <footer class="site-footer">
+            <div class="footer-bottom">
+                <p>© 2025 Megastore | All Rights Reserved</p>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support - Megastore</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #003366, #0066cc, #007acc);
+            color: #fff;
+            margin-top: 20px;
+            margin-bottom: 40px;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px 20px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #007acc, #ffffff, #007acc);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textShine 3s ease infinite;
+        }
+
+        @keyframes textShine {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Support Intro */
+        .support-intro {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            background: rgba(0, 122, 204, 0.2);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .support-intro p {
+            line-height: 1.8;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        /* Support Options */
+        .support-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .support-card {
+            background: rgba(0, 122, 204, 0.2);
+            border-radius: 15px;
+            padding: 30px;
+            width: 350px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .support-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .support-card i {
+            font-size: 3.5rem;
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+
+        .support-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+
+        .support-card p {
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .support-btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: rgba(79, 70, 229, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .support-btn:hover {
+            background: #4f46e5;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            background: rgba(0, 122, 204, 0.15);
+            padding: 40px;
+            border-radius: 15px;
+            margin: 40px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .faq-section h2 {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            color: #ffffff;
+        }
+
+        .faq-item {
+            margin-bottom: 20px;
+            background: rgba(0, 122, 204, 0.25);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .faq-question i {
+            transition: transform 0.3s ease;
+        }
+
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 300px;
+            padding: 0 20px 20px;
+        }
+
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+
+        /* Contact Form */
+        .contact-section {
+            background: rgba(0, 122, 204, 0.2);
+            padding: 40px;
+            border-radius: 15px;
+            margin: 40px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .contact-section h2 {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            color: #ffffff;
+        }
+
+        .contact-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .form-group {
+            flex: 1 0 calc(50% - 20px);
+            min-width: 280px;
+        }
+
+        .form-group.full {
+            flex: 1 0 100%;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: rgba(79, 70, 229, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: #4f46e5;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Support Status */
+        .status-section {
+            margin: 40px 0;
+        }
+
+        .status-section h2 {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            color: #ffffff;
+        }
+
+        .status-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .status-card {
+            background: rgba(0, 122, 204, 0.2);
+            padding: 25px;
+            border-radius: 15px;
+            flex: 1;
+            min-width: 250px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .status-card i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .status-card.online i {
+            color: #4ade80;
+        }
+
+        .status-card.offline i {
+            color: #f87171;
+        }
+
+        .status-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .status-online {
+            background: rgba(74, 222, 128, 0.2);
+            color: #4ade80;
+        }
+
+        .status-offline {
+            background: rgba(248, 113, 113, 0.2);
+            color: #f87171;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .support-card, .status-card {
+                width: 100%;
+                max-width: 350px;
+            }
+            
+            .form-group {
+                flex: 1 0 100%;
+            }
+            
+            .faq-section, .contact-section {
+                padding: 30px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .support-card, .status-card {
+                padding: 20px;
+            }
+        }
+
+        /* Navigation */
+        .nav-buttons {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .nav-button {
+            display: inline-block;
+            margin: 0 10px;
+            padding: 12px 25px;
+            background: rgba(79, 70, 229, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-button:hover {
+            background: #4f46e5;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Footer */
+        .site-footer {
+            background: rgba(0, 122, 204, 0.3);
+            padding: 30px 20px;
+            margin-top: 50px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .footer-bottom {
+            color: #ffffff;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Support Center</h1>
+            <p>We're Here to Help You</p>
+        </header>
+
+        <section class="support-intro">
+            <p>At Megastore, we're committed to providing exceptional support to our customers. Whether you need technical assistance, have billing questions, or just want to provide feedback, we're here to help you every step of the way.</p>
+            <p>Our average response time is under 2 hours during business hours (9 AM - 6 PM IST, Monday to Saturday).</p>
+        </section>
+
+        <div class="support-options">
+            <div class="support-card">
+                <i class="fas fa-question-circle"></i>
+                <h3>FAQ & Help Articles</h3>
+                <p>Find instant answers to common questions in our comprehensive knowledge base.</p>
+                <a href="#faq" class="support-btn">Browse FAQs</a>
+            </div>
+            
+            <div class="support-card">
+                <i class="fas fa-envelope"></i>
+                <h3>Email Support</h3>
+                <p>Send us a detailed message and we'll get back to you as soon as possible.</p>
+                <a href="#contact" class="support-btn">Contact Us</a>
+            </div>
+            
+            <div class="support-card">
+                <i class="fas fa-phone-alt"></i>
+                <h3>Phone Support</h3>
+                <p>Speak directly with our support team during business hours for immediate assistance.</p>
+                <a href="tel:+18001234567" class="support-btn">Call Now</a>
+            </div>
+        </div>
+
+        <section class="status-section">
+            <h2>System Status</h2>
+            <div class="status-cards">
+                <div class="status-card online">
+                    <i class="fas fa-server"></i>
+                    <h3>Website Status</h3>
+                    <p>All systems operational</p>
+                    <span class="status-indicator status-online">Online</span>
+                </div>
+                
+                <div class="status-card online">
+                    <i class="fas fa-shopping-cart"></i>
+                    <h3>Order Processing</h3>
+                    <p>Processing normally</p>
+                    <span class="status-indicator status-online">Online</span>
+                </div>
+                
+                <div class="status-card online">
+                    <i class="fas fa-database"></i>
+                    <h3>Database Status</h3>
+                    <p>Running smoothly</p>
+                    <span class="status-indicator status-online">Online</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq" class="faq-section">
+            <h2>Frequently Asked Questions</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>How do I reset my password?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>To reset your password, go to the login page and click on "Forgot Password". Enter your email address and we'll send you a link to reset your password. The link will be valid for 24 hours.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>What payment methods do you accept?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>We accept all major credit cards (Visa, MasterCard, American Express), PayPal, UPI payments (Google Pay, PhonePe, Paytm), and net banking from most Indian banks.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>How can I track my order?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Once your order has been shipped, you'll receive a confirmation email with a tracking number and a link to track your package. You can also track your order by logging into your account and viewing your order history.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>What is your return policy?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>We offer a 30-day return policy for most digital products. If you're not satisfied with your purchase, please contact our support team within 30 days of your purchase for a full refund. Some products may have different return policies which will be clearly stated at the time of purchase.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Do you offer technical support for your products?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes, we offer free technical support for all our products. You can contact our support team via email, phone, or through the contact form on this page. Our typical response time is under 2 hours during business hours.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="contact-section">
+            <h2>Contact Our Support Team</h2>
+            
+            <form class="contact-form">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" placeholder="Enter your full name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="Enter your email address" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <select id="subject" required>
+                        <option value="">Select a subject</option>
+                        <option value="billing">Billing Inquiry</option>
+                        <option value="technical">Technical Support</option>
+                        <option value="product">Product Information</option>
+                        <option value="refund">Refund Request</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="order">Order ID (if applicable)</label>
+                    <input type="text" id="order" placeholder="Enter your order ID">
+                </div>
+                
+                <div class="form-group full">
+                    <label for="message">Message</label>
+                    <textarea id="message" placeholder="Please describe your issue in detail" required></textarea>
+                </div>
+                
+                <div class="form-group full">
+                    <button type="submit" class="submit-btn">Send Message</button>
+                </div>
+            </form>
+        </section>
+
+        <div class="nav-buttons">
+            <a href="main.html" class="nav-button"><i class="fas fa-arrow-left"></i> Return to Home Page</a>
+            <a href="about.html" class="nav-button"><i class="fas fa-info-circle"></i> About Us</a>
+            <a href="teams.html" class="nav-button"><i class="fas fa-users"></i> Our Teams</a>
+        </div>
+
+        <footer class="site-footer">
+            <div class="footer-bottom">
+                <p>© 2025 Megastore | All Rights Reserved</p>
+                <p>Support Hours: 9 AM - 6 PM IST (Monday to Saturday) | Email: support@megastore.com | Phone: +91 1800 123 4567</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // FAQ toggle functionality
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentElement;
+                item.classList.toggle('active');
+            });
+        });
+        
+        // Form submission handling
+        const contactForm = document.querySelector('.contact-form');
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Thank you for your message! Our support team will contact you shortly.');
+            contactForm.reset();
+        });
+    </script>
+</body>
+</html>
