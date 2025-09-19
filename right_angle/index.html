@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>সিভিল ইঞ্জিনিয়ার ক্যালকুলেটর স্যুট</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #008ae6, #005999);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .logo {
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .logo i {
+            font-size: 60px;
+            color: white;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .calculator-card {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .calculator-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.25);
+        }
+        .card-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .card-icon i {
+            font-size: 40px;
+            color: white;
+        }
+        .calculator-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        .calculator-card p {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+        .btn {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.05);
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+        @media (max-width: 768px) {
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-calculator"></i>
+        </div>
+        <h1>সিভিল ইঞ্জিনিয়ার ক্যালকুলেটর স্যুট</h1>
+        <p class="subtitle">পেশাদার সিভিল ইঞ্জিনিয়ারিং গণনার জন্য প্রয়োজনীয় সকল ক্যালকুলেটর এক স্থানে</p>
+    </div>
+    
+    <div class="calculator-grid">
+        <div class="calculator-card" onclick="location.href='scientific.html'">
+            <div class="card-icon">
+                <i class="fas fa-calculator"></i>
+            </div>
+            <h2>সায়েন্টিফিক ক্যালকুলেটর</h2>
+            <p>প্রতিদিনের সাধারণ ও জটিল গণনার জন্য সম্পূর্ণ বৈশিষ্ট্যসম্পন্ন সায়েন্টিফিক ক্যালকুলেটর</p>
+            <button class="btn">ব্যবহার করুন <i class="fas fa-arrow-right"></i></button>
+        </div>
+        
+        <div class="calculator-card" onclick="location.href='structural.html'">
+            <div class="card-icon">
+                <i class="fas fa-ruler-combined"></i>
+            </div>
+            <h2>স্ট্রাকচারাল ডিজাইন ক্যালকুলেটর</h2>
+            <p>বীম, কলাম ও স্ল্যাব ডিজাইনের জন্য প্রয়োজনীয় সমস্ত গণনা করুন</p>
+            <button class="btn">ব্যবহার করুন <i class="fas fa-arrow-right"></i></button>
+        </div>
+        
+        <div class="calculator-card" onclick="location.href='survey.html'">
+            <div class="card-icon">
+                <i class="fas fa-map-marked-alt"></i>
+            </div>
+            <h2>সার্ভে ও লেভেল ক্যালকুলেটর</h2>
+            <p>জরিপ কাজ, দূরত্ব পরিমাপ এবং লেভেলিং সম্পর্কিত গণনা করুন</p>
+            <button class="btn">ব্যবহার করুন <i class="fas fa-arrow-right"></i></button>
+        </div>
+        
+        <div class="calculator-card" onclick="location.href='estimation.html'">
+            <div class="card-icon">
+                <i class="fas fa-tape"></i>
+            </div>
+            <h2>কনস্ট্রাকশন এস্টিমেশন ক্যালকুলেটर</h2>
+            <p>নির্মাণ সামগ্রী ও খরচ অনুমানের জন্য প্রয়োজনীয় গণনা করুন</p>
+            <button class="btn">ব্যবহার করুন <i class="fas fa-arrow-right"></i></button>
+        </div>
+        
+        <div class="calculator-card" onclick="location.href='hydraulic.html'">
+            <div class="card-icon">
+                <i class="fas fa-tint"></i>
+            </div>
+            <h2>হাইড্রোলিক/এনভায়রনমেন্টাল ক্যালকুলেটর</h2>
+            <p>জলবাহী এবং পরিবেশগত প্রকৌশল সম্পর্কিত সমস্ত গণনা করুন</p>
+            <button class="btn">ব্যবহার করুন <i class="fas fa-arrow-right"></i></button>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>© ২০২৩ সিভিল ইঞ্জিনিয়ারিং ক্যালকুলেটর স্যুট | সকল অধিকার সংরক্ষিত</p>
+    </div>
+</body>
+</html>
