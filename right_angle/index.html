@@ -1,198 +1,435 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>সিভিল ইঞ্জিনিয়ার ক্যালকুলেটর স্যুট</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #008ae6, #005999);
-            color: white;
-            min-height: 100vh;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        .logo {
-            width: 120px;
-            height: 120px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        }
-        .logo i {
-            font-size: 60px;
-            color: white;
-        }
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-        .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        .calculator-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .calculator-card {
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 15px;
-            padding: 25px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-        .calculator-card:hover {
-            transform: translateY(-10px);
-            background: rgba(255, 255, 255, 0.25);
-            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.25);
-        }
-        .card-icon {
-            width: 80px;
-            height: 80px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-        .card-icon i {
-            font-size: 40px;
-            color: white;
-        }
-        .calculator-card h2 {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-        }
-        .calculator-card p {
-            font-size: 1rem;
-            opacity: 0.9;
-            margin-bottom: 20px;
-        }
-        .btn {
-            background: rgba(255, 255, 255, 0.3);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 50px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .btn:hover {
-            background: rgba(255, 255, 255, 0.4);
-            transform: scale(1.05);
-        }
-        .footer {
-            margin-top: 50px;
-            text-align: center;
-            opacity: 0.8;
-            font-size: 0.9rem;
-        }
-        @media (max-width: 768px) {
-            .calculator-grid {
-                grid-template-columns: 1fr;
-            }
-            h1 {
-                font-size: 2rem;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Right Angle Calculator - Improved Layout</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .container {
+      background: rgba(30, 30, 46, 0.8);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .logo-container {
+      margin-bottom: 20px;
+    }
+    
+    .logo-triangle {
+      transform-origin: center;
+      animation: rotate 8s linear infinite;
+    }
+    
+    .logo-circle {
+      animation: pulse 2s ease-in-out infinite alternate;
+    }
+    
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      background: linear-gradient(to right, #4cc9f0, #4361ee);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    p {
+      font-size: 1.1rem;
+      margin-bottom: 25px;
+      opacity: 0.9;
+      color: #cbd5e1;
+    }
+    
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+    
+    input {
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      background: #ffffff;
+      color: #1e1e2e;
+      font-size: 1.1rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    input:focus {
+      outline: none;
+      border: 2px solid #4361ee;
+      transform: scale(1.03);
+      box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+    }
+    
+    input::placeholder {
+      color: #6b7280;
+    }
+    
+    button {
+      padding: 15px 30px;
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(67, 97, 238, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    button:hover {
+      transform: translateY(-3px);
+    }
+    
+    button:active {
+      transform: translateY(1px);
+    }
+    
+    .btn-primary {
+      background: linear-gradient(to right, #4361ee, #3a0ca3);
+    }
+    
+    .btn-primary:hover {
+      box-shadow: 0 8px 20px rgba(67, 97, 238, 0.6);
+    }
+    
+    .btn-secondary {
+      background: linear-gradient(to right, #f72585, #b5179e);
+      box-shadow: 0 5px 15px rgba(247, 37, 133, 0.4);
+    }
+    
+    .btn-secondary:hover {
+      box-shadow: 0 8px 20px rgba(247, 37, 133, 0.6);
+    }
+    
+    .btn-tertiary {
+      background: linear-gradient(to right, #4cc9f0, #4895ef);
+      box-shadow: 0 5px 15px rgba(76, 201, 240, 0.4);
+    }
+    
+    .btn-tertiary:hover {
+      box-shadow: 0 8px 20px rgba(76, 201, 240, 0.6);
+    }
+    
+    .result {
+      margin-top: 25px;
+      padding: 20px;
+      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.05);
+      font-size: 1.3rem;
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .result.highlight {
+      background: rgba(255, 255, 255, 0.1);
+      transform: scale(1.05);
+    }
+    
+    .formula {
+      margin-top: 20px;
+      font-size: 1rem;
+      opacity: 0.8;
+      color: #cbd5e1;
+    }
+    
+    .history-section {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .history-list {
+      max-height: 200px;
+      overflow-y: auto;
+      margin-top: 15px;
+      text-align: left;
+    }
+    
+    .history-item {
+      padding: 12px 15px;
+      margin-bottom: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .history-data {
+      flex-grow: 1;
+      font-size: 0.95rem;
+    }
+    
+    .history-actions {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .history-actions button {
+      padding: 8px 12px;
+      font-size: 0.8rem;
+      margin: 0;
+    }
+    
+    .empty-history {
+      text-align: center;
+      padding: 15px;
+      opacity: 0.7;
+      color: #94a3b8;
+    }
+    
+    .button-group {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 15px;
+    }
+    
+    /* নতুন স্টাইল যোগ করা হয়েছে */
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    
+    .action-buttons button {
+      flex: 1;
+      min-width: 140px;
+    }
+    
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    @keyframes pulse {
+      from { transform: scale(1); opacity: 0.7; }
+      to { transform: scale(1.1); opacity: 1; }
+    }
+    
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px;
+      }
+      
+      h1 {
+        font-size: 1.8rem;
+      }
+      
+      .button-group {
+        flex-direction: column;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="header">
-        <div class="logo">
-            <i class="fas fa-calculator"></i>
-        </div>
-        <h1>সিভিল ইঞ্জিনিয়ার ক্যালকুলেটর স্যুট</h1>
-        <p class="subtitle">পেশাদার সিভিল ইঞ্জিনিয়ারিং গণনার জন্য প্রয়োজনীয় সকল ক্যালকুলেটর এক স্থানে</p>
+  <div class="container">
+    <div class="logo-container">
+      <svg width="150" height="150" viewBox="0 0 200 200">
+        <!-- Animated Triangle -->
+        <polygon class="logo-triangle" points="100,40 160,160 40,160" stroke="#4361ee" stroke-width="5" fill="none" />
+        
+        <!-- Animated Circles -->
+        <circle class="logo-circle" cx="100" cy="100" r="30" stroke="#4cc9f0" stroke-width="3" fill="none" />
+        <circle class="logo-circle" cx="100" cy="100" r="20" stroke="#f72585" stroke-width="2" fill="none" />
+        
+        <!-- Right Angle Symbol -->
+        <path d="M85,145 L85,160 L70,160" stroke="#4361ee" stroke-width="3" fill="none" />
+      </svg>
     </div>
     
-    <div class="calculator-grid">
-        <div class="calculator-card" onclick="location.href='scientific.html'">
-            <div class="card-icon">
-                <i class="fas fa-calculator"></i>
-            </div>
-            <h2>সায়েন্টিফিক ক্যালকুলেটর</h2>
-            <p>প্রতিদিনের সাধারণ ও জটিল গণনার জন্য সম্পূর্ণ বৈশিষ্ট্যসম্পন্ন সায়েন্টিফিক ক্যালকুলেটর</p>
-            <button class="btn">ব্যবহার করুন <i class="fas fa-arrow-right"></i></button>
-        </div>
-        
-        <div class="calculator-card" onclick="location.href='structural.html'">
-            <div class="card-icon">
-                <i class="fas fa-ruler-combined"></i>
-            </div>
-            <h2>স্ট্রাকচারাল ডিজাইন ক্যালকুলেটর</h2>
-            <p>বীম, কলাম ও স্ল্যাব ডিজাইনের জন্য প্রয়োজনীয় সমস্ত গণনা করুন</p>
-            <button class="btn">ব্যবহার করুন <i class="fas fa-arrow-right"></i></button>
-        </div>
-        
-        <div class="calculator-card" onclick="location.href='survey.html'">
-            <div class="card-icon">
-                <i class="fas fa-map-marked-alt"></i>
-            </div>
-            <h2>সার্ভে ও লেভেল ক্যালকুলেটর</h2>
-            <p>জরিপ কাজ, দূরত্ব পরিমাপ এবং লেভেলিং সম্পর্কিত গণনা করুন</p>
-            <button class="btn">ব্যবহার করুন <i class="fas fa-arrow-right"></i></button>
-        </div>
-        
-        <div class="calculator-card" onclick="location.href='estimation.html'">
-            <div class="card-icon">
-                <i class="fas fa-tape"></i>
-            </div>
-            <h2>কনস্ট্রাকশন এস্টিমেশন ক্যালকুলেটर</h2>
-            <p>নির্মাণ সামগ্রী ও খরচ অনুমানের জন্য প্রয়োজনীয় গণনা করুন</p>
-            <button class="btn">ব্যবহার করুন <i class="fas fa-arrow-right"></i></button>
-        </div>
-        
-        <div class="calculator-card" onclick="location.href='hydraulic.html'">
-            <div class="card-icon">
-                <i class="fas fa-tint"></i>
-            </div>
-            <h2>হাইড্রোলিক/এনভায়রনমেন্টাল ক্যালকুলেটর</h2>
-            <p>জলবাহী এবং পরিবেশগত প্রকৌশল সম্পর্কিত সমস্ত গণনা করুন</p>
-            <button class="btn">ব্যবহার করুন <i class="fas fa-arrow-right"></i></button>
-        </div>
+    <h1>Right Angle Calculator</h1>
+    <p>Enter two sides (a, b) to calculate the hypotenuse</p>
+    
+    <div class="input-group">
+      <input type="number" id="a" placeholder="Enter side (a)...." step="any">
+      <input type="number" id="b" placeholder="Enter side (b)...." step="any">
     </div>
     
-    <div class="footer">
-        <p>© ২০২৩ সিভিল ইঞ্জিনিয়ারিং ক্যালকুলেটর স্যুট | সকল অধিকার সংরক্ষিত</p>
+    <!-- Calculate এবং Reset বাটন একই লাইনে -->
+    <div class="action-buttons">
+      <button class="btn-primary" onclick="calculate()">
+        <i class="fas fa-calculator"></i> Calculate
+      </button>
+      <button class="btn-tertiary" onclick="resetCalculator()">
+        <i class="fas fa-redo"></i> Reset
+      </button>
     </div>
+    
+    <div class="result" id="result">Result will be shown here</div>
+    
+    <div class="formula">Formula: c = √(a² + b²)</div>
+    
+    <div class="history-section">
+      <h2>Calculation History</h2>
+      <div class="history-list" id="historyList">
+        <div class="empty-history">No calculations yet</div>
+      </div>
+      
+      <div class="button-group">
+        <button class="btn-secondary" onclick="clearHistory()">
+          <i class="fas fa-trash"></i> Clear History
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Load calculations from localStorage
+    let calculations = JSON.parse(localStorage.getItem('calculations')) || [];
+    
+    // Display history
+    function renderHistory() {
+      const historyList = document.getElementById('historyList');
+      
+      if (calculations.length === 0) {
+        historyList.innerHTML = '<div class="empty-history">No calculations yet</div>';
+        return;
+      }
+      
+      historyList.innerHTML = '';
+      calculations.forEach((calc, index) => {
+        const historyItem = document.createElement('div');
+        historyItem.className = 'history-item';
+        historyItem.innerHTML = `
+          <div class="history-data">
+            a: ${calc.a}, b: ${calc.b} → c: ${calc.c}
+          </div>
+          <div class="history-actions">
+            <button class="btn-tertiary" onclick="editCalculation(${index})" style="padding: 6px 10px; font-size: 0.8rem;">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn-secondary" onclick="deleteCalculation(${index})" style="padding: 6px 10px; font-size: 0.8rem;">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        `;
+        historyList.appendChild(historyItem);
+      });
+    }
+    
+    // Calculate hypotenuse
+    function calculate() {
+      let a = parseFloat(document.getElementById("a").value);
+      let b = parseFloat(document.getElementById("b").value);
+      
+      const resultElement = document.getElementById("result");
+      
+      if(isNaN(a) || isNaN(b) || a <= 0 || b <= 0) {
+        resultElement.innerText = "Please enter two valid positive numbers.";
+        resultElement.classList.add("highlight");
+        setTimeout(() => resultElement.classList.remove("highlight"), 1000);
+        return;
+      }
+      
+      let c = Math.sqrt(a*a + b*b);
+      resultElement.innerHTML = `Hypotenuse (c) = <strong>${c.toFixed(2)}</strong>`;
+      resultElement.classList.add("highlight");
+      setTimeout(() => resultElement.classList.remove("highlight"), 1000);
+      
+      // Save to history
+      calculations.push({ a, b, c: c.toFixed(2) });
+      localStorage.setItem('calculations', JSON.stringify(calculations));
+      
+      // Update history display
+      renderHistory();
+    }
+    
+    // Reset calculator inputs
+    function resetCalculator() {
+      document.getElementById("a").value = "";
+      document.getElementById("b").value = "";
+      document.getElementById("result").innerText = "Result will be shown here";
+    }
+    
+    // Clear all history
+    function clearHistory() {
+      if (confirm("Are you sure you want to clear all history?")) {
+        calculations = [];
+        localStorage.removeItem('calculations');
+        renderHistory();
+      }
+    }
+    
+    // Delete a specific calculation
+    function deleteCalculation(index) {
+      calculations.splice(index, 1);
+      localStorage.setItem('calculations', JSON.stringify(calculations));
+      renderHistory();
+    }
+    
+    // Edit a calculation
+    function editCalculation(index) {
+      const calc = calculations[index];
+      document.getElementById("a").value = calc.a;
+      document.getElementById("b").value = calc.b;
+      
+      // Recalculate
+      let c = Math.sqrt(calc.a * calc.a + calc.b * calc.b);
+      document.getElementById("result").innerHTML = `Hypotenuse (c) = <strong>${c.toFixed(2)}</strong>`;
+      
+      // Update the calculation
+      calculations[index].c = c.toFixed(2);
+      localStorage.setItem('calculations', JSON.stringify(calculations));
+      renderHistory();
+    }
+    
+    // Allow calculation on Enter key press
+    document.addEventListener('keypress', function(event) {
+      if (event.key === 'Enter') {
+        calculate();
+      }
+    });
+    
+    // Initial render of history
+    renderHistory();
+  </script>
 </body>
 </html>
