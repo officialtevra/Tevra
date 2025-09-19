@@ -1,0 +1,1729 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ইমেজ সহ অনুভূমিক স্ক্রল মেনু</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #003366, #0066cc, #007acc);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 100%;
+            padding: 0;
+            margin-top: 15mm;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 0;
+            color: #007acc;
+        }
+
+        /* নতুন কার্ড স্টাইল */
+        :root {
+            --accent: #4f46e5;
+        }
+
+        .card-scroll-container {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding: 20px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            margin: 20px auto 40px;
+            max-width: 100%;
+            margin-left: -3mm;
+            background: #007acc;
+        }
+
+        .card-scroll-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .card {
+            width: 300px;
+            height: 230px;
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            flex-shrink: 0;
+            scroll-snap-align: center;
+        }
+
+        .card-hero {
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            position: relative;
+        }
+
+        .overlay {
+            background: rgba(0, 0, 0, 0.55);
+            color: white;
+            padding: 14px;
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .cover {
+            width: 70px;
+            height: 70px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .text-block {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 70px;
+            width: 100%;
+            position: relative;
+        }
+
+        .title {
+            font-size: 16px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .about {
+            font-size: 10px;
+            color: #d1d5db;
+            margin: 0;
+        }
+
+        .info-line {
+            display: flex;
+            align-items: center;
+            font-size: 11px;
+            gap: 8px;
+            margin-top: 2px;
+            position: relative;
+        }
+
+        .info-line span {
+            color: #f1f5f9;
+        }
+
+        .btn {
+            font-size: 10px;
+            background: var(--accent);
+            border: none;
+            border-radius: 6px;
+            padding: 4px 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            position: absolute;
+            right: 0;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .menu-container {
+            background: #007acc;
+            border-radius: 0;
+            overflow: hidden;
+            margin-top: 20px;
+            margin-left: 0;
+            margin-right: 0;
+            margin-top: -15mm;
+        }
+
+        .nav-container {
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #007acc;
+            
+        }
+
+        .category-name {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .more-link {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 10px 25px;
+            border-radius: 25px;
+            background: rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .more-link:hover {
+            background: rgba(0, 0, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .scrollmenu {
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 25px 15px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            margin-top: -5mm;
+            margin-left: -8mm;
+        }
+
+        .scrollmenu::-webkit-scrollbar {
+            display: none;
+        }
+
+        .menu-items-container {
+            display: inline-block;
+            padding: 0 5px;
+        }
+
+        .menu-item {
+            display: inline-block;
+            text-align: center;
+            padding: 8px;
+            margin: 0 3px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            width: 180px;
+            vertical-align: top;
+            background: rgba(0, 122, 204, 0.1);
+        }
+
+        .menu-item:hover {
+            background: rgba(0, 122, 204, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .menu-item a {
+            display: flex;
+            align-items: center;
+            color: white;
+            text-align: left;
+            padding: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            background: transparent;
+            margin-bottom: 4px;
+        }
+
+        .menu-item a:hover {
+            background: rgba(0, 122, 204, 0.2);
+        }
+
+        .app-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            margin-right: 8px;
+            object-fit: cover;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .app-info {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+
+        .app-name, .app-size {
+            font-size: 0.85rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 2px;
+        }
+
+        .app-rating {
+            font-size: 0.8rem;
+            color: #ffcc00;
+            white-space: nowrap;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 30px 20px;
+            font-size: 1rem;
+            opacity: 0.9;
+            width: 100%;
+            background: rgba(0, 122, 204, 0.3);
+            border-radius: 10px;
+            color: #ffffff;
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                padding: 12px 20px;
+            }
+            
+            .category-name {
+                font-size: 1.2rem;
+            }
+            
+            .more-link {
+                padding: 8px 20px;
+                font-size: 1.1rem;
+            }
+            
+            .menu-item {
+                width: 220px;
+                padding: 15px;
+                margin: 0 10px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .app-image {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .scrollmenu {
+                padding: 20px 10px;
+            }
+            
+            .card {
+                width: 280px;
+                height: 200px;
+            }
+            
+            .title {
+                font-size: 14px;
+            }
+            
+            .about {
+                font-size: 9px;
+            }
+            
+            .info-line {
+                font-size: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-container {
+                padding: 10px 15px;
+            }
+            
+            .category-name {
+                font-size: 1.1rem;
+            }
+            
+            .more-link {
+                padding: 7px 16px;
+                font-size: 1rem;
+            }
+            
+            .menu-item {
+                width: 200px;
+                padding: 12px;
+                margin: 0 8px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .app-image {
+                width: 60px;
+                height: 60px;
+                margin-right: 12px;
+            }
+            
+            .app-name {
+                font-size: 1rem;
+            }
+            
+            .card {
+                width: 260px;
+                height: 190px;
+            }
+            
+            .title {
+                font-size: 13px;
+            }
+            
+            .about {
+                font-size: 8px;
+            }
+            
+            .info-line {
+                font-size: 9px;
+                flex-wrap: wrap;
+            }
+        }
+
+        .menu-item {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.7s ease;
+            z-index: 1;
+        }
+
+        .menu-item:hover::before {
+            left: 100%;
+        }
+
+        .app-image {
+            transition: transform 0.3s ease;
+        }
+
+        .menu-item:hover .app-image {
+            transform: scale(1.05);
+        }
+
+        .more-link {
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .more-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            z-index: -1;
+            transition: background 0.3s ease;
+            border-radius: 25px;
+        }
+
+        .more-link:hover::before {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .scrollmenu::-webkit-scrollbar-thumb {
+            background: linear-gradient(to right, #007acc, #005c99, #007acc);
+            background-size: 200% 100%;
+            animation: scrollbarGradient 3s ease infinite;
+        }
+
+        @keyframes scrollbarGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        h1 {
+            background: linear-gradient(45deg, #007acc, #ffffff, #007acc);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textShine 3s ease infinite;
+        }
+
+        @keyframes textShine {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .app-rating {
+            text-shadow: 0 0 5px rgba(255, 204, 0, 0.7);
+        }
+
+        footer {
+            background: linear-gradient(90deg, rgba(0, 122, 204, 0.3), rgba(0, 92, 153, 0.4), rgba(0, 122, 204, 0.3));
+            background-size: 200% 100%;
+            animation: footerGradient 5s ease infinite;
+        }
+
+        @keyframes footerGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .second-menu {
+            margin-top: 20px;
+        }
+        
+        /* দ্বিতীয় মেনু কন্টেইনার ৫mm উপরে উঠানোর জন্য */
+.menu-container.second-menu {
+    margin-top: -8mm; /* ৫ এমএম উপরে উঠানো */
+}
+
+
+/* নতুন স্ক্রল কার্ড স্টাইল */
+.new-scroll-section {
+    
+    padding: 0 15px;
+    margin top: -27mm;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 0 10px;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+}
+
+.view-all {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.15);
+    transition: all 0.3s ease;
+}
+
+.view-all:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.new-card-scroll {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding-right: 5px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.new-card-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.new-card {
+    width: 100px;
+    height: 180px;   /* আগে 150px ছিল, এখন বাড়ানো হলো */
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    transition: all 0.3s ease;
+    border-radius: 12px;
+}
+
+.new-card:hover {
+    transform: translateY(-5px);
+}
+
+.new-card-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
+    object-fit: cover;
+    margin-bottom: 8px;
+}
+
+.new-card-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: white;
+    text-align: center;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+.new-card-info {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 0.7rem;
+}
+
+.new-card-rating {
+    color: #ffcc00;
+}
+
+.new-card-size {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.second-body.move-up {
+    margin-top: -18mm;  /* ২০ মিমি উপরে তুলবে */
+}
+
+.menu-container.second-menu.second-menu-lower {
+    margin-top: 40mm !important;
+}
+
+/* Footer Styles */
+.site-footer {
+  background: #007acc;
+  color: #eee;
+  padding: 40px 20px 20px;
+  font-family: "Poppins", sans-serif;
+}
+
+.footer-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.footer-container h2, 
+.footer-container h3 {
+  color: #fff;
+  margin-bottom: 15px;
+}
+
+.footer-brand p {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.footer-links ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-links ul li {
+  margin: 8px 0;
+}
+
+.footer-links ul li a {
+  text-decoration: none;
+  color: #ccc;
+  transition: color 0.3s;
+}
+
+.footer-links ul li a:hover {
+  color: #fff;
+}
+
+.footer-contact p,
+.footer-social a {
+  font-size: 14px;
+  margin: 6px 0;
+}
+
+.footer-social a {
+  display: block;
+  text-decoration: none;
+  color: #ccc;
+  transition: color 0.3s;
+}
+
+.footer-social a:hover {
+  color: #fff;
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: 20px;
+  margin-top: 30px;
+  border-top: 1px solid #333;
+  font-size: 13px;
+  color: #aaa;
+}
+
+.card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- নতুন কার্ড সেকশন -->
+        <div class="card-scroll-container">
+            <!-- Card 1 -->
+            	<a href="song-page.html" class="card-link">
+            <div class="card">
+                <div class="card-hero" style="background:url('https://picsum.photos/id/1015/800/400') no-repeat center;">
+                    <div class="overlay">
+                        <img src="https://picsum.photos/id/1011/70" alt="cover" class="cover">
+                        <div class="text-block">
+                            <div class="title">Lagao Ghut • প্রেমের গান</div>
+                            <div class="about">হৃদয়স্পর্শী গান যা ভালোবাসা ও বেদনার অনুভব প্রকাশ করে।</div>
+                            <div class="info-line">
+                                <span>⭐ 4.2</span>
+                                <span>4.6 MB</span>
+                                <span>3:45 • MP3</span>
+                                <button class="btn">ডাউনলোড</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </a>
+
+            <!-- Card 2 -->
+            	<a href="song-page.html" class="card-link">
+            <div class="card">
+                <div class="card-hero" style="background:url('https://picsum.photos/id/1016/800/400') no-repeat center;">
+                    <div class="overlay">
+                        <img src="https://picsum.photos/id/1027/70" alt="cover" class="cover">
+                        <div class="text-block">
+                            <div class="title">প্রেমের রঙ</div>
+                            <div class="about">মেলোডি আর কথার মিশ্রণে রোমান্টিক ছোঁয়া।</div>
+                            <div class="info-line">
+                                <span>⭐ 4.5</span>
+                                <span>5.2 MB</span>
+                                <span>4:12 • MP3</span>
+                                <button class="btn">ডাউনলোড</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </a>
+
+            <!-- Card 3 -->
+            	<a href="song-page.html" class="card-link">
+            <div class="card">
+                <div class="card-hero" style="background:url('https://picsum.photos/id/1020/800/400') no-repeat center;">
+                    <div class="overlay">
+                        <img src="https://picsum.photos/id/1005/70" alt="cover" class="cover">
+                        <div class="text-block">
+                            <div class="title">স্মৃতির ডায়েরি</div>
+                            <div class="about">পুরনো দিনের আবেগঘন কণ্ঠস্বর।</div>
+                            <div class="info-line">
+                                <span>⭐ 4.8</span>
+                                <span>6.0 MB</span>
+                                <span>5:01 • MP3</span>
+                                <button class="btn">ডাউনলোড</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </a>
+
+            <!-- Card 4 -->
+            	<a href="song-page.html" class="card-link">
+            <div class="card">
+                <div class="card-hero" style="background:url('https://picsum.photos/id/1035/800/400') no-repeat center;">
+                    <div class="overlay">
+                        <img src="https://picsum.photos/id/1025/70" alt="cover" class="cover">
+                        <div class="text-block">
+                            <div class="title">ভালোবাসার আলো</div>
+                            <div class="about">নতুন প্রজন্মের জন্য হৃদয় ছোঁয়া মিউজিক।</div>
+                            <div class="info-line">
+                                <span>⭐ 4.1</span>
+                                <span>3.8 MB</span>
+                                <span>3:22 • MP3</span>
+                                <button class="btn">ডাউনলোড</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </a>
+
+            <!-- Card 5 -->
+            	<a href="song-page.html" class="card-link">
+            <div class="card">
+                <div class="card-hero" style="background:url('https://picsum.photos/id/1043/800/400') no-repeat center;">
+                    <div class="overlay">
+                        <img src="https://picsum.photos/id/1022/70" alt="cover" class="cover">
+                        <div class="text-block">
+                            <div class="title">রাত্রির সুর</div>
+                            <div class="about">নীরব রাতকে সঙ্গ দেবে মিষ্টি সুরেলা কণ্ঠ।</div>
+                            <div class="info-line">
+                                <span>⭐ 4.7</span>
+                                <span>4.9 MB</span>
+                                <span>4:05 • MP3</span>
+                                <button class="btn">ডাউনলোড</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </a>
+
+            <!-- Card 6 -->
+            	<a href="song-page.html" class="card-link">
+            <div class="card">
+                <div class="card-hero" style="background:url('https://picsum.photos/id/1047/800/400') no-repeat center;">
+                    <div class="overlay">
+                        <img src="https://picsum.photos/id/1037/70" alt="cover" class="cover">
+                        <div class="text-block">
+                            <div class="title">স্বপ্নের পথ</div>
+                            <div class="about">অজানা পথে যাত্রার সুরেলা গল্প।</div>
+                            <div class="info-line">
+                                <span>⭐ 4.6</span>
+                                <span>5.1 MB</span>
+                                <span>4:18 • MP3</span>
+                                <button class="btn">ডাউনলোড</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </a>
+
+            <!-- Card 7 -->
+            	<a href="song-page.html" class="card-link">
+            <div class="card">
+                <div class="card-hero" style="background:url('https://picsum.photos/id/1050/800/400') no-repeat center;">
+                    <div class="overlay">
+                        <img src="https://picsum.photos/id/1048/70" alt="cover" class="cover">
+                        <div class="text-block">
+                            <div class="title">হৃদয়ের কথা</div>
+                            <div class="about">মন ছুঁয়ে যাওয়া মেলোডি ও কথা।</div>
+                            <div class="info-line">
+                                <span>⭐ 4.4</span>
+                                <span>4.2 MB</span>
+                                <span>3:58 • MP3</span>
+                                <button class="btn">ডাউনলোড</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </a>
+
+            <!-- Card 8 -->
+            	<a href="song-page.html" class="card-link">
+            <div class="card">
+                <div class="card-hero" style="background:url('https://picsum.photos/id/1062/800/400') no-repeat center;">
+                    <div class="overlay">
+                        <img src="https://picsum.photos/id/1060/70" alt="cover" class="cover">
+                        <div class="text-block">
+                            <div class="title">চিরদিন তোমার</div>
+                            <div class="about">ভালোবাসার প্রতিশ্রুতি নিয়ে লেখা গান।</div>
+                            <div class="info-line">
+                                <span>⭐ 4.9</span>
+                                <span>6.3 MB</span>
+                                <span>5:10 • MP3</span>
+                                <button class="btn">ডাউনলোড</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </a>
+
+            <!-- Card 9 -->
+            	<a href="song-page.html" class="card-link">
+            <div class="card">
+                <div class="card-hero" style="background:url('https://picsum.photos/id/1074/800/400') no-repeat center;">
+                    <div class="overlay">
+                        <img src="https://picsum.photos/id/1070/70" alt="cover" class="cover">
+                        <div class="text-block">
+                            <div class="title">নীরব অনুভূতি</div>
+                            <div class="about">চুপচাপ হৃদয়ের কণ্ঠস্বর।</div>
+                            <div class="info-line">
+                                <span>⭐ 4.3</span>
+                                <span>4.0 MB</span>
+                                <span>3:40 • MP3</span>
+                                <button class="btn">ডাউনলোড</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </a>
+
+            <!-- Card 10 -->
+            	<a href="song-page.html" class="card-link">
+            <div class="card">
+                <div class="card-hero" style="background:url('https://picsum.photos/id/1084/800/400') no-repeat center;">
+                    <div class="overlay">
+                        <img src="https://picsum.photos/id/1080/70" alt="cover" class="cover">
+                        <div class="text-block">
+                            <div class="title">অন্তহীন পথ</div>
+                            <div class="about">জীবনের অন্তহীন যাত্রার সঙ্গীত।</div>
+                            <div class="info-line">
+                                <span>⭐ 4.7</span>
+                                <span>5.5 MB</span>
+                                <span>4:45 • MP3</span>
+                                <button class="btn">ডাউনলোড</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </a>
+        
+    <!-- একীভূত মেনু কন্টেইনার -->
+    <div class="menu-container">
+        <!-- নেভিগেশন বার -->
+        <div class="nav-container">
+            <div class="category-name">অ্যাপস ক্যাটাগরি</div>
+            <a href="more.html" class="more-link" target="_blank">মোর</a>
+        </div>
+        
+        <!-- স্ক্রল মেনু -->
+        <div class="scrollmenu">
+            <div class="menu-items-container">
+                <div class="menu-item">
+                    <a href="#home1">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125006.png" alt="App 1" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">Prison Escape Journey</span>
+                            <span class="app-size">Prison Escape Journey Prison Escape Journey </span>
+                            <span class="app-rating">★★★★☆ 4.3</span>
+                        </div>
+                    </a>
+                    <a href="#home2">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125009.png" alt="App 2" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">স্মার্ট হোম</span>
+                            <span class="app-size">২২ এমবি</span>
+                            <span class="app-rating">★★★★★</span>
+                        </div>
+                    </a>
+                    <a href="#home3">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125012.png" alt="App 3" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">হোম কেয়ার</span>
+                            <span class="app-size">১৮ এমবি</span>
+                            <span class="app-rating">★★★☆☆</span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="menu-item">
+                    <a href="#news1">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125021.png" alt="News App 1" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">নিউজ ২৪</span>
+                            <span class="app-size">৩২ এমবি</span>
+                            <span class="app-rating">★★★★☆</span>
+                        </div>
+                    </a>
+                    <a href="#news2">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125024.png" alt="News App 2" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">বাংলা নিউজ</span>
+                            <span class="app-size">২৮ এমবি</span>
+                            <span class="app-rating">★★★★★</span>
+                        </div>
+                    </a>
+                    <a href="#news3">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125027.png" alt="News App 3" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">ব্রেকিং নিউজ</span>
+                            <span class="app-size">৩৫ এমবি</span>
+                            <span class="app-rating">★★★☆☆</span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="menu-item">
+                    <a href="#contact1">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125030.png" alt="Contact App 1" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">কন্টাক্ট প্লাস</span>
+                            <span class="app-size">১২ এমবি</span>
+                            <span class="app-rating">★★★★☆</span>
+                        </div>
+                    </a>
+                    <a href="#contact2">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125033.png" alt="Contact App 2" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">কন্টাক্ট ম্যানেজার</span>
+                            <span class="app-size">২০ এমবি</span>
+                            <span class="app-rating">★★★★★</span>
+                        </div>
+                    </a>
+                    <a href="#contact3">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125036.png" alt="Contact App 3" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">কন্টাক্ট সেভ</span>
+                            <span class="app-size">১৫ এমবি</span>
+                            <span class="app-rating">★★★☆☆</span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="menu-item">
+                    <a href="#about1">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125039.png" alt="About App 1" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">আমার সম্পর্কে</span>
+                            <span class="app-size">১০ এমবি</span>
+                            <span class="app-rating">★★★★☆</span>
+                        </div>
+                    </a>
+                    <a href="#about2">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125042.png" alt="About App 2" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">প্রোফাইল مেকার</span>
+                            <span class="app-size">১৬ এমবি</span>
+                            <span class="app-rating">★★★★★</span>
+                        </div>
+                    </a>
+                    <a href="#about3">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125045.png" alt="About App 3" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">বায়ো ক্রিয়েটর</span>
+                            <span class="app-size">১৪ এমবি</span>
+                            <span class="app-rating">★★★☆☆</span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="menu-item">
+                    <a href="#support1">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125048.png" alt="Support App 1" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">সাপোর্ট ডেস্ক</span>
+                            <span class="app-size">২৫ এমবি</span>
+                            <span class="app-rating">★★★★☆</span>
+                        </div>
+                    </a>
+                    <a href="#support2">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125051.png" alt="Support App 2" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">হেল্প সেন্টার</span>
+                            <span class="app-size">৩০ এমবি</span>
+                            <span class="app-rating">★★★★★</span>
+                        </div>
+                    </a>
+                    <a href="#support3">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125054.png" alt="Support App 3" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">সাপোর্ট চ্যাট</span>
+                            <span class="app-size">২২ এমবি</span>
+                            <span class="app-rating">★★★☆☆</span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="menu-item">
+                    <a href="#blog1">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125057.png" alt="Blog App 1" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">ব্লগার</span>
+                            <span class="app-size">১৮ এমবি</span>
+                            <span class="app-rating">★★★★☆</span>
+                        </div>
+                    </a>
+                    <a href="#blog2">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125060.png" alt="Blog App 2" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">ব্লগ ম্যানিয়া</span>
+                            <span class="app-size">২৪ এমবি</span>
+                            <span class="app-rating">★★★★★</span>
+                        </div>
+                    </a>
+                    <a href="#blog3">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125063.png" alt="Blog App 3" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">ব্লগ রাইটার</span>
+                            <span class="app-size">২০ এমবি</span>
+                            <span class="app-rating">★★★☆☆</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- একীভূত মেনু কন্টেইনার -->
+    <div class="menu-container second-menu">
+        <!-- নেভিগেশন বার -->
+        <div class="nav-container">
+            <div class="category-name">অ্যাপস ক্যাটাগরি</div>
+            <a href="more.html" class="more-link" target="_blank">মোর</a>
+        </div>
+        
+         <!-- নতুন স্ক্রল কার্ড সেকশন -->
+    <div class="new-scroll-section">
+        
+        <div class="new-card-scroll">
+            <!-- Card 1 -->
+            <div class="new-card">
+                <img src="https://picsum.photos/id/20/100" alt="App" class="new-card-img">
+                <div class="new-card-title">TikTok</div>
+                <div class="new-card-info">
+                    <div class="new-card-rating">⭐4.7</div>
+                    <div class="new-card-size">203MB</div>
+                </div>
+            </div>
+            
+            <!-- Card 2 -->
+            <div class="new-card">
+                <img src="https://picsum.photos/id/21/100" alt="App" class="new-card-img">
+                <div class="new-card-title">Spotify</div>
+                <div class="new-card-info">
+                    <div class="new-card-rating">⭐4.8</div>
+                    <div class="new-card-size">98MB</div>
+                </div>
+            </div>
+            
+            <!-- Card 3 -->
+            <div class="new-card">
+                <img src="https://picsum.photos/id/22/100" alt="App" class="new-card-img">
+                <div class="new-card-title">Netflix</div>
+                <div class="new-card-info">
+                    <div class="new-card-rating">⭐4.6</div>
+                    <div class="new-card-size">167MB</div>
+                </div>
+            </div>
+            
+            <!-- Card 4 -->
+            <div class="new-card">
+                <img src="https://picsum.photos/id/23/100" alt="App" class="new-card-img">
+                <div class="new-card-title">Zoom</div>
+                <div class="new-card-info">
+                    <div class="new-card-rating">⭐4.3</div>
+                    <div class="new-card-size">145MB</div>
+                </div>
+            </div>
+            
+            <!-- Card 5 -->
+            <div class="new-card">
+                <img src="https://picsum.photos/id/24/100" alt="App" class="new-card-img">
+                <div class="new-card-title">Shazam</div>
+                <div class="new-card-info">
+                    <div class="new-card-rating">⭐4.5</div>
+                    <div class="new-card-size">56MB</div>
+                </div>
+            </div>
+            
+            <!-- Card 6 -->
+            <div class="new-card">
+                <img src="https://picsum.photos/id/25/100" alt="App" class="new-card-img">
+                <div class="new-card-title">Uber</div>
+                <div class="new-card-info">
+                    <div class="new-card-rating">⭐4.2</div>
+                    <div class="new-card-size">112MB</div>
+                </div>
+            </div>
+            
+            <!-- Card 7 -->
+            <div class="new-card">
+                <img src="https://picsum.photos/id/26/100" alt="App" class="new-card-img">
+                <div class="new-card-title">Snapseed</div>
+                <div class="new-card-info">
+                    <div class="new-card-rating">⭐4.7</div>
+                    <div class="new-card-size">87MB</div>
+                </div>
+            </div>
+            
+            <!-- Card 8 -->
+            <div class="new-card">
+                <img src="https://picsum.photos/id/27/100" alt="App" class="new-card-img">
+                <div class="new-card-title">PayPal</div>
+                <div class="new-card-info">
+                    <div class="new-card-rating">⭐4.4</div>
+                    <div class="new-card-size">134MB</div>
+                </div>
+            </div>
+            
+            <!-- Card 9 -->
+            <div class="new-card">
+                <img src="https://picsum.photos/id/28/100" alt="App" class="new-card-img">
+                <div class="new-card-title">Duolingo</div>
+                <div class="new-card-info">
+                    <div class="new-card-rating">⭐4.6</div>
+                    <div class="new-card-size">76MB</div>
+                </div>
+            </div>
+            
+            <!-- Card 10 -->
+            <div class="new-card">
+                <img src="https://picsum.photos/id/29/100" alt="App" class="new-card-img">
+                <div class="new-card-title">Amazon</div>
+                <div class="new-card-info">
+                    <div class="new-card-rating">⭐4.3</div>
+                    <div class="new-card-size">156MB</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- একীভূত মেনু কন্টেইনার (প্রথম) -->
+<div class="menu-container second-menu">
+    <div class="nav-container">
+        <div class="category-name">অ্যাপস ক্যাটাগরি</div>
+        <a href="more.html" class="more-link" target="_blank">মোর</a>
+    </div>
+</div>
+
+    </body>
+    
+    
+    
+
+
+
+    
+<!-- নিচের "body" কে div-এ রূপান্তর করুন -->
+<div class="second-body move-up">
+   <!-- দ্বিতীয় বডির কনটেন্ট -->
+</div>
+
+    <div class="container">
+        <!-- নতুন কার্ড সেকশন -->
+        <div class="card-scroll-container">
+            <!-- Card 1 -->
+<a href="song-page.html" class="card-link">
+    <div class="card">
+        <div class="card-hero" style="background:url('https://picsum.photos/id/1015/800/400') no-repeat center;">
+            <div class="overlay">
+                <img src="https://picsum.photos/id/1011/70" alt="cover" class="cover">
+                <div class="text-block">
+                    <div class="title">Lagao Ghut • প্রেমের গান</div>
+                    <div class="about">হৃদয়স্পর্শী গান যা ভালোবাসা ও বেদনার অনুভব প্রকাশ করে।</div>
+                    <div class="info-line">
+                        <span>⭐ 4.2</span>
+                        <span>4.6 MB</span>
+                        <span>3:45 • MP3</span>
+                        <button class="btn">ডাউনলোড</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</a>
+
+            <!-- Card 2 -->
+            	<a href="song-page.html" class="card-link">
+            <div class="card">
+                <div class="card-hero" style="background:url('https://picsum.photos/id/1016/800/400') no-repeat center;">
+                    <div class="overlay">
+                        <img src="https://picsum.photos/id/1027/70" alt="cover" class="cover">
+                        <div class="text-block">
+                            <div class="title">প্রেমের রঙ</div>
+                            <div class="about">মেলোডি আর কথার মিশ্রণে রোমান্টিক ছোঁয়া।</div>
+                            <div class="info-line">
+                                <span>⭐ 4.5</span>
+                                <span>5.2 MB</span>
+                                <span>4:12 • MP3</span>
+                                <button class="btn">ডাউনলোড</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </a>
+
+            <!-- Card 3 -->
+            	<a href="song-page.html" class="card-link">
+            <div class="card">
+                <div class="card-hero" style="background:url('https://picsum.photos/id/1020/800/400') no-repeat center;">
+                    <div class="overlay">
+                        <img src="https://picsum.photos/id/1005/70" alt="cover" class="cover">
+                        <div class="text-block">
+                            <div class="title">স্মৃতির ডায়েরি</div>
+                            <div class="about">পুরনো দিনের আবেগঘন কণ্ঠস্বর।</div>
+                            <div class="info-line">
+                                <span>⭐ 4.8</span>
+                                <span>6.0 MB</span>
+                                <span>5:01 • MP3</span>
+                                <button class="btn">ডাউনলোড</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </a>
+
+            <!-- Card 4 -->
+            	<a href="song-page.html" class="card-link">
+            <div class="card">
+                <div class="card-hero" style="background:url('https://picsum.photos/id/1035/800/400') no-repeat center;">
+                    <div class="overlay">
+                        <img src="https://picsum.photos/id/1025/70" alt="cover" class="cover">
+                        <div class="text-block">
+                            <div class="title">ভালোবাসার আলো</div>
+                            <div class="about">নতুন প্রজন্মের জন্য হৃদয় ছোঁয়া মিউজিক।</div>
+                            <div class="info-line">
+                                <span>⭐ 4.1</span>
+                                <span>3.8 MB</span>
+                                <span>3:22 • MP3</span>
+                                <button class="btn">ডাউনলোড</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </a>
+
+            <!-- Card 5 -->
+            	<a href="song-page.html" class="card-link">
+            <div class="card">
+                <div class="card-hero" style="background:url('https://picsum.photos/id/1043/800/400') no-repeat center;">
+                    <div class="overlay">
+                        <img src="https://picsum.photos/id/1022/70" alt="cover" class="cover">
+                        <div class="text-block">
+                            <div class="title">রাত্রির সুর</div>
+                            <div class="about">নীরব রাতকে সঙ্গ দেবে মিষ্টি সুরেলা কণ্ঠ।</div>
+                            <div class="info-line">
+                                <span>⭐ 4.7</span>
+                                <span>4.9 MB</span>
+                                <span>4:05 • MP3</span>
+                                <button class="btn">ডাউনলোড</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </a>
+
+            <!-- Card 6 -->
+            	<a href="song-page.html" class="card-link">
+            <div class="card">
+                <div class="card-hero" style="background:url('https://picsum.photos/id/1047/800/400') no-repeat center;">
+                    <div class="overlay">
+                        <img src="https://picsum.photos/id/1037/70" alt="cover" class="cover">
+                        <div class="text-block">
+                            <div class="title">স্বপ্নের পথ</div>
+                            <div class="about">অজানা পথে যাত্রার সুরেলা গল্প।</div>
+                            <div class="info-line">
+                                <span>⭐ 4.6</span>
+                                <span>5.1 MB</span>
+                                <span>4:18 • MP3</span>
+                                <button class="btn">ডাউনলোড</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </a>
+
+            <!-- Card 7 -->
+            	<a href="song-page.html" class="card-link">
+            <div class="card">
+                <div class="card-hero" style="background:url('https://picsum.photos/id/1050/800/400') no-repeat center;">
+                    <div class="overlay">
+                        <img src="https://picsum.photos/id/1048/70" alt="cover" class="cover">
+                        <div class="text-block">
+                            <div class="title">হৃদয়ের কথা</div>
+                            <div class="about">মন ছুঁয়ে যাওয়া মেলোডি ও কথা।</div>
+                            <div class="info-line">
+                                <span>⭐ 4.4</span>
+                                <span>4.2 MB</span>
+                                <span>3:58 • MP3</span>
+                                <button class="btn">ডাউনলোড</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </a>
+
+            <!-- Card 8 -->
+            	<a href="song-page.html" class="card-link">
+            <div class="card">
+                <div class="card-hero" style="background:url('https://picsum.photos/id/1062/800/400') no-repeat center;">
+                    <div class="overlay">
+                        <img src="https://picsum.photos/id/1060/70" alt="cover" class="cover">
+                        <div class="text-block">
+                            <div class="title">চিরদিন তোমার</div>
+                            <div class="about">ভালোবাসার প্রতিশ্রুতি নিয়ে লেখা গান।</div>
+                            <div class="info-line">
+                                <span>⭐ 4.9</span>
+                                <span>6.3 MB</span>
+                                <span>5:10 • MP3</span>
+                                <button class="btn">ডাউনলোড</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </a>
+
+            <!-- Card 9 -->
+            	<a href="song-page.html" class="card-link">
+            <div class="card">
+                <div class="card-hero" style="background:url('https://picsum.photos/id/1074/800/400') no-repeat center;">
+                    <div class="overlay">
+                        <img src="https://picsum.photos/id/1070/70" alt="cover" class="cover">
+                        <div class="text-block">
+                            <div class="title">নীরব অনুভূতি</div>
+                            <div class="about">চুপচাপ হৃদয়ের কণ্ঠস্বর।</div>
+                            <div class="info-line">
+                                <span>⭐ 4.3</span>
+                                <span>4.0 MB</span>
+                                <span>3:40 • MP3</span>
+                                <button class="btn">ডাউনলোড</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </a>
+
+            <!-- Card 10 -->
+            	<a href="song-page.html" class="card-link">
+            <div class="card">
+                <div class="card-hero" style="background:url('https://picsum.photos/id/1084/800/400') no-repeat center;">
+                    <div class="overlay">
+                        <img src="https://picsum.photos/id/1080/70" alt="cover" class="cover">
+                        <div class="text-block">
+                            <div class="title">অন্তহীন পথ</div>
+                            <div class="about">জীবনের অন্তহীন যাত্রার সঙ্গীত।</div>
+                            <div class="info-line">
+                                <span>⭐ 4.7</span>
+                                <span>5.5 MB</span>
+                                <span>4:45 • MP3</span>
+                                <button class="btn">ডাউনলোড</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </a>
+        
+       
+    
+    <!-- একীভূত মেনু কন্টেইনার -->
+    <div class="menu-container">
+        <!-- নেভিগেশন বার -->
+        <div class="nav-container">
+            <div class="category-name">অ্যাপস ক্যাটাগরি</div>
+            <a href="more.html" class="more-link" target="_blank">মোর</a>
+        </div>
+        
+        <!-- স্ক্রল মেনু -->
+        <div class="scrollmenu">
+            <div class="menu-items-container">
+                <div class="menu-item">
+                    <a href="#home1">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125006.png" alt="App 1" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">Prison Escape Journey</span>
+                            <span class="app-size">Prison Escape Journey Prison Escape Journey </span>
+                            <span class="app-rating">★★★★☆ 4.3</span>
+                        </div>
+                    </a>
+                    <a href="#home2">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125009.png" alt="App 2" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">স্মার্ট হোম</span>
+                            <span class="app-size">২২ এমবি</span>
+                            <span class="app-rating">★★★★★</span>
+                        </div>
+                    </a>
+                    <a href="#home3">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125012.png" alt="App 3" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">হোম কেয়ার</span>
+                            <span class="app-size">১৮ এমবি</span>
+                            <span class="app-rating">★★★☆☆</span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="menu-item">
+                    <a href="#news1">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125021.png" alt="News App 1" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">নিউজ ২৪</span>
+                            <span class="app-size">৩২ এমবি</span>
+                            <span class="app-rating">★★★★☆</span>
+                        </div>
+                    </a>
+                    <a href="#news2">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125024.png" alt="News App 2" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">বাংলা নিউজ</span>
+                            <span class="app-size">২৮ এমবি</span>
+                            <span class="app-rating">★★★★★</span>
+                        </div>
+                    </a>
+                    <a href="#news3">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125027.png" alt="News App 3" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">ব্রেকিং নিউজ</span>
+                            <span class="app-size">৩৫ এমবি</span>
+                            <span class="app-rating">★★★☆☆</span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="menu-item">
+                    <a href="#contact1">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125030.png" alt="Contact App 1" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">কন্টাক্ট প্লাস</span>
+                            <span class="app-size">১২ এমবি</span>
+                            <span class="app-rating">★★★★☆</span>
+                        </div>
+                    </a>
+                    <a href="#contact2">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125033.png" alt="Contact App 2" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">কন্টাক্ট ম্যানেজার</span>
+                            <span class="app-size">২০ এমবি</span>
+                            <span class="app-rating">★★★★★</span>
+                        </div>
+                    </a>
+                    <a href="#contact3">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125036.png" alt="Contact App 3" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">কন্টাক্ট সেভ</span>
+                            <span class="app-size">১৫ এমবি</span>
+                            <span class="app-rating">★★★☆☆</span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="menu-item">
+                    <a href="#about1">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125039.png" alt="About App 1" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">আমার সম্পর্কে</span>
+                            <span class="app-size">১০ এমবি</span>
+                            <span class="app-rating">★★★★☆</span>
+                        </div>
+                    </a>
+                    <a href="#about2">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125042.png" alt="About App 2" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">প্রোফাইল مেকার</span>
+                            <span class="app-size">১৬ এমবি</span>
+                            <span class="app-rating">★★★★★</span>
+                        </div>
+                    </a>
+                    <a href="#about3">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125045.png" alt="About App 3" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">বায়ো ক্রিয়েটর</span>
+                            <span class="app-size">১৪ এমবি</span>
+                            <span class="app-rating">★★★☆☆</span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="menu-item">
+                    <a href="#support1">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125048.png" alt="Support App 1" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">সাপোর্ট ডেস্ক</span>
+                            <span class="app-size">২৫ এমবি</span>
+                            <span class="app-rating">★★★★☆</span>
+                        </div>
+                    </a>
+                    <a href="#support2">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125051.png" alt="Support App 2" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">হেল্প সেন্টার</span>
+                            <span class="app-size">৩০ এমবি</span>
+                            <span class="app-rating">★★★★★</span>
+                        </div>
+                    </a>
+                    <a href="#support3">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125054.png" alt="Support App 3" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">সাপোর্ট চ্যাট</span>
+                            <span class="app-size">২২ এমবি</span>
+                            <span class="app-rating">★★★☆☆</span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="menu-item">
+                    <a href="#blog1">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125057.png" alt="Blog App 1" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">ব্লগার</span>
+                            <span class="app-size">১৮ এমবি</span>
+                            <span class="app-rating">★★★★☆</span>
+                        </div>
+                    </a>
+                    <a href="#blog2">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125060.png" alt="Blog App 2" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">ব্লগ ম্যানিয়া</span>
+                            <span class="app-size">২৪ এমবি</span>
+                            <span class="app-rating">★★★★★</span>
+                        </div>
+                    </a>
+                    <a href="#blog3">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6125/6125063.png" alt="Blog App 3" class="app-image">
+                        <div class="app-info">
+                            <span class="app-name">ব্লগ রাইটার</span>
+                            <span class="app-size">২০ এমবি</span>
+                            <span class="app-rating">★★★☆☆</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- একীভূত মেনু কন্টেইনার -->
+    <div class="menu-container second-menu">
+        <!-- নেভিগেশন বার -->
+        <div class="nav-container">
+            <div class="category-name">অ্যাপস ক্যাটাগরি</div>
+            <a href="more.html" class="more-link" target="_blank">মোর</a>
+        </div>
+        
+     <!-- নতুন স্ক্রল কার্ড সেকশন -->
+    <div class="new-scroll-section">
+        
+        <div class="new-card-scroll">
+            <!-- Card 1 -->
+            <div class="new-card">
+                <img src="https://picsum.photos/id/20/100" alt="App" class="new-card-img">
+                <div class="new-card-title">TikTok</div>
+                <div class="new-card-info">
+                    <div class="new-card-rating">⭐4.7</div>
+                    <div class="new-card-size">203MB</div>
+                </div>
+            </div>
+            
+            <!-- Card 2 -->
+            <div class="new-card">
+                <img src="https://picsum.photos/id/21/100" alt="App" class="new-card-img">
+                <div class="new-card-title">Spotify</div>
+                <div class="new-card-info">
+                    <div class="new-card-rating">⭐4.8</div>
+                    <div class="new-card-size">98MB</div>
+                </div>
+            </div>
+            
+            <!-- Card 3 -->
+            <div class="new-card">
+                <img src="https://picsum.photos/id/22/100" alt="App" class="new-card-img">
+                <div class="new-card-title">Netflix</div>
+                <div class="new-card-info">
+                    <div class="new-card-rating">⭐4.6</div>
+                    <div class="new-card-size">167MB</div>
+                </div>
+            </div>
+            
+            <!-- Card 4 -->
+            <div class="new-card">
+                <img src="https://picsum.photos/id/23/100" alt="App" class="new-card-img">
+                <div class="new-card-title">Zoom</div>
+                <div class="new-card-info">
+                    <div class="new-card-rating">⭐4.3</div>
+                    <div class="new-card-size">145MB</div>
+                </div>
+            </div>
+            
+            <!-- Card 5 -->
+            <div class="new-card">
+                <img src="https://picsum.photos/id/24/100" alt="App" class="new-card-img">
+                <div class="new-card-title">Shazam</div>
+                <div class="new-card-info">
+                    <div class="new-card-rating">⭐4.5</div>
+                    <div class="new-card-size">56MB</div>
+                </div>
+            </div>
+            
+            <!-- Card 6 -->
+            <div class="new-card">
+                <img src="https://picsum.photos/id/25/100" alt="App" class="new-card-img">
+                <div class="new-card-title">Uber</div>
+                <div class="new-card-info">
+                    <div class="new-card-rating">⭐4.2</div>
+                    <div class="new-card-size">112MB</div>
+                </div>
+            </div>
+            
+            <!-- Card 7 -->
+            <div class="new-card">
+                <img src="https://picsum.photos/id/26/100" alt="App" class="new-card-img">
+                <div class="new-card-title">Snapseed</div>
+                <div class="new-card-info">
+                    <div class="new-card-rating">⭐4.7</div>
+                    <div class="new-card-size">87MB</div>
+                </div>
+            </div>
+            
+            <!-- Card 8 -->
+            <div class="new-card">
+                <img src="https://picsum.photos/id/27/100" alt="App" class="new-card-img">
+                <div class="new-card-title">PayPal</div>
+                <div class="new-card-info">
+                    <div class="new-card-rating">⭐4.4</div>
+                    <div class="new-card-size">134MB</div>
+                </div>
+            </div>
+            
+            <!-- Card 9 -->
+            <div class="new-card">
+                <img src="https://picsum.photos/id/28/100" alt="App" class="new-card-img">
+                <div class="new-card-title">Duolingo</div>
+                <div class="new-card-info">
+                    <div class="new-card-rating">⭐4.6</div>
+                    <div class="new-card-size">76MB</div>
+                </div>
+            </div>
+            
+            <!-- Card 10 -->
+            <div class="new-card">
+                <img src="https://picsum.photos/id/29/100" alt="App" class="new-card-img">
+                <div class="new-card-title">Amazon</div>
+                <div class="new-card-info">
+                    <div class="new-card-rating">⭐4.3</div>
+                    <div class="new-card-size">156MB</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+  
+    <!-- Website Footer -->
+<footer class="site-footer">
+  <div class="footer-container">
+  <!-- কপিরাইট -->
+  <div class="footer-bottom">
+    <p>© 2025 Megastore | সর্বস্বত্ব সংরক্ষিত</p>
+  </div>
+</footer>
+    </body>
+</html>
