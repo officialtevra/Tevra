@@ -637,7 +637,7 @@
     <script>
         // সার্চ বক্সে ক্লিক করলে search.html ওপেন হবে
         document.getElementById('searchInput').addEventListener('click', function() {
-            window.open('search/search.html', '_blank');
+            window.open('../search.html', '_blank');
         });
 
         // Enter key press করলে search.html ওপেন হবে এবং search query নিয়ে যাবে
@@ -647,7 +647,7 @@
                 if (query) {
                     window.open(`search.html?q=${encodeURIComponent(query)}`, '_blank');
                 } else {
-                    window.open('search/search.html', '_blank');
+                    window.open('../search.html', '_blank');
                 }
             }
         });
