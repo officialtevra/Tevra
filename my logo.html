@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tevra - উন্নত অ্যানিমেটেড লোগো</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            padding: 20px;
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        .logo-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .logo-container {
+            position: relative;
+            margin: 30px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+        
+        .logo-circle {
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 4px solid transparent;
+            animation: rotate 8s linear infinite;
+        }
+        
+        .logo-circle:nth-child(1) {
+            border-top-color: #6a11cb;
+            border-bottom-color: #6a11cb;
+            animation-duration: 6s;
+        }
+        
+        .logo-circle:nth-child(2) {
+            border-left-color: #2575fc;
+            border-right-color: #2575fc;
+            animation-duration: 8s;
+            animation-direction: reverse;
+            width: 160px;
+            height: 160px;
+        }
+        
+        .logo-circle:nth-child(3) {
+            border-top-color: #ff4b4b;
+            border-right-color: #ff4b4b;
+            animation-duration: 10s;
+            width: 140px;
+            height: 140px;
+        }
+        
+        .logo-text {
+            position: relative;
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(45deg, #6a11cb, #2575fc, #ff4b4b, #2575fc, #6a11cb);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 2px;
+            animation: gradientText 4s ease infinite, pulse 2s ease-in-out infinite;
+            /* উন্নতি: টেক্সট আউটলাইন যোগ */
+            text-shadow: 0px 0px 3px rgba(0, 0, 0, 0.1);
+            padding: 5px;
+        }
+        
+        .logo-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, #6a11cb, #2575fc);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 20px rgba(37, 117, 252, 0.4);
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .logo-icon-inner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid white;
+            border-radius: 12px;
+            position: relative;
+            animation: rotate 5s linear infinite;
+        }
+        
+        .logo-icon-inner::after {
+            content: "";
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: white;
+            border-radius: 50%;
+            top: -8px;
+            right: -8px;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        /* নতুন সেন্টার সিম্বল স্টাইল */
+        .center-symbol {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            font-weight: 900;
+            font-size: 32px;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            animation: symbolPulse 2s ease-in-out infinite;
+            /* উন্নতি: সাবটল গ্লো ইফেক্ট */
+            filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+        }
+        
+        .tagline {
+            color: #5c67d9;
+            font-size: 20px;
+            margin: 20px 0;
+            font-weight: 500;
+            animation: fadeInOut 3s ease-in-out infinite;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(45deg, #6a11cb, #2575fc);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 5px 15px rgba(37, 117, 252, 0.3);
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(37, 117, 252, 0.4);
+        }
+        
+        .instructions {
+            margin-top: 30px;
+            color: white;
+            text-align: center;
+            max-width: 500px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        h1 {
+            color: white;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Animations */
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes gradientText {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes symbolPulse {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+        
+        @keyframes float {
+            0% { transform: translate(-50%, -50%); }
+            50% { transform: translate(-50%, -55%); }
+            100% { transform: translate(-50%, -50%); }
+        }
+        
+        @keyframes fadeInOut {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+
+        /* উন্নতি: মোবাইল রেস্পন্সিভনেস */
+        @media (max-width: 600px) {
+            .logo-card {
+                padding: 25px;
+            }
+            
+            .logo-container {
+                height: 160px;
+            }
+            
+            .logo-circle {
+                width: 140px;
+                height: 140px;
+            }
+            
+            .logo-circle:nth-child(2) {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .logo-circle:nth-child(3) {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .logo-icon {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .logo-icon-inner {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .logo-text {
+                font-size: 36px;
+            }
+            
+            .center-symbol {
+                width: 50px;
+                height: 50px;
+                font-size: 28px;
+            }
+            
+            .tagline {
+                font-size: 18px;
+            }
+            
+            button {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .logo-text {
+                font-size: 32px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            button {
+                width: 100%;
+                max-width: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tevra - উন্নত অ্যানিমেটেড লোগো</h1>
+        
+        <div class="logo-card">
+            <div class="logo-container">
+                <div class="logo-circle"></div>
+                <div class="logo-circle"></div>
+                <div class="logo-circle"></div>
+                
+                <div class="logo-icon">
+                    <div class="logo-icon-inner"></div>
+                </div>
+                
+                <!-- নতুন সেন্টার সিম্বল -->
+                <div class="center-symbol">T</div>
+            </div>
+            
+            <div class="logo-text">www.tevra.in</div>
+            <div class="tagline">দ্রুত গতি, অনন্য অভিজ্ঞতা</div>
+            
+            <div class="controls">
+                <button onclick="window.location.href='https://tevra.in'">ওয়েবসাইট দেখুন</button>
+                <button onclick="downloadLogo()">লোগো ডাউনলোড</button>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <p>এই অ্যানিমেটেড লোগোটি Tevra ওয়েবসাইটের জন্য ডিজাইন করা হয়েছে। উন্নত সংস্করণে লোগো টেক্সটে আউটলাইন, সেন্টার সিম্বলে গ্লো ইফেক্ট এবং মোবাইল ডিভাইসের জন্য রেস্পন্সিভ ডিজাইন যোগ করা হয়েছে।</p>
+        </div>
+    </div>
+    
+    <script>
+        // Additional interactive animation
+        document.addEventListener('mousemove', (e) => {
+            const circles = document.querySelectorAll('.logo-circle');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            circles.forEach((circle, index) => {
+                const speed = index * 0.5 + 1;
+                circle.style.transform = `rotate(${x * speed * 45}deg)`;
+            });
+        });
+
+        // লোগো ডাউনলোড ফাংশন
+        function downloadLogo() {
+            // ভবিষ্যতে canvas বা SVG এক্সপোর্ট যোগ করা হবে
+            // এখন একটি সিমুলেটেড ডাউনলোড ডায়ালগ দেখানো হচ্ছে
+            const link = document.createElement('a');
+            link.href = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSIxMDAiIGN5PSIxMDAiIHI9IjkwIiBmaWxsPSJub25lIiBzdHJva2U9IiM2YTExY2IiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWRhc2hhcnJheT0iMTAsNSIgdHJhbnNmb3JtPSJyb3RhdGUoMCAxMDAgMTAwKSI+CiAgICA8YW5pbWF0ZVRyYW5zZm9ybSBhdHRyaWJ1dGVOYW1lPSJ0cmFuc2Zvcm0iIHR5cGU9InJvdGF0ZSIgZnJvbT0iMCAxMDAgMTAwIiB0bz0iMzYwIDEwMCAxMDAiIGR1cj0iOHMiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIiAvPgogIDwvY2lyY2xlPgogIDx0ZXh0IHg9IjEwMCIgeT0iMTEwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjQiIGZvbnQtd2VpZ2h0PSJib2xkIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNmExMWNiIj5UdjwvdGV4dD4KPC9zdmc+';
+            link.download = 'tevra-logo.svg';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            setTimeout(() => {
+                alert('বেটা সংস্করণ: ভবিষ্যতে সম্পূর্ণ লোগো ডাউনলোড সক্ষম হবে।\n\nবর্তমানে একটি SVG নমুনা ডাউনলোড হয়েছে।');
+            }, 100);
+        }
+    </script>
+</body>
+</html>
