@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Games</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #6a00f4;
+            --secondary-color: #00f0ff;
+            --accent-color: #ff2d75;
+            --dark-bg: #0f0a1e;
+            --card-bg: #1a1432;
+            --text-light: #ffffff;
+            --text-glow: 0 0 10px var(--secondary-color);
+            --neon-border: 1px solid var(--secondary-color);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(106, 0, 244, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 240, 255, 0.1) 0%, transparent 20%);
+            color: var(--text-light);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .search-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .search-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            gap: 15px;
+        }
+
+        .back-button {
+            background: var(--primary-color);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.3s;
+        }
+
+        .back-button:hover {
+            background: var(--accent-color);
+            transform: scale(1.05);
+        }
+
+        .search-input-container {
+            position: relative;
+            flex-grow: 1;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 20px;
+            padding-left: 50px;
+            border-radius: 30px;
+            border: 2px solid var(--primary-color);
+            outline: none;
+            font-size: 16px;
+            background-color: rgba(26, 20, 50, 0.7);
+            color: var(--text-light);
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 15px var(--secondary-color);
+            background-color: rgba(26, 20, 50, 0.9);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary-color);
+            font-size: 20px;
+        }
+
+        .results-container {
+            margin-top: 20px;
+        }
+
+        .result-item {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid transparent;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .result-item:hover {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .result-title {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: var(--secondary-color);
+        }
+
+        .result-description {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+
+        .result-url {
+            font-size: 12px;
+            color: #aaa;
+            word-break: break-all;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            font-size: 18px;
+            opacity: 0.7;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 30px;
+            font-size: 18px;
+        }
+
+        .debug-info {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid red;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .debug-toggle {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .debug-btn {
+            background: #444;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="search-container">
+        <div class="search-header">
+            <button class="back-button" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="search-input-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" id="searchInput" placeholder="Search games..." autocomplete="off">
+            </div>
+        </div>
+        
+        <div class="results-container" id="resultsContainer">
+            <div class="no-results">Type something to search for games</div>
+        </div>
+
+        <div class="debug-toggle">
+            <button class="debug-btn" onclick="toggleDebug()">Show Debug Info</button>
+        </div>
+        
+        <div class="debug-info" id="debugInfo">
+            <h3>Debug Information</h3>
+            <div id="debugContent">Debug information will appear here</div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCi5n-L_ogUif2Bsq7l8qfU9Yoq9h7J6VE",
+            authDomain: "cryptonix-67333.firebaseapp.com",
+            databaseURL: "https://cryptonix-67333-default-rtdb.firebaseio.com",
+            projectId: "cryptonix-67333",
+            storageBucket: "cryptonix-67333.firebasestorage.app",
+            appId: "1:701360318410:web:050c6ced8857cc0d2b5133",
+        };
+
+        // Debug function
+        function debugLog(message) {
+            console.log(message);
+            const debugContent = document.getElementById('debugContent');
+            debugContent.innerHTML += `<p>${new Date().toLocaleTimeString()}: ${message}</p>`;
+        }
+
+        // Toggle debug info
+        function toggleDebug() {
+            const debugInfo = document.getElementById('debugInfo');
+            debugInfo.style.display = debugInfo.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Initialize Firebase
+        try {
+            firebase.initializeApp(firebaseConfig);
+            debugLog("Firebase initialized successfully");
+        } catch (error) {
+            debugLog("Error initializing Firebase: " + error.message);
+        }
+        
+        const db = firebase.database();
+
+        // DOM elements
+        const searchInput = document.getElementById('searchInput');
+        const resultsContainer = document.getElementById('resultsContainer');
+
+        // Reference to games in database
+        const gamesRef = db.ref('games');
+
+        // Function to go back - FIXED
+        function goBack() {
+            // Check if there's a previous page in history
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                // If no history, redirect to main page
+                window.location.href = '../index.html';
+            }
+        }
+
+        // Function to search games
+        function searchGames(query) {
+            if (!query.trim()) {
+                resultsContainer.innerHTML = '<div class="no-results">Type something to search for games</div>';
+                return;
+            }
+
+            resultsContainer.innerHTML = '<div class="loading">Searching...</div>';
+            debugLog("Searching for: " + query);
+
+            gamesRef.once('value')
+                .then(snapshot => {
+                    const gamesData = snapshot.val();
+                    debugLog("Received data from Firebase: " + (gamesData ? "Data received successfully" : "No data"));
+                    
+                    const results = [];
+
+                    if (gamesData) {
+                        // Convert object to array and search
+                        for (const key in gamesData) {
+                            if (gamesData.hasOwnProperty(key)) {
+                                const game = gamesData[key];
+                                // Case insensitive search
+                                if (game.name && game.name.toLowerCase().includes(query.toLowerCase())) {
+                                    results.push({...game, id: key});
+                                }
+                            }
+                        }
+                    }
+
+                    debugLog("Found " + results.length + " results");
+                    displayResults(results);
+                })
+                .catch(error => {
+                    console.error("Error searching games:", error);
+                    debugLog("Error searching games: " + error.message);
+                    resultsContainer.innerHTML = '<div class="no-results">Error searching games. Please check debug info.</div>';
+                });
+        }
+
+        // Function to display results
+        function displayResults(results) {
+            if (results.length === 0) {
+                resultsContainer.innerHTML = '<div class="no-results">No games found. Try a different search term.</div>';
+                return;
+            }
+
+            let html = '';
+            results.forEach(game => {
+                // URL validation and formatting
+                let gameUrl = game.url;
+                if (!gameUrl.startsWith('http://') && !gameUrl.startsWith('https://')) {
+                    gameUrl = 'https://' + gameUrl;
+                }
+                
+                // Escape special characters for HTML
+                const gameName = game.name.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                const gameDescription = (game.description || 'No description available').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                
+                html += `
+                    <div class="result-item" onclick="openGame('${gameUrl.replace(/'/g, "\\'")}')">
+                        <div class="result-title">${gameName}</div>
+                        <div class="result-description">${gameDescription}</div>
+                        <div class="result-url">${gameUrl}</div>
+                    </div>
+                `;
+            });
+
+            resultsContainer.innerHTML = html;
+        }
+
+        // Function to open game URL
+        function openGame(url) {
+            if (url) {
+                window.open(url, '_blank');
+            }
+        }
+
+        // Event listener for search input
+        let searchTimeout;
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            const query = this.value;
+            
+            searchTimeout = setTimeout(() => {
+                searchGames(query);
+            }, 300); // 300ms debounce
+        });
+
+        // Focus on input when page loads
+        window.onload = function() {
+            searchInput.focus();
+            
+            // Check if there's a query parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const query = urlParams.get('q');
+            if (query) {
+                searchInput.value = query;
+                searchGames(query);
+            }
+
+            // Test Firebase connection
+            debugLog("Testing Firebase connection...");
+            gamesRef.once('value')
+                .then(snapshot => {
+                    const gamesData = snapshot.val();
+                    if (gamesData) {
+                        debugLog("Firebase connection successful. Found " + Object.keys(gamesData).length + " games in database.");
+                    } else {
+                        debugLog("Firebase connection successful but no games found in database.");
+                    }
+                })
+                .catch(error => {
+                    debugLog("Firebase connection failed: " + error.message);
+                    debugLog("Please make sure you've updated Firebase rules to allow read access to 'games'");
+                });
+        };
+    </script>
+</body>
+</html>
