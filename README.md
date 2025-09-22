@@ -2,7 +2,10 @@
 
 <div align="center">
 
-![Tevra Logo Preview](https://via.placeholder.com/500x300/1a2a6c/ffffff?text=Tevra+Animated+Logo) <!-- Replace with actual logo image -->
+<!-- সরাসরি HTML এম্বেড করা -->
+<div>
+  <iframe src="https://htmlpreview.github.io/?https://github.com/your-username/your-repo/blob/main/my%20logo.html" width="100%" height="600px" style="border: none; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);"></iframe>
+</div>
 
 **দ্রুত গতি, অনন্য অভিজ্ঞতা**  
 একটি আধুনিক ও ডায়নামিক লোগো ডিজাইন
