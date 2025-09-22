@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Age Calculator | CalcPro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: #007acc;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 80px 20px 100px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        
+        .calculator-header {
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            padding: 25px;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+        
+        .calculator-header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        
+        .calculator-header p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        /* Result Section at the Top */
+        .result-top {
+            background: #007acc;
+            color: white;
+            padding: 25px;
+            text-align: center;
+            display: none;
+        }
+        
+        .result-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .age-result-large {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin: 10px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .detailed-result {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .detail-box {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .detail-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 5px 0;
+        }
+        
+        .detail-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .calculator-body {
+            padding: 25px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #005c99;
+        }
+        
+        .date-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .date-input:focus {
+            border-color: #007acc;
+            box-shadow: 0 0 0 3px rgba(0, 122, 204, 0.2);
+            outline: none;
+        }
+        
+        .calculate-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 122, 204, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 122, 204, 0.4);
+        }
+        
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+        
+        .premium-feature {
+            background: linear-gradient(135deg, #ff8a00, #e52e71);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-left: 10px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: white;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 600px) {
+            .detailed-result {
+                grid-template-columns: 1fr;
+            }
+            
+            .age-result-large {
+                font-size: 1.2rem;
+            }
+            
+            .detail-value {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="calculator-header">
+            <h1>Age Calculator <span class="premium-feature">PREMIUM</span></h1>
+            <p>Calculate your exact age in years, months, and days</p>
+        </div>
+        
+        <!-- Results displayed at the top -->
+        <div class="result-top" id="result-top">
+            <div class="result-title">Your Age Is</div>
+            <div class="age-result-large" id="age-result-large">0 years, 0 months, 0 days</div>
+            
+            <div class="detailed-result">
+                <div class="detail-box">
+                    <div class="detail-value" id="years">0</div>
+                    <div class="detail-label">Years</div>
+                </div>
+                <div class="detail-box">
+                    <div class="detail-value" id="months">0</div>
+                    <div class="detail-label">Months</div>
+                </div>
+                <div class="detail-box">
+                    <div class="detail-value" id="days">0</div>
+                    <div class="detail-label">Days</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="calculator-body">
+            <div class="input-group">
+                <label for="birthdate">Enter Your Date of Birth</label>
+                <input type="date" id="birthdate" class="date-input">
+            </div>
+            
+            <button class="calculate-btn" id="calculate-btn">
+                <i class="fas fa-calculator"></i> Calculate Age
+            </button>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>www.tevra.in CalcPro Premium Age Calculator | &copy; 2023</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const calculateBtn = document.getElementById('calculate-btn');
+            const birthdateInput = document.getElementById('birthdate');
+            const resultTop = document.getElementById('result-top');
+            const ageResultLarge = document.getElementById('age-result-large');
+            const yearsEl = document.getElementById('years');
+            const monthsEl = document.getElementById('months');
+            const daysEl = document.getElementById('days');
+            
+            // Set max date to today
+            const today = new Date();
+            const maxDate = today.toISOString().split('T')[0];
+            birthdateInput.max = maxDate;
+            
+            // Set a default date (20 years ago)
+            const defaultDate = new Date();
+            defaultDate.setFullYear(defaultDate.getFullYear() - 20);
+            birthdateInput.value = defaultDate.toISOString().split('T')[0];
+            
+            // Initially hide the result container
+            resultTop.style.display = 'none';
+            
+            calculateBtn.addEventListener('click', function() {
+                const birthdate = new Date(birthdateInput.value);
+                
+                if (!birthdateInput.value) {
+                    alert('Please select your date of birth');
+                    return;
+                }
+                
+                // Calculate age
+                const ageDetails = calculateAgeDetails(birthdate);
+                
+                // Display results at the top
+                ageResultLarge.textContent = `${ageDetails.years} years, ${ageDetails.months} months, ${ageDetails.days} days`;
+                yearsEl.textContent = ageDetails.years;
+                monthsEl.textContent = ageDetails.months;
+                daysEl.textContent = ageDetails.days;
+                
+                // Show result container with animation
+                resultTop.style.display = 'block';
+                resultTop.style.animation = 'fadeIn 0.5s ease-in-out';
+            });
+            
+            function calculateAgeDetails(birthdate) {
+                const today = new Date();
+                let years = today.getFullYear() - birthdate.getFullYear();
+                let months = today.getMonth() - birthdate.getMonth();
+                let days = today.getDate() - birthdate.getDate();
+                
+                if (days < 0) {
+                    months--;
+                    // Get days in the previous month
+                    const lastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+                    days += lastMonth.getDate();
+                }
+                
+                if (months < 0) {
+                    years--;
+                    months += 12;
+                }
+                
+                return {
+                    years: years,
+                    months: months,
+                    days: days
+                };
+            }
+        });
+    </script>
+</body>
+</html>
