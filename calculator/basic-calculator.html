@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* আপনার CSS স্টাইলগুলি এখানে রেখেছি, কোনো পরিবর্তন করা হয়নি */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #007acc, #005a9e);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .calculator-container {
+            width: 100%;
+            max-width: 360px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .calculator-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .calculator-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            flex: 1;
+            text-align: center;
+        }
+        
+        .back-button {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+        }
+        
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .menu-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-icon:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .display {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: right;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            word-break: break-all;
+            overflow: hidden;
+        }
+        
+        .calculation {
+            font-size: 1.2rem;
+            min-height: 28px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 10px;
+        }
+        
+        .result {
+            font-size: 2rem;
+            font-weight: 600;
+        }
+        
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+        
+        .btn {
+            border: none;
+            border-radius: 12px;
+            height: 60px;
+            font-size: 1.2rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn:active {
+            transform: scale(0.95);
+        }
+        
+        .operator {
+            background: rgba(255, 165, 0, 0.3);
+        }
+        
+        .operator:hover {
+            background: rgba(255, 165, 0, 0.4);
+        }
+        
+        .equals {
+            background: rgba(255, 165, 0, 0.5);
+        }
+        
+        .equals:hover {
+            background: rgba(255, 165, 0, 0.6);
+        }
+        
+        .clear, .delete {
+            background: rgba(255, 99, 71, 0.3);
+        }
+        
+        .clear:hover, .delete:hover {
+            background: rgba(255, 99, 71, 0.4);
+        }
+        
+        .history-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 350px;
+            height: 100vh;
+            background: rgba(0, 30, 60, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+            transition: right 0.3s ease;
+            z-index: 1000;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .history-panel.open {
+            right: 0;
+        }
+        
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .history-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .close-history {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .close-history:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .history-list {
+            flex: 1;
+        }
+        
+        .history-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .history-content {
+            flex: 1;
+        }
+        
+        .history-calculation {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 5px;
+        }
+        
+        .history-result {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .history-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .history-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 5px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .history-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .edit-mode {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .edit-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            padding: 10px;
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .edit-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .edit-btn {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .save-btn {
+            background: rgba(50, 205, 50, 0.3);
+            color: white;
+        }
+        
+        .save-btn:hover {
+            background: rgba(50, 205, 50, 0.5);
+        }
+        
+        .cancel-btn {
+            background: rgba(255, 99, 71, 0.3);
+            color: white;
+        }
+        
+        .cancel-btn:hover {
+            background: rgba(255, 99, 71, 0.5);
+        }
+        
+        .no-history {
+            text-align: center;
+            padding: 30px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .clear-history {
+            margin-top: 20px;
+            padding: 12px;
+            background: rgba(255, 99, 71, 0.3);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .clear-history:hover {
+            background: rgba(255, 99, 71, 0.5);
+        }
+        
+        @media (max-width: 480px) {
+            .calculator-container {
+                padding: 15px;
+            }
+            
+            .btn {
+                height: 50px;
+                font-size: 1.1rem;
+            }
+            
+            .history-panel {
+                width: 100%;
+                right: -100%;
+            }
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="calculator-container">
+        <div class="calculator-header">
+            <div class="back-button" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i>
+            </div>
+            <div class="calculator-title">Basic Calculator</div>
+            <div class="menu-icon" id="history-button">
+                <i class="fas fa-ellipsis-v"></i>
+            </div>
+        </div>
+        
+        <div class="display">
+            <div class="calculation" id="calculation"></div>
+            <div class="result" id="result">0</div>
+        </div>
+        
+        <div class="buttons">
+            <button class="btn clear" onclick="clearAll()">C</button>
+            <button class="btn delete" onclick="backspace()"><i class="fas fa-backspace"></i></button>
+            <button class="btn operator" onclick="appendOperator('%')">%</button>
+            <button class="btn operator" onclick="appendOperator('/')">/</button>
+            
+            <button class="btn" onclick="appendNumber('7')">7</button>
+            <button class="btn" onclick="appendNumber('8')">8</button>
+            <button class="btn" onclick="appendNumber('9')">9</button>
+            <button class="btn operator" onclick="appendOperator('*')">×</button>
+            
+            <button class="btn" onclick="appendNumber('4')">4</button>
+            <button class="btn" onclick="appendNumber('5')">5</button>
+            <button class="btn" onclick="appendNumber('6')">6</button>
+            <button class="btn operator" onclick="appendOperator('-')">-</button>
+            
+            <button class="btn" onclick="appendNumber('1')">1</button>
+            <button class="btn" onclick="appendNumber('2')">2</button>
+            <button class="btn" onclick="appendNumber('3')">3</button>
+            <button class="btn operator" onclick="appendOperator('+')">+</button>
+            
+            <button class="btn" onclick="appendNumber('0')">0</button>
+            <button class="btn" onclick="appendDecimal()">.</button>
+            <button class="btn equals" onclick="calculate()" colspan="2">=</button>
+        </div>
+    </div>
+    
+    <div class="history-panel" id="history-panel">
+        <div class="history-header">
+            <div class="history-title">Calculation History</div>
+            <button class="close-history" id="close-history">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="history-list" id="history-list">
+            <!-- History items will be added here dynamically -->
+            <div class="no-history" id="no-history">No calculations yet</div>
+        </div>
+        
+        <button class="clear-history" onclick="clearAllHistory()">Clear All History</button>
+    </div>
+
+    <script>
+        // DOM elements
+        const calculationElement = document.getElementById('calculation');
+        const resultElement = document.getElementById('result');
+        const historyButton = document.getElementById('history-button');
+        const historyPanel = document.getElementById('history-panel');
+        const closeHistoryButton = document.getElementById('close-history');
+        const historyList = document.getElementById('history-list');
+        const noHistory = document.getElementById('no-history');
+        
+        // Calculator state
+        let currentInput = '0';
+        let currentCalculation = '';
+        let shouldResetInput = false;
+        let lastResult = null;
+        
+        // Back function
+        function goBack() {
+            window.history.back();
+        }
+        
+        // Initialize calculator
+        function initCalculator() {
+            resultElement.textContent = currentInput;
+            loadHistory();
+        }
+        
+        // Append number to current input
+        function appendNumber(number) {
+            if (shouldResetInput) {
+                currentInput = '';
+                shouldResetInput = false;
+            }
+            
+            if (currentInput === '0' && number !== '.') {
+                currentInput = number;
+            } else {
+                currentInput += number;
+            }
+            
+            resultElement.textContent = currentInput;
+        }
+        
+        // Append decimal point
+        function appendDecimal() {
+            if (shouldResetInput) {
+                currentInput = '0';
+                shouldResetInput = false;
+            }
+            
+            if (!currentInput.includes('.')) {
+                currentInput += '.';
+                resultElement.textContent = currentInput;
+            }
+        }
+        
+        // Append operator
+        function appendOperator(operator) {
+            // If we have a previous result, use it as the starting point for a new calculation
+            if (lastResult !== null && shouldResetInput) {
+                currentCalculation = lastResult + operator;
+                calculationElement.textContent = currentCalculation;
+                currentInput = '0';
+                shouldResetInput = false;
+                return;
+            }
+            
+            // Otherwise, add the current input to the calculation
+            if (currentCalculation === '') {
+                currentCalculation = currentInput + operator;
+            } else {
+                // If the last character is an operator, replace it
+                const lastChar = currentCalculation.slice(-1);
+                if (['+', '-', '*', '/', '%'].includes(lastChar)) {
+                    currentCalculation = currentCalculation.slice(0, -1) + operator;
+                } else {
+                    currentCalculation += currentInput + operator;
+                }
+            }
+            
+            calculationElement.textContent = currentCalculation;
+            shouldResetInput = true;
+        }
+        
+        // Perform calculation
+        function calculate() {
+            try {
+                let expression = '';
+                
+                // If we're in the middle of a calculation, add the current input
+                if (currentCalculation !== '') {
+                    expression = currentCalculation + currentInput;
+                } else {
+                    expression = currentInput;
+                }
+                
+                // Replace × with * for evaluation
+                expression = expression.replace(/×/g, '*');
+                
+                // Evaluate the expression
+                const calculationResult = eval(expression);
+                
+                // Save to history
+                addToHistory(expression, calculationResult);
+                
+                // Update display
+                calculationElement.textContent = expression + ' =';
+                resultElement.textContent = calculationResult;
+                
+                // Reset state for next calculation
+                currentInput = calculationResult.toString();
+                lastResult = calculationResult;
+                currentCalculation = '';
+                shouldResetInput = true;
+            } catch (error) {
+                resultElement.textContent = 'Error';
+                currentInput = '0';
+                currentCalculation = '';
+                shouldResetInput = true;
+                lastResult = null;
+            }
+        }
+        
+        // Clear all
+        function clearAll() {
+            currentInput = '0';
+            currentCalculation = '';
+            lastResult = null;
+            resultElement.textContent = currentInput;
+            calculationElement.textContent = '';
+        }
+        
+        // Backspace
+        function backspace() {
+            if (currentInput.length > 1) {
+                currentInput = currentInput.slice(0, -1);
+            } else {
+                currentInput = '0';
+            }
+            resultElement.textContent = currentInput;
+        }
+        
+        // History functionality
+        function toggleHistory() {
+            historyPanel.classList.toggle('open');
+        }
+        
+        function addToHistory(calculation, result) {
+            // Get existing history
+            const history = JSON.parse(localStorage.getItem('calculatorHistory')) || [];
+            
+            // Add new item
+            history.unshift({
+                calculation,
+                result,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Keep only last 50 items
+            if (history.length > 50) {
+                history.pop();
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('calculatorHistory', JSON.stringify(history));
+            
+            // Refresh history display
+            loadHistory();
+        }
+        
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem('calculatorHistory')) || [];
+            
+            // Show no history message if empty
+            if (history.length === 0) {
+                noHistory.style.display = 'block';
+                historyList.innerHTML = '';
+                historyList.appendChild(noHistory);
+                return;
+            }
+            
+            noHistory.style.display = 'none';
+            
+            // Clear history list
+            historyList.innerHTML = '';
+            
+            // Add history items
+            history.forEach((item, index) => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.innerHTML = `
+                    <div class="history-content">
+                        <div class="history-calculation">${item.calculation}</div>
+                        <div class="history-result">= ${item.result}</div>
+                    </div>
+                    <div class="history-actions">
+                        <button class="history-btn" onclick="useHistoryResult('${item.result.toString().replace("'", "\\'")}')">
+                            <i class="fas fa-redo"></i>
+                        </button>
+                        <button class="history-btn" onclick="editHistoryItem(${index})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="history-btn" onclick="deleteHistoryItem(${index})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                historyList.appendChild(historyItem);
+            });
+        }
+        
+        function useHistoryResult(result) {
+            currentInput = result;
+            resultElement.textContent = currentInput;
+            shouldResetInput = true;
+            toggleHistory();
+        }
+        
+        function editHistoryItem(index) {
+            const history = JSON.parse(localStorage.getItem('calculatorHistory')) || [];
+            const item = history[index];
+            
+            const historyItem = historyList.children[index];
+            historyItem.innerHTML = `
+                <div class="edit-mode">
+                    <input type="text" class="edit-input" value="${item.calculation}" id="edit-calculation-${index}">
+                    <input type="text" class="edit-input" value="${item.result}" id="edit-result-${index}">
+                    <div class="edit-buttons">
+                        <button class="edit-btn save-btn" onclick="saveHistoryEdit(${index})">Save</button>
+                        <button class="edit-btn cancel-btn" onclick="loadHistory()">Cancel</button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function saveHistoryEdit(index) {
+            const history = JSON.parse(localStorage.getItem('calculatorHistory')) || [];
+            const calculationInput = document.getElementById(`edit-calculation-${index}`);
+            const resultInput = document.getElementById(`edit-result-${index}`);
+            
+            history[index].calculation = calculationInput.value;
+            history[index].result = resultInput.value;
+            
+            localStorage.setItem('calculatorHistory', JSON.stringify(history));
+            loadHistory();
+        }
+        
+        function deleteHistoryItem(index) {
+            const history = JSON.parse(localStorage.getItem('calculatorHistory')) || [];
+            history.splice(index, 1);
+            localStorage.setItem('calculatorHistory', JSON.stringify(history));
+            loadHistory();
+        }
+        
+        function clearAllHistory() {
+            if (confirm('Are you sure you want to clear all history?')) {
+                localStorage.removeItem('calculatorHistory');
+                loadHistory();
+            }
+        }
+        
+        // Event listeners
+        historyButton.addEventListener('click', toggleHistory);
+        closeHistoryButton.addEventListener('click', toggleHistory);
+        
+        // Initialize calculator
+        initCalculator();
+    </script>
+</body>
+</html>

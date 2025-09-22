@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Main Page</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: #007acc;
+      padding: 20px;
+      margin-top: 20mm;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #fff;
+      font-size: 2.5rem;
+      font-weight: 700;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      padding: 15px 30px;
+      border: 3px solid;
+      border-image: linear-gradient(45deg, #ff8a00, #e52e71, #3a7bd5, #00d2ff);
+      border-image-slice: 1;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+      animation: colorChange 5s infinite alternate, pulse 2s infinite ease-in-out;
+      display: inline-block;
+      position: relative;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    @keyframes colorChange {
+      0% {
+        background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+        border-image: linear-gradient(45deg, #ff8a00, #e52e71, #3a7bd5, #00d2ff);
+        border-image-slice: 1;
+      }
+      25% {
+        background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+        border-image: linear-gradient(45deg, #e52e71, #3a7bd5, #00d2ff, #ff8a00);
+        border-image-slice: 1;
+      }
+      50% {
+        background: linear-gradient(135deg, #3494E6, #EC6EAD);
+        border-image: linear-gradient(45deg, #3a7bd5, #00d2ff, #ff8a00, #e52e71);
+        border-image-slice: 1;
+      }
+      75% {
+        background: linear-gradient(135deg, #EC6EAD, #3494E6);
+        border-image: linear-gradient(45deg, #00d2ff, #ff8a00, #e52e71, #3a7bd5);
+        border-image-slice: 1;
+      }
+      100% {
+        background: linear-gradient(135deg, #ff8a00, #e52e71);
+        border-image: linear-gradient(45deg, #ff8a00, #e52e71, #3a7bd5, #00d2ff);
+        border-image-slice: 1;
+      }
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: translateX(-50%) scale(1);
+      }
+      50% {
+        transform: translateX(-50%) scale(1.05);
+      }
+      100% {
+        transform: translateX(-50%) scale(1);
+      }
+    }
+
+    .card-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
+      justify-items: center;
+    }
+
+    .card-item {
+      text-align: center;
+      margin: 5px;
+    }
+
+    .card-link {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .card {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,1.1);
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      background-size: cover;
+      background-position: center;
+      margin: 0 auto;
+    }
+
+    .card:hover {
+      transform: scale(1.08);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    }
+
+    .card-title {
+      margin-top: 20px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: white;
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        width: 100px;
+        height: 100px;
+      }
+      .card-title {
+        font-size: 0.85rem;
+      }
+      h1 {
+        font-size: 1.8rem;
+        padding: 10px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>www.tevra.in</h1>
+
+  <div class="card-section">
+    <div class="card-item">
+      <a href="basic-calculator.html" class="card-link">
+        <div class="card" style="background-image: url('image/besic_calcluter.png');"></div>
+        <div class="card-title">Basic Calculator</div>
+      </a>
+    </div>
+    <div class="card-item">
+      <a href="right-angle.html" class="card-link">
+        <div class="card" style="background-image: url('image/right-angle.png');"></div>
+        <div class="card-title"> Right Angle</div>
+      </a>
+    </div>
+    <div class="card-item">
+      <a href="financial-calculator.html" class="card-link">
+        <div class="card" style="background-image: url('image/financial-calculato_3.jpg');"></div>
+        <div class="card-title"> Financial Calculator</div>
+      </a>
+    </div>
+    <div class="card-item">
+      <a href="scientific-calculator.html" class="card-link">
+        <div class="card" style="background-image: url('image/Scientific-Calculator2.jpg');"></div>
+        <div class="card-title">Scientific Calculator</div>
+      </a>
+    </div>
+    
+    <div class="card-item">
+      <a href="bmi-calculator.html" class="card-link">
+        <div class="card" style="background-image: url('image/bmi_calculator.jpg');"></div>
+        <div class="card-title">BMI Calculator</div>
+      </a>
+    </div>
+    
+    
+  </div>
+</body>
+</html>
