@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -114,12 +114,28 @@
             border: 1px solid transparent;
             transition: all 0.3s;
             cursor: pointer;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
         }
 
         .result-item:hover {
             border-color: var(--secondary-color);
             box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
             transform: translateY(-2px);
+        }
+
+        .result-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+            border: 1px solid var(--primary-color);
+        }
+
+        .result-content {
+            flex: 1;
         }
 
         .result-title {
@@ -310,15 +326,24 @@
                     gameUrl = 'https://' + gameUrl;
                 }
                 
+                // Image URL handling
+                let imageUrl = game.image || 'https://via.placeholder.com/60x60/1a1432/00f0ff?text=No+Image';
+                if (!imageUrl.startsWith('http://') && !imageUrl.startsWith('https://')) {
+                    imageUrl = 'https://' + imageUrl;
+                }
+                
                 // Escape special characters for HTML
                 const gameName = game.name.replace(/'/g, "\\'").replace(/"/g, '&quot;');
                 const gameDescription = (game.description || 'No description available').replace(/'/g, "\\'").replace(/"/g, '&quot;');
                 
                 html += `
                     <div class="result-item" onclick="openGame('${gameUrl.replace(/'/g, "\\'")}')">
-                        <div class="result-title">${gameName}</div>
-                        <div class="result-description">${gameDescription}</div>
-                        <div class="result-url">${gameUrl}</div>
+                        <img src="${imageUrl.replace(/'/g, "\\'")}" alt="${gameName}" class="result-image" onerror="this.src='https://via.placeholder.com/60x60/1a1432/00f0ff?text=No+Image'">
+                        <div class="result-content">
+                            <div class="result-title">${gameName}</div>
+                            <div class="result-description">${gameDescription}</div>
+                            <div class="result-url">${gameUrl}</div>
+                        </div>
                     </div>
                 `;
             });
