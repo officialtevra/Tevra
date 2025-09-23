@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Loan Calculator | CalcPro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 80px 20px 100px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        
+        .calculator-header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            padding: 30px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .calculator-header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+        }
+        
+        .calculator-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        
+        .calculator-header p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            position: relative;
+        }
+        
+        .result-section {
+            background: linear-gradient(135deg, #e74c3c, #e67e22);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            display: none; /* Hidden by default */
+            position: relative;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+        
+        .result-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.05"><path d="M20,20 L80,20 L80,80 L20,80 Z" fill="white"/><circle cx="50" cy="50" r="30" fill="none" stroke="white" stroke-width="2"/></svg>');
+        }
+        
+        .result-title {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            font-weight: 700;
+            position: relative;
+        }
+        
+        .loan-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .summary-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 25px 15px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        .summary-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .summary-value {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin: 10px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .summary-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 600;
+        }
+        
+        .calculator-body {
+            padding: 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 30px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 700;
+            color: #2c3e50;
+            font-size: 1.2rem;
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 18px 50px 18px 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .input-field:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.2);
+            outline: none;
+        }
+        
+        .input-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.3rem;
+            color: #3498db;
+        }
+        
+        .range-container {
+            margin-top: 15px;
+        }
+        
+        .range-value {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .range-slider {
+            width: 100%;
+            height: 10px;
+            -webkit-appearance: none;
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            border-radius: 5px;
+            outline: none;
+        }
+        
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 25px;
+            height: 25px;
+            background: #e74c3c;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+            border: 3px solid white;
+            transition: all 0.3s ease;
+        }
+        
+        .range-slider::-webkit-slider-thumb:hover {
+            background: #c0392b;
+            transform: scale(1.1);
+        }
+        
+        .loan-details {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 25px;
+            border-left: 5px solid #3498db;
+            display: none; /* Hidden by default */
+        }
+        
+        .loan-details.active {
+            display: block;
+            animation: fadeIn 0.6s ease-in-out;
+        }
+        
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+        
+        .detail-value {
+            font-weight: 700;
+            color: #e74c3c;
+            font-size: 1.1rem;
+        }
+        
+        .calculate-btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .calculate-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .calculate-btn:hover::before {
+            left: 100%;
+        }
+        
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.6);
+        }
+        
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+        
+        .premium-feature {
+            background: linear-gradient(135deg, #f39c12, #e74c3c);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-left: 15px;
+            animation: pulse 2s infinite;
+            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.4);
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: white;
+            font-size: 1rem;
+            opacity: 0.9;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            .loan-summary {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .summary-value {
+                font-size: 1.8rem;
+            }
+            
+            .calculator-header h1 {
+                font-size: 2rem;
+            }
+            
+            .result-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="calculator-header">
+            <h1>Loan Calculator <span class="premium-feature">PREMIUM</span></h1>
+            <p>Calculate your loan payments with precision</p>
+        </div>
+        
+        <!-- Results displayed at the top - Hidden by default -->
+        <div class="result-section" id="result-section">
+            <div class="result-title" id="result-title">Your Loan Summary</div>
+            
+            <div class="loan-summary">
+                <div class="summary-item">
+                    <div class="summary-value" id="monthly-payment">$0</div>
+                    <div class="summary-label">Monthly Payment</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value" id="total-interest">$0</div>
+                    <div class="summary-label">Total Interest</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value" id="total-payment">$0</div>
+                    <div class="summary-label">Total Payment</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="calculator-body">
+            <div class="input-group">
+                <label for="loan-amount">Loan Amount ($)</label>
+                <div class="input-with-icon">
+                    <input type="number" id="loan-amount" class="input-field" placeholder="Enter loan amount" value="25000" min="0">
+                    <div class="input-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                </div>
+                <div class="range-container">
+                    <div class="range-value">
+                        <span>$1,000</span>
+                        <span id="loan-amount-value">$25,000</span>
+                        <span>$100,000</span>
+                    </div>
+                    <input type="range" id="loan-amount-range" class="range-slider" min="1000" max="100000" value="25000" step="1000">
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label for="interest-rate">Annual Interest Rate (%)</label>
+                <div class="input-with-icon">
+                    <input type="number" id="interest-rate" class="input-field" placeholder="Enter interest rate" value="5.5" min="0" max="30" step="0.1">
+                    <div class="input-icon">
+                        <i class="fas fa-percentage"></i>
+                    </div>
+                </div>
+                <div class="range-container">
+                    <div class="range-value">
+                        <span>1%</span>
+                        <span id="interest-rate-value">5.5%</span>
+                        <span>30%</span>
+                    </div>
+                    <input type="range" id="interest-rate-range" class="range-slider" min="1" max="30" value="5.5" step="0.1">
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label for="loan-term">Loan Term (Years)</label>
+                <div class="input-with-icon">
+                    <input type="number" id="loan-term" class="input-field" placeholder="Enter loan term" value="5" min="1" max="30">
+                    <div class="input-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                </div>
+                <div class="range-container">
+                    <div class="range-value">
+                        <span>1 Year</span>
+                        <span id="loan-term-value">5 Years</span>
+                        <span>30 Years</span>
+                    </div>
+                    <input type="range" id="loan-term-range" class="range-slider" min="1" max="30" value="5">
+                </div>
+            </div>
+            
+            <button class="calculate-btn" id="calculate-btn">
+                <i class="fas fa-calculator"></i> Calculate Loan
+            </button>
+            
+            <div class="loan-details" id="loan-details">
+                <div class="detail-item">
+                    <span class="detail-label">Principal Amount:</span>
+                    <span class="detail-value" id="detail-principal">$25,000.00</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Annual Interest Rate:</span>
+                    <span class="detail-value" id="detail-interest-rate">5.5%</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Loan Term:</span>
+                    <span class="detail-value" id="detail-loan-term">5 Years (60 Months)</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Monthly Payment:</span>
+                    <span class="detail-value" id="detail-monthly-payment">$477.83</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Total Interest Paid:</span>
+                    <span class="detail-value" id="detail-total-interest">$3,669.80</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Total Amount Paid:</span>
+                    <span class="detail-value" id="detail-total-payment">$28,669.80</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>www.tevra.in CalcPro Premium Loan Calculator | &copy; 2023</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loanAmountInput = document.getElementById('loan-amount');
+            const loanAmountRange = document.getElementById('loan-amount-range');
+            const loanAmountValue = document.getElementById('loan-amount-value');
+            
+            const interestRateInput = document.getElementById('interest-rate');
+            const interestRateRange = document.getElementById('interest-rate-range');
+            const interestRateValue = document.getElementById('interest-rate-value');
+            
+            const loanTermInput = document.getElementById('loan-term');
+            const loanTermRange = document.getElementById('loan-term-range');
+            const loanTermValue = document.getElementById('loan-term-value');
+            
+            const calculateBtn = document.getElementById('calculate-btn');
+            const resultSection = document.getElementById('result-section');
+            const loanDetails = document.getElementById('loan-details');
+            
+            // Result elements
+            const monthlyPaymentEl = document.getElementById('monthly-payment');
+            const totalInterestEl = document.getElementById('total-interest');
+            const totalPaymentEl = document.getElementById('total-payment');
+            
+            // Detail elements
+            const detailPrincipal = document.getElementById('detail-principal');
+            const detailInterestRate = document.getElementById('detail-interest-rate');
+            const detailLoanTerm = document.getElementById('detail-loan-term');
+            const detailMonthlyPayment = document.getElementById('detail-monthly-payment');
+            const detailTotalInterest = document.getElementById('detail-total-interest');
+            const detailTotalPayment = document.getElementById('detail-total-payment');
+            
+            // Track if it's the first calculation
+            let firstCalculation = true;
+            
+            // Sync range sliders with input fields
+            loanAmountInput.addEventListener('input', function() {
+                loanAmountRange.value = this.value;
+                updateLoanAmountDisplay();
+                // Don't auto-calculate, wait for button click
+            });
+            
+            loanAmountRange.addEventListener('input', function() {
+                loanAmountInput.value = this.value;
+                updateLoanAmountDisplay();
+                // Don't auto-calculate, wait for button click
+            });
+            
+            interestRateInput.addEventListener('input', function() {
+                interestRateRange.value = this.value;
+                updateInterestRateDisplay();
+                // Don't auto-calculate, wait for button click
+            });
+            
+            interestRateRange.addEventListener('input', function() {
+                interestRateInput.value = this.value;
+                updateInterestRateDisplay();
+                // Don't auto-calculate, wait for button click
+            });
+            
+            loanTermInput.addEventListener('input', function() {
+                loanTermRange.value = this.value;
+                updateLoanTermDisplay();
+                // Don't auto-calculate, wait for button click
+            });
+            
+            loanTermRange.addEventListener('input', function() {
+                loanTermInput.value = this.value;
+                updateLoanTermDisplay();
+                // Don't auto-calculate, wait for button click
+            });
+            
+            calculateBtn.addEventListener('click', function() {
+                calculateLoan();
+                // Show result section and details only after button click
+                resultSection.style.display = 'block';
+                loanDetails.classList.add('active');
+                
+                // Add animation for the first calculation
+                if (firstCalculation) {
+                    resultSection.style.animation = 'fadeIn 0.8s ease-in-out';
+                    firstCalculation = false;
+                }
+            });
+            
+            function updateLoanAmountDisplay() {
+                loanAmountValue.textContent = '$' + Number(loanAmountInput.value).toLocaleString();
+            }
+            
+            function updateInterestRateDisplay() {
+                interestRateValue.textContent = interestRateInput.value + '%';
+            }
+            
+            function updateLoanTermDisplay() {
+                loanTermValue.textContent = loanTermInput.value + ' Year' + (loanTermInput.value > 1 ? 's' : '');
+            }
+            
+            function calculateLoan() {
+                const principal = parseFloat(loanAmountInput.value);
+                const annualInterestRate = parseFloat(interestRateInput.value);
+                const years = parseFloat(loanTermInput.value);
+                
+                // Convert annual rate to monthly and percentage to decimal
+                const monthlyInterestRate = (annualInterestRate / 100) / 12;
+                const numberOfPayments = years * 12;
+                
+                // Calculate monthly payment using the formula
+                const monthlyPayment = principal * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfPayments)) / 
+                                      (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
+                
+                const totalPayment = monthlyPayment * numberOfPayments;
+                const totalInterest = totalPayment - principal;
+                
+                // Update result section
+                monthlyPaymentEl.textContent = '$' + monthlyPayment.toFixed(2);
+                totalInterestEl.textContent = '$' + totalInterest.toFixed(2);
+                totalPaymentEl.textContent = '$' + totalPayment.toFixed(2);
+                
+                // Update detail section
+                detailPrincipal.textContent = '$' + principal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                detailInterestRate.textContent = annualInterestRate.toFixed(2) + '%';
+                detailLoanTerm.textContent = years + ' Year' + (years > 1 ? 's' : '') + ' (' + numberOfPayments + ' Months)';
+                detailMonthlyPayment.textContent = '$' + monthlyPayment.toFixed(2);
+                detailTotalInterest.textContent = '$' + totalInterest.toFixed(2);
+                detailTotalPayment.textContent = '$' + totalPayment.toFixed(2);
+            }
+            
+            // Initialize displays
+            updateLoanAmountDisplay();
+            updateInterestRateDisplay();
+            updateLoanTermDisplay();
+            
+            // Don't perform initial calculation - wait for button click
+            // The result section and details will remain hidden until the button is clicked
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DatePro | Premium Date Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a3a 0%, #2c3e50 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        
+        .calculator-header {
+            background: linear-gradient(135deg, #8e44ad, #9b59b6);
+            padding: 30px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .calculator-header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+        }
+        
+        .calculator-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        
+        .calculator-header p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            position: relative;
+        }
+        
+        .premium-feature {
+            background: linear-gradient(135deg, #f39c12, #e74c3c);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-left: 15px;
+            animation: pulse 2s infinite;
+            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.4);
+        }
+        
+        .result-section {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            display: none;
+            position: relative;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+        
+        .result-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.05"><path d="M20,20 L80,20 L80,80 L20,80 Z" fill="white"/><circle cx="50" cy="50" r="30" fill="none" stroke="white" stroke-width="2"/></svg>');
+        }
+        
+        .result-title {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            font-weight: 700;
+            position: relative;
+        }
+        
+        .date-summary {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .summary-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px 10px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        .summary-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .summary-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin: 10px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .summary-label {
+            font-size: 1rem;
+            opacity: 0.9;
+            font-weight: 600;
+        }
+        
+        .calculator-body {
+            padding: 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 30px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 700;
+            color: #2c3e50;
+            font-size: 1.2rem;
+        }
+        
+        .date-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .date-box {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+        
+        .date-box:focus-within {
+            border-color: #3498db;
+            box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.2);
+        }
+        
+        .date-box-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .input-with-icon {
+            position: relative;
+            margin-bottom: 15px;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 15px 45px 15px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .input-field:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        .input-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            color: #3498db;
+        }
+        
+        .today-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .today-btn:hover {
+            background: #2980b9;
+        }
+        
+        .calculate-btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, #8e44ad, #9b59b6);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(142, 68, 173, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .calculate-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .calculate-btn:hover::before {
+            left: 100%;
+        }
+        
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(142, 68, 173, 0.6);
+        }
+        
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+        
+        .date-details {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 25px;
+            border-left: 5px solid #3498db;
+            display: none;
+        }
+        
+        .date-details.active {
+            display: block;
+            animation: fadeIn 0.6s ease-in-out;
+        }
+        
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+        
+        .detail-value {
+            font-weight: 700;
+            color: #e74c3c;
+            font-size: 1.1rem;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: white;
+            font-size: 1rem;
+            opacity: 0.9;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            .date-summary {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            
+            .date-inputs {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .summary-value {
+                font-size: 1.5rem;
+            }
+            
+            .calculator-header h1 {
+                font-size: 2rem;
+            }
+            
+            .result-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="calculator-header">
+            <h1>DatePro Calculator <span class="premium-feature">PREMIUM</span></h1>
+            <p>Calculate the difference between two dates</p>
+        </div>
+        
+        <!-- Results displayed at the top - Hidden by default -->
+        <div class="result-section" id="result-section">
+            <div class="result-title" id="result-title">Date Difference</div>
+            
+            <div class="date-summary">
+                <div class="summary-item">
+                    <div class="summary-value" id="years-diff">0</div>
+                    <div class="summary-label">Years</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value" id="months-diff">0</div>
+                    <div class="summary-label">Months</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value" id="weeks-diff">0</div>
+                    <div class="summary-label">Weeks</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value" id="days-diff">0</div>
+                    <div class="summary-label">Days</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="calculator-body">
+            <div class="input-group">
+                <label>Select Dates</label>
+                <div class="date-inputs">
+                    <div class="date-box">
+                        <div class="date-box-title">Start Date</div>
+                        <div class="input-with-icon">
+                            <input type="date" id="start-date" class="input-field">
+                            <div class="input-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                        </div>
+                        <button class="today-btn" id="start-today">Today</button>
+                    </div>
+                    
+                    <div class="date-box">
+                        <div class="date-box-title">End Date</div>
+                        <div class="input-with-icon">
+                            <input type="date" id="end-date" class="input-field">
+                            <div class="input-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                        </div>
+                        <button class="today-btn" id="end-today">Today</button>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="calculate-btn" id="calculate-btn">
+                <i class="fas fa-calculator"></i> Calculate Difference
+            </button>
+            
+            <div class="date-details" id="date-details">
+                <div class="detail-item">
+                    <span class="detail-label">Start Date:</span>
+                    <span class="detail-value" id="detail-start-date">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">End Date:</span>
+                    <span class="detail-value" id="detail-end-date">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Total Days:</span>
+                    <span class="detail-value" id="detail-total-days">0</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Total Weeks:</span>
+                    <span class="detail-value" id="detail-total-weeks">0</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Total Months:</span>
+                    <span class="detail-value" id="detail-total-months">0</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Total Years:</span>
+                    <span class="detail-value" id="detail-total-years">0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>www.tevra.in DatePro Premium Calculator | &copy; 2023</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const startDateInput = document.getElementById('start-date');
+            const endDateInput = document.getElementById('end-date');
+            const startTodayBtn = document.getElementById('start-today');
+            const endTodayBtn = document.getElementById('end-today');
+            const calculateBtn = document.getElementById('calculate-btn');
+            const resultSection = document.getElementById('result-section');
+            const dateDetails = document.getElementById('date-details');
+            
+            // Result elements
+            const yearsDiffEl = document.getElementById('years-diff');
+            const monthsDiffEl = document.getElementById('months-diff');
+            const weeksDiffEl = document.getElementById('weeks-diff');
+            const daysDiffEl = document.getElementById('days-diff');
+            
+            // Detail elements
+            const detailStartDate = document.getElementById('detail-start-date');
+            const detailEndDate = document.getElementById('detail-end-date');
+            const detailTotalDays = document.getElementById('detail-total-days');
+            const detailTotalWeeks = document.getElementById('detail-total-weeks');
+            const detailTotalMonths = document.getElementById('detail-total-months');
+            const detailTotalYears = document.getElementById('detail-total-years');
+            
+            // Set default dates (today and 30 days from today)
+            const today = new Date();
+            const defaultEndDate = new Date();
+            defaultEndDate.setDate(today.getDate() + 30);
+            
+            // Format date as YYYY-MM-DD for input fields
+            function formatDateForInput(date) {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+            
+            // Format date for display
+            function formatDateForDisplay(date) {
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                return date.toLocaleDateString('en-US', options);
+            }
+            
+            // Set default dates
+            startDateInput.value = formatDateForInput(today);
+            endDateInput.value = formatDateForInput(defaultEndDate);
+            
+            // Set today buttons
+            startTodayBtn.addEventListener('click', function() {
+                startDateInput.value = formatDateForInput(new Date());
+            });
+            
+            endTodayBtn.addEventListener('click', function() {
+                endDateInput.value = formatDateForInput(new Date());
+            });
+            
+            calculateBtn.addEventListener('click', function() {
+                calculateDateDifference();
+                // Show result section and details only after button click
+                resultSection.style.display = 'block';
+                dateDetails.classList.add('active');
+            });
+            
+            function calculateDateDifference() {
+                const startDate = new Date(startDateInput.value);
+                const endDate = new Date(endDateInput.value);
+                
+                // Swap dates if start date is after end date
+                if (startDate > endDate) {
+                    [startDate, endDate] = [endDate, startDate];
+                    startDateInput.value = formatDateForInput(startDate);
+                    endDateInput.value = formatDateForInput(endDate);
+                }
+                
+                // Calculate difference in milliseconds
+                const timeDiff = endDate - startDate;
+                
+                // Calculate days
+                const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+                
+                // Calculate weeks
+                const weeksDiff = Math.floor(daysDiff / 7);
+                
+                // Calculate months and years (approximate)
+                let monthsDiff = 0;
+                let yearsDiff = 0;
+                
+                // More accurate calculation for months and years
+                let tempStartDate = new Date(startDate);
+                yearsDiff = endDate.getFullYear() - tempStartDate.getFullYear();
+                monthsDiff = endDate.getMonth() - tempStartDate.getMonth();
+                
+                if (monthsDiff < 0) {
+                    yearsDiff--;
+                    monthsDiff += 12;
+                }
+                
+                if (endDate.getDate() < tempStartDate.getDate()) {
+                    monthsDiff--;
+                }
+                
+                // Update result section
+                yearsDiffEl.textContent = yearsDiff;
+                monthsDiffEl.textContent = monthsDiff;
+                weeksDiffEl.textContent = weeksDiff;
+                daysDiffEl.textContent = daysDiff;
+                
+                // Update detail section
+                detailStartDate.textContent = formatDateForDisplay(startDate);
+                detailEndDate.textContent = formatDateForDisplay(endDate);
+                detailTotalDays.textContent = daysDiff.toLocaleString('en-US');
+                detailTotalWeeks.textContent = weeksDiff.toLocaleString('en-US');
+                detailTotalMonths.textContent = monthsDiff.toLocaleString('en-US');
+                detailTotalYears.textContent = yearsDiff.toLocaleString('en-US');
+            }
+            
+            // Perform initial calculation
+            calculateDateDifference();
+        });
+    </script>
+</body>
+</html>

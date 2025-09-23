@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings | CalcPro Premium</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a3a 0%, #2c3e50 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 80px 20px 100px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        
+        .settings-header {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            padding: 30px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .settings-header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+        }
+        
+        .settings-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        
+        .settings-header p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            position: relative;
+        }
+        
+        .premium-feature {
+            background: linear-gradient(135deg, #f39c12, #e74c3c);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-left: 15px;
+            animation: pulse 2s infinite;
+            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.4);
+        }
+        
+        .settings-body {
+            padding: 30px;
+        }
+        
+        .settings-section {
+            margin-bottom: 40px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+        
+        .section-title i {
+            color: #6c5ce7;
+        }
+        
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+        
+        .setting-info {
+            flex: 1;
+        }
+        
+        .setting-label {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+        
+        .setting-description {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+        
+        .setting-control {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: #6c5ce7;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(30px);
+        }
+        
+        /* Select Dropdown */
+        .select-control {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            min-width: 150px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .select-control:focus {
+            border-color: #6c5ce7;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.2);
+        }
+        
+        /* Button Styles */
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            color: white;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 92, 231, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #2c3e50;
+        }
+        
+        .btn-secondary:hover {
+            background: #d5d5d5;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c, #e67e22);
+            color: white;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+        
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        
+        /* Account Section */
+        .account-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .account-details h3 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+        
+        .account-details p {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        /* Footer */
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: white;
+            font-size: 1rem;
+            opacity: 0.9;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            animation: modalFadeIn 0.3s ease;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 15px;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #7f8c8d;
+            transition: color 0.3s ease;
+        }
+        
+        .close-modal:hover {
+            color: #e74c3c;
+        }
+        
+        .modal-body {
+            margin-bottom: 25px;
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            .setting-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .setting-control {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="settings-header">
+            <h1>Settings <span class="premium-feature">PREMIUM</span></h1>
+            <p>Customize your CalcPro experience</p>
+        </div>
+        
+        <div class="settings-body">
+            <!-- Account Section -->
+            <div class="settings-section">
+                <div class="section-title">
+                    <i class="fas fa-user-circle"></i>
+                    Account
+                </div>
+                
+                <div class="account-info">
+                    <div class="avatar">CP</div>
+                    <div class="account-details">
+                        <h3>CalcPro Premium User</h3>
+                        <p>Premium member since 2023</p>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="openModal('profileModal')">
+                        <i class="fas fa-user-edit"></i> Edit Profile
+                    </button>
+                    <button class="btn btn-secondary" onclick="openModal('passwordModal')">
+                        <i class="fas fa-key"></i> Change Password
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Appearance Section -->
+            <div class="settings-section">
+                <div class="section-title">
+                    <i class="fas fa-palette"></i>
+                    Appearance
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Dark Mode</div>
+                        <div class="setting-description">Switch between light and dark themes</div>
+                    </div>
+                    <div class="setting-control">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="darkModeToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Theme Color</div>
+                        <div class="setting-description">Choose your preferred color scheme</div>
+                    </div>
+                    <div class="setting-control">
+                        <select class="select-control" id="themeSelect">
+                            <option value="blue">Blue Theme</option>
+                            <option value="purple">Purple Theme</option>
+                            <option value="green">Green Theme</option>
+                            <option value="red">Red Theme</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Font Size</div>
+                        <div class="setting-description">Adjust the text size for better readability</div>
+                    </div>
+                    <div class="setting-control">
+                        <select class="select-control" id="fontSizeSelect">
+                            <option value="small">Small</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="large">Large</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Calculator Settings -->
+            <div class="settings-section">
+                <div class="section-title">
+                    <i class="fas fa-calculator"></i>
+                    Calculator Settings
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Decimal Places</div>
+                        <div class="setting-description">Number of decimal places in results</div>
+                    </div>
+                    <div class="setting-control">
+                        <select class="select-control" id="decimalPlacesSelect">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2" selected>2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Sound Effects</div>
+                        <div class="setting-description">Enable or disable calculator sounds</div>
+                    </div>
+                    <div class="setting-control">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="soundToggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Vibration Feedback</div>
+                        <div class="setting-description">Haptic feedback on button presses</div>
+                    </div>
+                    <div class="setting-control">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="vibrationToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Data & Privacy -->
+            <div class="settings-section">
+                <div class="section-title">
+                    <i class="fas fa-shield-alt"></i>
+                    Data & Privacy
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Save Calculation History</div>
+                        <div class="setting-description">Store your calculation history locally</div>
+                    </div>
+                    <div class="setting-control">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="historyToggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Auto-clear History</div>
+                        <div class="setting-description">Automatically clear history after 30 days</div>
+                    </div>
+                    <div class="setting-control">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="autoClearToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="openModal('exportModal')">
+                        <i class="fas fa-download"></i> Export Data
+                    </button>
+                    <button class="btn btn-danger" onclick="openModal('clearDataModal')">
+                        <i class="fas fa-trash"></i> Clear All Data
+                    </button>
+                </div>
+            </div>
+            
+            <!-- About Section -->
+            <div class="settings-section">
+                <div class="section-title">
+                    <i class="fas fa-info-circle"></i>
+                    About CalcPro
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Version</div>
+                        <div class="setting-description">Current application version</div>
+                    </div>
+                    <div class="setting-control">
+                        <span>v2.1.0 Premium</span>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Last Updated</div>
+                        <div class="setting-description">Date of last application update</div>
+                    </div>
+                    <div class="setting-control">
+                        <span>October 15, 2023</span>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="openModal('aboutModal')">
+                        <i class="fas fa-star"></i> Rate App
+                    </button>
+                    <button class="btn btn-secondary" onclick="openModal('helpModal')">
+                        <i class="fas fa-question-circle"></i> Help & Support
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>www.tevra.in CalcPro Premium Settings | &copy; 2023</p>
+    </div>
+    
+    <!-- Modals -->
+    <div class="modal" id="profileModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Edit Profile</div>
+                <button class="close-modal" onclick="closeModal('profileModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Profile editing functionality would be implemented here.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('profileModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="saveProfile()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="passwordModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Change Password</div>
+                <button class="close-modal" onclick="closeModal('passwordModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Password change functionality would be implemented here.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('passwordModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="changePassword()">Update Password</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="clearDataModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Clear All Data</div>
+                <button class="close-modal" onclick="closeModal('clearDataModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to clear all your data? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('clearDataModal')">Cancel</button>
+                <button class="btn btn-danger" onclick="clearAllData()">Clear All Data</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="aboutModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">About CalcPro</div>
+                <button class="close-modal" onclick="closeModal('aboutModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>CalcPro Premium is a comprehensive calculator application with advanced features for all your calculation needs.</p>
+                <p><strong>Version:</strong> 2.1.0 Premium</p>
+                <p><strong>Developed by:</strong> TEVRA Labs</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeModal('aboutModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        // Close modal when clicking outside the content
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        }
+        
+        // Save settings to localStorage
+        function saveSettings() {
+            const settings = {
+                darkMode: document.getElementById('darkModeToggle').checked,
+                theme: document.getElementById('themeSelect').value,
+                fontSize: document.getElementById('fontSizeSelect').value,
+                decimalPlaces: document.getElementById('decimalPlacesSelect').value,
+                sound: document.getElementById('soundToggle').checked,
+                vibration: document.getElementById('vibrationToggle').checked,
+                saveHistory: document.getElementById('historyToggle').checked,
+                autoClear: document.getElementById('autoClearToggle').checked
+            };
+            
+            localStorage.setItem('calcProSettings', JSON.stringify(settings));
+            showNotification('Settings saved successfully!');
+        }
+        
+        // Load settings from localStorage
+        function loadSettings() {
+            const savedSettings = localStorage.getItem('calcProSettings');
+            
+            if (savedSettings) {
+                const settings = JSON.parse(savedSettings);
+                
+                document.getElementById('darkModeToggle').checked = settings.darkMode || false;
+                document.getElementById('themeSelect').value = settings.theme || 'blue';
+                document.getElementById('fontSizeSelect').value = settings.fontSize || 'medium';
+                document.getElementById('decimalPlacesSelect').value = settings.decimalPlaces || '2';
+                document.getElementById('soundToggle').checked = settings.sound !== false; // Default to true
+                document.getElementById('vibrationToggle').checked = settings.vibration || false;
+                document.getElementById('historyToggle').checked = settings.saveHistory !== false; // Default to true
+                document.getElementById('autoClearToggle').checked = settings.autoClear || false;
+            }
+        }
+        
+        // Show notification
+        function showNotification(message) {
+            // Create a simple notification (in a real app, you'd use a more sophisticated system)
+            alert(message);
+        }
+        
+        // Example functions for modal actions
+        function saveProfile() {
+            showNotification('Profile updated successfully!');
+            closeModal('profileModal');
+        }
+        
+        function changePassword() {
+            showNotification('Password changed successfully!');
+            closeModal('passwordModal');
+        }
+        
+        function clearAllData() {
+            if (confirm('Are you sure you want to clear all data? This cannot be undone.')) {
+                localStorage.clear();
+                showNotification('All data has been cleared.');
+                closeModal('clearDataModal');
+                // Reload to apply changes
+                setTimeout(() => location.reload(), 1000);
+            }
+        }
+        
+        // Auto-save settings when changes are made
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSettings();
+            
+            // Add event listeners to all settings controls
+            const settingsControls = document.querySelectorAll('input, select');
+            settingsControls.forEach(control => {
+                control.addEventListener('change', saveSettings);
+            });
+        });
+    </script>
+</body>
+</html>
