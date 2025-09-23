@@ -234,6 +234,12 @@
         .hidden {
             display: none;
         }
+
+        .url-help {
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+        }
     </style>
 </head>
 
@@ -291,6 +297,7 @@
                         <div class="form-group">
                             <label for="gameImage">Image URL</label>
                             <input type="url" id="gameImage" placeholder="https://example.com/image.jpg">
+                            <div class="url-help">GitHub links auto-convert to raw format</div>
                         </div>
                         <div class="form-group">
                             <label for="gameDescription">Description</label>
@@ -359,6 +366,20 @@
 
         // Current editing state
         let isEditing = false;
+
+        // Function to convert GitHub URL to raw format
+        function convertGitHubUrlToRaw(url) {
+            if (!url) return url;
+            
+            // If it's a GitHub blob URL, convert to raw
+            if (url.includes('github.com') && url.includes('/blob/')) {
+                return url
+                    .replace('github.com', 'raw.githubusercontent.com')
+                    .replace('/blob/', '/');
+            }
+            
+            return url;
+        }
 
         // Show/hide sections
         function showSection(section) {
@@ -434,10 +455,12 @@
             e.preventDefault();
             
             const gameId = gameIdInput.value;
+            const imageUrl = convertGitHubUrlToRaw(gameImageInput.value);
+            
             const gameData = {
                 name: gameNameInput.value,
                 url: gameUrlInput.value,
-                image: gameImageInput.value,
+                image: imageUrl,
                 description: gameDescInput.value
             };
             
