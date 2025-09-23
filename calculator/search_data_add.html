@@ -1,5 +1,6 @@
-<!DOCTYPE html>
+
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -235,6 +236,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <header>
@@ -287,6 +289,10 @@
                             <input type="url" id="gameUrl" required placeholder="https://example.com/game">
                         </div>
                         <div class="form-group">
+                            <label for="gameImage">Image URL</label>
+                            <input type="url" id="gameImage" placeholder="https://example.com/image.jpg">
+                        </div>
+                        <div class="form-group">
                             <label for="gameDescription">Description</label>
                             <textarea id="gameDescription" placeholder="Enter game description"></textarea>
                         </div>
@@ -331,6 +337,7 @@
         const gameIdInput = document.getElementById('gameId');
         const gameNameInput = document.getElementById('gameName');
         const gameUrlInput = document.getElementById('gameUrl');
+        const gameImageInput = document.getElementById('gameImage');
         const gameDescInput = document.getElementById('gameDescription');
         const saveBtn = document.getElementById('saveBtn');
         const cancelBtn = document.getElementById('cancelBtn');
@@ -397,6 +404,7 @@
                             </div>
                             <div class="game-url">${game.url}</div>
                             <div class="game-description">${game.description || 'No description'}</div>
+                            ${game.image ? `<div class="game-url">Image: ${game.image}</div>` : ''}
                         `;
                         gamesContainer.appendChild(gameElement);
                     });
@@ -429,6 +437,7 @@
             const gameData = {
                 name: gameNameInput.value,
                 url: gameUrlInput.value,
+                image: gameImageInput.value,
                 description: gameDescInput.value
             };
             
@@ -463,6 +472,7 @@
                     gameIdInput.value = gameId;
                     gameNameInput.value = game.name;
                     gameUrlInput.value = game.url;
+                    gameImageInput.value = game.image || '';
                     gameDescInput.value = game.description || '';
                     
                     saveBtn.textContent = 'Update Game';
