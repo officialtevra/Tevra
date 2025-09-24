@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Main Page</title>
+  <title>www.tevra.in - ফ্লেক্সিবল কার্ড</title>
   <style>
     * {
       margin: 0;
@@ -24,7 +24,7 @@
       color: #fff;
       font-size: 2.5rem;
       font-weight: 700;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 1.4);
       padding: 15px 30px;
       border: 3px solid;
       border-image: linear-gradient(45deg, #ff8a00, #e52e71, #3a7bd5, #00d2ff);
@@ -89,11 +89,14 @@
     .card-item {
       text-align: center;
       margin: 5px;
+      transition: all 0.3s ease;
+      position: relative;
     }
 
     .card-link {
       text-decoration: none;
       color: inherit;
+      display: block;
     }
 
     .card {
@@ -102,7 +105,7 @@
       height: 100px;
       border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,1.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,1.4);
       cursor: pointer;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       background-size: cover;
@@ -122,6 +125,131 @@
       color: white;
     }
 
+    /* সিলেকশন স্টাইল */
+    .card-item.selected {
+      transform: scale(1.05);
+      box-shadow: 0 0 0 3px #ffeb3b, 0 6px 20px rgba(0,0,0,0.3);
+    }
+
+    .card-item.selected::after {
+      content: "✓";
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 20px;
+      height: 20px;
+      background: #4CAF50;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: bold;
+      z-index: 10;
+    }
+
+    .selection-mode .card-item {
+      cursor: pointer;
+    }
+
+    .selection-mode .card-link {
+      pointer-events: none;
+    }
+
+    /* থ্রি-ডট মেনু */
+    .menu-btn {
+      position: absolute;
+      margin-top: 25mm;
+      margin-left: 20px;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 24px;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .menu-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.1);
+    }
+
+    .menu-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      z-index: 999;
+    }
+
+    .menu-window {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      min-width: 300px;
+      display: none;
+      z-index: 1000;
+    }
+
+    .menu-window h2 {
+      color: #007acc;
+      margin-bottom: 20px;
+      text-align: center;
+      font-size: 1.5rem;
+    }
+
+    .menu-btn-simple {
+      background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin: 10px 0;
+      width: 100%;
+      transition: all 0.3s ease;
+    }
+
+    .menu-btn-simple:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .menu-btn-simple:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .selection-info {
+      color: #007acc;
+      text-align: center;
+      margin: 15px 0;
+      font-size: 1rem;
+      font-weight: 600;
+      min-height: 40px;
+      padding: 10px;
+      background: #f0f8ff;
+      border-radius: 5px;
+    }
+
     @media (max-width: 480px) {
       .card {
         width: 100px;
@@ -134,60 +262,408 @@
         font-size: 1.8rem;
         padding: 10px 20px;
       }
+      .menu-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+        top: 10px;
+        left: 10px;
+      }
+      .menu-window {
+        min-width: 280px;
+        padding: 20px;
+      }
     }
+    
+    .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: white;
+            font-size: 1rem;
+            opacity: 0.9;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
   </style>
 </head>
 <body>
+  <!-- থ্রি-ডট মেনু বাটন -->
+  <button class="menu-btn" id="menuBtn">⋯</button>
+
+  <!-- মেনু ওভারলে -->
+  <div class="menu-overlay" id="menuOverlay"></div>
+
+  <!-- মেনু উইন্ডো -->
+  <div class="menu-window" id="menuWindow">
+    <h2>কার্ড সেটিংস</h2>
+    
+    <div class="selection-info" id="selectionInfo">
+      কার্ডে ক্লিক করে সিলেক্ট করুন
+    </div>
+    
+    <button class="menu-btn-simple" id="startSelectionBtn">কার্ড সিলেক্ট শুরু করুন</button>
+    <button class="menu-btn-simple" id="swapBtn" disabled>কার্ড পজিশন পরিবর্তন করুন</button>
+    <button class="menu-btn-simple" id="resetBtn">ডিফল্ট পজিশনে রিসেট করুন</button>
+    
+    <div style="margin-top: 20px; text-align: center; color: #666; font-size: 0.9rem;">
+      সিলেক্ট করা কার্ডগুলির পজিশন স্বয়ংক্রিয়ভাবে সংরক্ষণ হয়
+    </div>
+  </div>
+
   <h1>www.tevra.in</h1>
 
-  <div class="card-section">
-    <div class="card-item">
+  <div class="card-section" id="cardContainer">
+    <div class="card-item" data-id="basic-calculator">
       <a href="basic-calculator.html" class="card-link">
         <div class="card" style="background-image: url('image/besic_calcluter.png');"></div>
         <div class="card-title">Basic Calculator</div>
       </a>
     </div>
-    <div class="card-item">
+    <div class="card-item" data-id="right-angle">
       <a href="right-angle.html" class="card-link">
         <div class="card" style="background-image: url('image/right-angle.png');"></div>
         <div class="card-title"> Right Angle</div>
       </a>
     </div>
-    <div class="card-item">
+    <div class="card-item" data-id="financial-calculator">
       <a href="financial-calculator.html" class="card-link">
         <div class="card" style="background-image: url('image/financial-calculato_3.jpg');"></div>
         <div class="card-title"> Financial Calculator</div>
       </a>
     </div>
-    <div class="card-item">
+    <div class="card-item" data-id="scientific-calculator">
       <a href="scientific-calculator.html" class="card-link">
         <div class="card" style="background-image: url('image/Scientific-Calculator2.jpg');"></div>
         <div class="card-title">Scientific Calculator</div>
       </a>
     </div>
     
-    <div class="card-item">
+    <div class="card-item" data-id="bmi-calculator">
       <a href="bmi-calculator.html" class="card-link">
         <div class="card" style="background-image: url('image/bmi_calculator.jpg');"></div>
         <div class="card-title">BMI Calculator</div>
       </a>
     </div>
     
-    <div class="card-item">
+    <div class="card-item" data-id="age-calculator">
       <a href="age-calculator.html" class="card-link">
         <div class="card" style="background-image: url('image/CalcPro_age.jpg');"></div>
         <div class="card-title">Age Calculator</div>
       </a>
     </div>
     
-    <div class="card-item">
+    <div class="card-item" data-id="unit-converter">
       <a href="unit-converter.html" class="card-link">
         <div class="card" style="background-image: url('image/Unit_Converter.jpg');"></div>
         <div class="card-title">Unit Converter </div>
       </a>
     </div>
     
+    <div class="card-item" data-id="currency-converter">
+      <a href="currency-converter.html" class="card-link">
+        <div class="card" style="background-image: url('image/Currency_Converte.jpg');"></div>
+        <div class="card-title">Currency Converter</div>
+      </a>
+    </div>
+    
+    <div class="card-item" data-id="percentage-converter">
+      <a href="percentage-calculator.html" class="card-link">
+        <div class="card" style="background-image: url('image/percentage_calculator.jpg');"></div>
+        <div class="card-title">Percentage Calculator</div>
+      </a>
+    </div>
+    
+    <div class="card-item" data-id="loan-calculato">
+      <a href="loan-calculator.html" class="card-link">
+        <div class="card" style="background-image: url('image/premium loan calculator.jpg');"></div>
+        <div class="card-title">Loan Calculator</div>
+      </a>
+    </div>
+    
+    <div class="card-item" data-id="tax-calculato">
+      <a href="tax-calculator.html" class="card-link">
+        <div class="card" style="background-image: url('image/TaxPro_a_sophis_1.jpg');"></div>
+        <div class="card-title">Tax Calculator</div>
+      </a>
+    </div>
+    
+    <div class="card-item" data-id="date-calculator">
+      <a href="date-calculator.html" class="card-link">
+        <div class="card" style="background-image: url('image/DatePro_a_sophi_1.jpg');"></div>
+        <div class="card-title">Date Calculator</div>
+      </a>
+    </div>
+    
+    <div class="card-item" data-id="gpa-calculator">
+      <a href="gpa-calculator.html" class="card-link">
+        <div class="card" style="background-image: url('image/GPA_Pro_a_sophi_0.jpg');"></div>
+        <div class="card-title">GPA Calculator</div>
+      </a>
+    </div>
     
   </div>
+  
+  <div class="footer">
+        <p>www.tevra.in CalcPro Premium Percentage Calculator | &copy; 2023</p>
+    </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const cardContainer = document.getElementById('cardContainer');
+      const menuBtn = document.getElementById('menuBtn');
+      const menuOverlay = document.getElementById('menuOverlay');
+      const menuWindow = document.getElementById('menuWindow');
+      const startSelectionBtn = document.getElementById('startSelectionBtn');
+      const swapBtn = document.getElementById('swapBtn');
+      const resetBtn = document.getElementById('resetBtn');
+      const selectionInfo = document.getElementById('selectionInfo');
+      
+      let selectedCards = [];
+      let isSelectionMode = false;
+      
+      // লোকাল স্টোরেজ থেকে কার্ডের অবস্থান লোড করুন
+      loadCardPositions();
+      
+      // মেনু বাটন ক্লিক
+      menuBtn.addEventListener('click', function() {
+        openMenu();
+      });
+      
+      // ওভারলে ক্লিক
+      menuOverlay.addEventListener('click', function() {
+        closeMenu();
+      });
+      
+      // সিলেকশন শুরু করুন
+      startSelectionBtn.addEventListener('click', function() {
+        startSelectionMode();
+        closeMenu();
+      });
+      
+      // কার্ড পজিশন পরিবর্তন করুন
+      swapBtn.addEventListener('click', function() {
+        if (selectedCards.length === 2) {
+          swapCardPositions(selectedCards[0], selectedCards[1]);
+          endSelectionMode();
+          closeMenu();
+        }
+      });
+      
+      // রিসেট করুন
+      resetBtn.addEventListener('click', function() {
+        if (confirm('আপনি কি নিশ্চিত যে আপনি কার্ডগুলির অবস্থান ডিফল্টে রিসেট করতে চান?')) {
+          localStorage.removeItem('cardPositions');
+          location.reload();
+        }
+        closeMenu();
+      });
+      
+      // মেনু খুলুন
+      function openMenu() {
+        menuOverlay.style.display = 'block';
+        menuWindow.style.display = 'block';
+        updateSelectionInfo();
+      }
+      
+      // মেনু বন্ধ করুন
+      function closeMenu() {
+        menuOverlay.style.display = 'none';
+        menuWindow.style.display = 'none';
+      }
+      
+      // সিলেকশন মোড শুরু করার ফাংশন
+      function startSelectionMode() {
+        isSelectionMode = true;
+        cardContainer.classList.add('selection-mode');
+        selectionInfo.textContent = 'কার্ডে ক্লিক করে সিলেক্ট করুন';
+        swapBtn.disabled = true;
+        
+        console.log('সিলেকশন মোড শুরু হয়েছে');
+        
+        // সব কার্ড থেকে সিলেকশন清除
+        clearSelections();
+        
+        // সরল ক্লিক ইভেন্ট যোগ করুন
+        addSimpleClickEvents();
+      }
+      
+      // সিলেকশন মোড শেষ করার ফাংশন
+      function endSelectionMode() {
+        isSelectionMode = false;
+        cardContainer.classList.remove('selection-mode');
+        selectionInfo.textContent = 'কার্ডে ক্লিক করে সিলেক্ট করুন';
+        
+        console.log('সিলেকশন মোড শেষ হয়েছে');
+        
+        // সব কার্ড থেকে সিলেকশন清除
+        clearSelections();
+        
+        // ইভেন্ট লিসেনার সরান
+        removeClickEvents();
+      }
+      
+      // কার্ড সিলেক্ট清除
+      function clearSelections() {
+        selectedCards = [];
+        document.querySelectorAll('.card-item').forEach(item => {
+          item.classList.remove('selected');
+        });
+      }
+      
+      // সরল ক্লিক ইভেন্ট যোগ করুন
+      function addSimpleClickEvents() {
+        document.querySelectorAll('.card-item').forEach(item => {
+          item.addEventListener('click', handleCardClick);
+        });
+      }
+      
+      // ইভেন্ট লিসেনার সরান
+      function removeClickEvents() {
+        document.querySelectorAll('.card-item').forEach(item => {
+          item.removeEventListener('click', handleCardClick);
+        });
+      }
+      
+      // কার্ড ক্লিক হ্যান্ডলার
+      function handleCardClick(event) {
+        if (!isSelectionMode) return;
+        
+        event.preventDefault();
+        event.stopPropagation();
+        
+        const card = event.currentTarget;
+        toggleCardSelection(card);
+      }
+      
+      // কার্ড সিলেক্ট টগল
+      function toggleCardSelection(card) {
+        if (!isSelectionMode) {
+          console.log('সিলেকশন মোড না থাকায় বাতিল');
+          return;
+        }
+        
+        const index = selectedCards.indexOf(card);
+        
+        if (index === -1) {
+          // সর্বোচ্চ ২টি কার্ড সিলেক্ট করতে দেয়া হবে
+          if (selectedCards.length < 2) {
+            selectedCards.push(card);
+            card.classList.add('selected');
+            console.log('কার্ড সিলেক্ট করা হয়েছে: ' + card.querySelector('.card-title').textContent);
+          } else {
+            console.log('ইতিমধ্যে ২টি কার্ড সিলেক্ট করা আছে');
+            alert('আপনি সর্বোচ্চ ২টি কার্ড সিলেক্ট করতে পারবেন। প্রথমে একটি কার্ড আনসিলেক্ট করুন।');
+          }
+        } else {
+          selectedCards.splice(index, 1);
+          card.classList.remove('selected');
+          console.log('কার্ড আনসিলেক্ট করা হয়েছে: ' + card.querySelector('.card-title').textContent);
+        }
+        
+        // সিলেকশন তথ্য আপডেট
+        updateSelectionInfo();
+      }
+      
+      // সিলেকশন তথ্য আপডেট
+      function updateSelectionInfo() {
+        if (selectedCards.length === 0) {
+          selectionInfo.textContent = 'কার্ডে ক্লিক করে সিলেক্ট করুন';
+          swapBtn.disabled = true;
+        } else if (selectedCards.length === 1) {
+          const cardTitle = selectedCards[0].querySelector('.card-title').textContent.trim();
+          selectionInfo.textContent = `সিলেক্ট করা হয়েছে: ${cardTitle} - আরও একটি কার্ড সিলেক্ট করুন`;
+          swapBtn.disabled = true;
+        } else if (selectedCards.length === 2) {
+          const card1Title = selectedCards[0].querySelector('.card-title').textContent.trim();
+          const card2Title = selectedCards[1].querySelector('.card-title').textContent.trim();
+          selectionInfo.textContent = `সিলেক্ট করা হয়েছে: ${card1Title} এবং ${card2Title}`;
+          swapBtn.disabled = false;
+        }
+      }
+      
+      // দুটি কার্ডের পজিশন পরিবর্তন - FIXED VERSION
+      function swapCardPositions(card1, card2) {
+        console.log('swapCardPositions function called');
+        
+        const allCards = Array.from(cardContainer.children);
+        const index1 = allCards.indexOf(card1);
+        const index2 = allCards.indexOf(card2);
+        
+        console.log('Card indices:', index1, index2);
+        
+        if (index1 === -1 || index2 === -1) {
+          console.error('Cards not found in container');
+          return;
+        }
+        
+        if (index1 === index2) {
+          console.log('Same card selected twice');
+          return;
+        }
+        
+        // কার্ডগুলির মধ্যে পজিশন পরিবর্তন
+        if (index1 < index2) {
+          // card1 আগে, card2 পরে
+          if (index2 + 1 < allCards.length) {
+            cardContainer.insertBefore(card2, card1);
+            cardContainer.insertBefore(card1, allCards[index2 + 1]);
+          } else {
+            cardContainer.insertBefore(card2, card1);
+            cardContainer.appendChild(card1);
+          }
+        } else {
+          // card2 আগে, card1 পরে
+          if (index1 + 1 < allCards.length) {
+            cardContainer.insertBefore(card1, card2);
+            cardContainer.insertBefore(card2, allCards[index1 + 1]);
+          } else {
+            cardContainer.insertBefore(card1, card2);
+            cardContainer.appendChild(card2);
+          }
+        }
+        
+        console.log('পজিশন পরিবর্তন সম্পন্ন');
+        
+        // পজিশন সংরক্ষণ করুন
+        saveCardPositions();
+        
+        alert('কার্ড পজিশন সফলভাবে পরিবর্তন করা হয়েছে!');
+        
+        // ভিজুয়াল কনফার্মেশনের জন্য সামান্য ডিলে
+        setTimeout(() => {
+          cardContainer.classList.add('refreshing');
+          setTimeout(() => {
+            cardContainer.classList.remove('refreshing');
+          }, 100);
+        }, 10);
+      }
+      
+      // কার্ডের অবস্থান সংরক্ষণ করুন
+      function saveCardPositions() {
+        const cardItems = Array.from(cardContainer.querySelectorAll('.card-item'));
+        const positions = cardItems.map(item => item.getAttribute('data-id'));
+        localStorage.setItem('cardPositions', JSON.stringify(positions));
+        console.log('পজিশন সংরক্ষণ করা হয়েছে:', positions);
+      }
+      
+      // কার্ডের অবস্থান লোড করুন
+      function loadCardPositions() {
+        const savedPositions = localStorage.getItem('cardPositions');
+        if (savedPositions) {
+          const positions = JSON.parse(savedPositions);
+          const cardItems = Array.from(cardContainer.querySelectorAll('.card-item'));
+          
+          console.log('লোড করা পজিশন:', positions);
+          
+          // সঠিক ক্রমে কার্ড সাজান
+          positions.forEach(id => {
+            const card = cardItems.find(item => item.getAttribute('data-id') === id);
+            if (card) {
+              cardContainer.appendChild(card);
+            }
+          });
+        }
+      }
+    });
+  </script>
 </body>
 </html>
