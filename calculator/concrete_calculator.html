@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concrete Calculator</title>
+<style>
+body { 
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+  margin: 20mm 20px 20px 20px; /* Top margin 20mm, others 20px */
+  background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+  color: #333;
+  min-height: 100vh;
+}
+
+.container { 
+  margin-bottom: 20px; 
+}
+
+.calculator {
+  background: linear-gradient(to bottom right, #ffffff, #f8f9fa);
+  padding: 20px; 
+  margin-bottom: 15px;
+  border-radius: 15px; 
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  display: flex; 
+  flex-direction: column;
+  position: relative;
+  border: 1px solid rgba(255,255,255,0.5);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.calculator:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+.header {
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(58, 123, 213, 0.2);
+}
+
+.type-box { 
+  display: flex; 
+  align-items: center; 
+  gap: 10px; 
+}
+
+input, select, button { 
+  display: block; 
+  margin: 10px 0; 
+  padding: 10px; 
+  width: 100%; 
+  border: 1px solid #ddd; 
+  border-radius: 8px; 
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: #3a7bd5;
+  box-shadow: 0 0 0 3px rgba(58, 123, 213, 0.2);
+}
+
+button { 
+  background: linear-gradient(to right, #3a7bd5, #00d2ff);
+  color: white; 
+  border: none; 
+  cursor: pointer; 
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+button:hover { 
+  background: linear-gradient(to right, #2d68b4, #00b8e6);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.result { 
+  margin-top: 10px; 
+  font-weight: bold; 
+  color: #3a7bd5;
+  font-size: 18px;
+  text-align: center;
+  padding: 10px;
+  background: rgba(58, 123, 213, 0.1);
+  border-radius: 8px;
+}
+
+#totalContainer {
+  background: linear-gradient(to right, #ffd89b, #19547b);
+  padding: 20px; 
+  border-radius: 15px; 
+  margin-bottom: 20px;
+  font-size: 20px; 
+  font-weight: bold; 
+  color: white;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+.menu {
+  position: absolute; 
+  top: 40px; 
+  right: 20px;
+  background: white; 
+  border: 1px solid #e0e0e0;
+  border-radius: 8px; 
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  display: none; 
+  flex-direction: column; 
+  z-index: 10;
+  overflow: hidden;
+}
+
+.menu button { 
+  background: none; 
+  color: #3a7bd5; 
+  border: none; 
+  padding: 10px 15px; 
+  width: 100%; 
+  text-align: left; 
+  cursor: pointer; 
+  margin: 0;
+  border-radius: 0;
+  font-weight: normal;
+  letter-spacing: normal;
+}
+
+.menu button:hover { 
+  background: #f0f7ff; 
+  transform: none;
+  box-shadow: none;
+}
+
+.three-dot { 
+  cursor: pointer; 
+  font-size: 24px; 
+  color: #3a7bd5;
+  padding: 5px 10px;
+  border-radius: 50%;
+  transition: background 0.3s ease;
+}
+
+.three-dot:hover {
+  background: rgba(58, 123, 213, 0.1);
+}
+
+.title {
+  color: #3a7bd5;
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+  text-align: center;
+}
+
+h2 {
+  text-align: center;
+  color: white;
+  font-size: 2.2rem;
+  margin-bottom: 25px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+  background: rgba(255,255,255,0.2);
+  padding: 15px;
+  border-radius: 12px;
+  backdrop-filter: blur(5px);
+}
+
+label {
+  font-weight: 600;
+  color: #555;
+  margin-top: 10px;
+  display: block;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  body {
+    margin: 20mm 10px 10px 10px; /* Top margin 20mm, others 10px */
+  }
+  
+  .calculator {
+    padding: 15px;
+  }
+  
+  h2 {
+    font-size: 1.8rem;
+  }
+  
+  #totalContainer {
+    font-size: 18px;
+    padding: 15px;
+  }
+}
+</style>
+</head>
+<body>
+
+<h2>🧮 Concrete Calculator</h2>
+
+<div id="totalContainer">
+  Total of All Calculations: <span id="grandTotal">0</span> m³
+</div>
+
+<div class="container">
+  <button onclick="addCalculator()">Add New</button>
+</div>
+
+<div id="calculators"></div>
+
+<script>
+let calcCounter = 0;
+
+function addCalculator() {
+  calcCounter++;
+  const calculatorsDiv = document.getElementById('calculators');
+
+  const calculator = document.createElement('div');
+  calculator.classList.add('calculator');
+  calculator.dataset.serial = calcCounter;
+
+  calculator.innerHTML = `
+    <div class="header">
+    	<div class="result">Result: 0 m³</div>
+      <div class="type-box">
+        <label>Type:</label>
+        <select class="type" onchange="updateFields(this)">
+          <option value="Slab">Slab</option>
+          <option value="Beam">Beam</option>
+          <option value="Column">Column</option>
+          <option value="Footing">Footing</option>
+        </select>
+      </div>
+      <div class="three-dot" onclick="toggleMenu(this)">⋮</div>
+    </div>
+
+    <div class="menu">
+      <button class="edit" onclick="editCalculator(this)">Edit</button>
+      <button onclick="removeCalculator(this)">Remove</button>
+    </div>
+
+    <div class="calc-content">
+      <h3 class="title">Concrete Calculator #${calcCounter} (Slab)</h3>
+      <div class="fields"></div>
+      <label>Mix Ratio (Cement:Sand:Aggregate):</label>
+      <select class="mix">
+        <option value="1:2:4">1 : 2 : 4 (M15 approx)</option>
+        <option value="1:1.5:3">1 : 1.5 : 3 (M20 approx)</option>
+        <option value="1:1:2">1 : 1 : 2 (M25 approx)</option>
+      </select>
+      <button onclick="calculate(this)">Calculate</button>
+      <div class="result">Result: 0 m³</div>
+    </div>
+  `;
+
+  calculatorsDiv.prepend(calculator);
+  updateFields(calculator.querySelector('.type'));
+}
+
+function toggleMenu(dot) {
+  const menu = dot.closest('.calculator').querySelector('.menu');
+  menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+}
+
+function updateFields(select) {
+  const calculator = select.closest('.calculator');
+  const fieldsDiv = calculator.querySelector('.fields');
+  const type = select.value;
+
+  const title = calculator.querySelector('.title');
+  title.innerText = `Concrete Calculator #${calculator.dataset.serial} (${type})`;
+
+  if (type === "Column") {
+    fieldsDiv.innerHTML = `
+      <label>Radius (মিটার):</label>
+      <input type="number" class="radius" value="0.5" step="0.01">
+      <label>Height (মিটার):</label>
+      <input type="number" class="height" value="3" step="0.01">
+    `;
+  } else {
+    fieldsDiv.innerHTML = `
+      <label>Length (মিটার):</label>
+      <input type="number" class="length" value="5" step="0.01">
+      <label>Width (মিটার):</label>
+      <input type="number" class="width" value="3" step="0.01">
+      <label>Thickness/Height (মিটার):</label>
+      <input type="number" class="height" value="0.6" step="0.01">
+    `;
+  }
+}
+
+function calculate(button) {
+  const calculator = button.closest('.calculator');
+  const type = calculator.querySelector('.type').value;
+
+  let volume = 0;
+  if (type === "Column") {
+    const r = parseFloat(calculator.querySelector('.radius').value);
+    const h = parseFloat(calculator.querySelector('.height').value);
+    volume = Math.PI * r * r * h;
+  } else {
+    const l = parseFloat(calculator.querySelector('.length').value);
+    const w = parseFloat(calculator.querySelector('.width').value);
+    const h = parseFloat(calculator.querySelector('.height').value);
+    volume = l * w * h;
+  }
+
+  calculator.querySelector('.result').innerText = `Result: ${volume.toFixed(2)} m³`;
+  calculator.dataset.result = volume;
+  updateGrandTotal();
+}
+
+function editCalculator(button) {
+  const calculator = button.closest('.calculator');
+  const typeSelect = calculator.querySelector('.type');
+  updateFields(typeSelect);
+  calculator.querySelector('.result').innerText = 'Result: 0 m³';
+  calculator.dataset.result = 0;
+  updateGrandTotal();
+}
+
+function removeCalculator(button) {
+  const calculator = button.closest('.calculator');
+  calculator.remove();
+  updateGrandTotal();
+}
+
+function updateGrandTotal() {
+  const calculators = document.querySelectorAll('.calculator');
+  let grandTotal = 0;
+  calculators.forEach(calc => {
+    grandTotal += parseFloat(calc.dataset.result || 0);
+  });
+  document.getElementById('grandTotal').innerText = grandTotal.toFixed(2);
+}
+</script>
+
+</body>
+</html>
