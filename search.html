@@ -3,377 +3,665 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Games</title>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Elegant Google Search</title>
     <style>
-        :root {
-            --primary-color: #6a00f4;
-            --secondary-color: #00f0ff;
-            --accent-color: #ff2d75;
-            --dark-bg: #0f0a1e;
-            --card-bg: #1a1432;
-            --text-light: #ffffff;
-            --text-glow: 0 0 10px var(--secondary-color);
-            --neon-border: 1px solid var(--secondary-color);
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
+        
         body {
-            background-color: var(--dark-bg);
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(106, 0, 244, 0.1) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(0, 240, 255, 0.1) 0%, transparent 20%);
-            color: var(--text-light);
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #0099ff;
             min-height: 100vh;
-            padding: 20px;
-        }
-
-        .search-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .search-header {
             display: flex;
-            align-items: center;
-            margin-bottom: 30px;
-            gap: 15px;
-        }
-
-        .back-button {
-            background: var(--primary-color);
-            border: none;
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
             justify-content: center;
-            font-size: 18px;
-            transition: all 0.3s;
+            align-items: flex-start;
+            padding: 20px;
+            margin-top: 10mm;
         }
-
-        .back-button:hover {
-            background: var(--accent-color);
-            transform: scale(1.05);
-        }
-
-        .search-input-container {
-            position: relative;
-            flex-grow: 1;
-        }
-
-        .search-input {
+        
+        .search-wrapper {
             width: 100%;
-            padding: 15px 20px;
-            padding-left: 50px;
-            border-radius: 30px;
-            border: 2px solid var(--primary-color);
-            outline: none;
-            font-size: 16px;
-            background-color: rgba(26, 20, 50, 0.7);
-            color: var(--text-light);
-            transition: all 0.3s;
+            max-width: 500px;
+            background: #0099ff;
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            
+            padding: 40px 35px;
+            
         }
-
-        .search-input:focus {
-            border-color: var(--secondary-color);
-            box-shadow: 0 0 15px var(--secondary-color);
-            background-color: rgba(26, 20, 50, 0.9);
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--secondary-color);
-            font-size: 20px;
-        }
-
-        .results-container {
-            margin-top: 20px;
-        }
-
-        .result-item {
-            background: var(--card-bg);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-            border: 1px solid transparent;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-
-        .result-item:hover {
-            border-color: var(--secondary-color);
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
-            transform: translateY(-2px);
-        }
-
-        .result-title {
-            font-size: 18px;
-            margin-bottom: 8px;
-            color: var(--secondary-color);
-        }
-
-        .result-description {
-            font-size: 14px;
-            opacity: 0.8;
-            margin-bottom: 8px;
-        }
-
-        .result-url {
-            font-size: 12px;
-            color: #aaa;
-            word-break: break-all;
-        }
-
-        .no-results {
+        
+        .logo-container {
             text-align: center;
-            padding: 40px;
-            font-size: 18px;
-            opacity: 0.7;
+            margin-bottom: 30px;
         }
-
-        .loading {
-            text-align: center;
-            padding: 30px;
-            font-size: 18px;
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff, #e6f7ff, #cceeff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
         }
-
-        .debug-info {
-            background: rgba(255, 0, 0, 0.1);
-            border: 1px solid red;
-            border-radius: 5px;
-            padding: 10px;
-            margin-top: 20px;
-            font-size: 14px;
-            display: none;
+        
+        .tagline {
+            color: #e6f7ff;
+            font-size: 1.1rem;
+            font-weight: 400;
         }
-
-        .debug-toggle {
-            text-align: center;
-            margin-top: 20px;
+        
+        /* Google CSE Container */
+        .search-container {
+            margin-bottom: 20px;
         }
-
-        .debug-btn {
-            background: #444;
-            color: white;
+        
+        /* Custom search box styling */
+        .gsc-control-cse {
+            padding: 0 !important;
+            background: transparent !important;
+            border: none !important;
+        }
+        
+        .gsc-input-box {
+            border: 2px solid #e6f7ff !important;
+            border-radius: 50px !important;
+            height: 60px !important;
+            padding: 0 25px !important;
+            background: white !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
+        }
+        
+        .gsc-input-box:hover {
+            border-color: #ffffff !important;
+            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15) !important;
+        }
+        
+        .gsc-input-box:focus-within {
+            border-color: #ffffff !important;
+            box-shadow: 0 4px 25px rgba(255, 255, 255, 0.2) !important;
+            transform: translateY(-1px);
+        }
+        
+        .gsc-input {
+            padding: 0 !important;
+            height: 100% !important;
+        }
+        
+        .gsc-input input {
+            height: 100% !important;
+            border: none !important;
+            outline: none !important;
+            background: transparent !important;
+            font-size: 18px !important;
+            color: #003366 !important;
+            padding: 0 10px !important;
+            text-align: center !important;
+            font-weight: 400 !important;
+            width: 100% !important;
+        }
+        
+        .gsc-input input::placeholder {
+            color: #6699cc !important;
+            font-size: 18px !important;
+            font-weight: 400 !important;
+            text-align: center !important;
+            opacity: 1 !important;
+            letter-spacing: 0.5px !important;
+        }
+        
+        /* Hide Google's default button */
+        .gsc-search-button {
+            display: none !important;
+        }
+        
+        /* Custom search button - SMALL AND ELEGANT */
+        .custom-search-button {
+            background: linear-gradient(135deg, #ffffff, #e6f7ff);
+            color: #0099ff;
             border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
+            border-radius: 50px;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+            width: auto;
+            display: inline-block;
+            min-width: 140px;
+        }
+        
+        .custom-search-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4);
+        }
+        
+        .custom-search-button:active {
+            transform: translateY(0);
+        }
+        
+        .custom-search-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0,153,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .custom-search-button:hover::before {
+            left: 100%;
+        }
+        
+        /* Button container for centering */
+        .button-container {
+            text-align: center;
+            margin-top: 10px;
+        }
+        
+        /* FULL SCREEN SEARCH RESULTS - RESPONSIVE DESIGN */
+        .gsc-results-wrapper-overlay, 
+        .gsc-results-wrapper-visible {
+            border: none !important;
+            box-shadow: none !important;
+            background: white !important;
+            width: 100vw !important;
+            max-width: none !important;
+            position: fixed !important;
+            top: 0 !important;
+            bottom: 20mm !important;
+            height: 100vh !important;
+            z-index: 1000 !important;
+            overflow-y: auto !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            border-radius: 0 !important;
+            left: -11mm !important;
+        }
+        
+        /* For large screens (desktop) - center the results */
+        @media (min-width: 1200px) {
+            .gsc-results-wrapper-visible {
+                width: 90vw !important;
+                max-width: 1400px !important;
+                right: -10mm !important;
+                transform: translateX(-50%) !important;
+                margin-top: -10mm !important;
+                height: 90vh !important;
+                border-radius: 15px !important;
+                box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3) !important;
+            }
+            
+            .gsc-results-wrapper-visible .gsc-resultsbox-visible {
+                padding: 40px !important;
+                border-radius: 15px !important;
+            }
+        }
+        
+        /* For medium screens (tablets) */
+        @media (min-width: 768px) and (max-width: 1199px) {
+            .gsc-results-wrapper-visible {
+                width: 95vw !important;
+                left: -50mm !important;
+                top: 2.5vh !important;
+                height: 95vh !important;
+                border-radius: 10px !important;
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25) !important;
+            }
+            
+            .gsc-results-wrapper-visible .gsc-resultsbox-visible {
+                padding: 30px !important;
+                border-radius: 10px !important;
+            }
+        }
+        
+        /* For small screens (mobile) - keep full screen */
+        @media (max-width: 767px) {
+            .gsc-results-wrapper-visible {
+                width: 100vw !important;
+                left: -11mm !important;
+                top: 0 !important;
+                height: 100vh !important;
+                border-radius: 0 !important;
+                box-shadow: none !important;
+            }
+            
+            .gsc-results-wrapper-visible .gsc-resultsbox-visible {
+                padding: 20px 15px !important;
+            }
+        }
+        
+        /* COMPLETELY REMOVE ALL GOOGLE'S OVERLAY ELEMENTS */
+        .gsc-results-wrapper-visible .gsc-dialog,
+        .gsc-results-wrapper-visible .gsc-dialog-container,
+        .gsc-results-wrapper-visible .gsc-modal-background-image,
+        .gsc-results-wrapper-visible .gsc-dialog-box,
+        .gsc-results-wrapper-visible .gsc-modal-background,
+        .gsc-results-wrapper-visible .gsc-dialog-container {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+        }
+        
+        /* Remove custom close button (red X button) */
+        .custom-close-button {
+            display: none !important;
+        }
+        
+        /* Style the actual results container */
+        .gsc-results-wrapper-visible .gsc-resultsbox-visible {
+            background: white !important;
+            padding: 20px !important;
+            height: 100% !important;
+            overflow-y: auto !important;
+            width: 100% !important;
+            margin: 0 !important;
+        }
+        
+        /* Remove tabs area completely */
+        .gsc-tabsArea {
+            display: none !important;
+        }
+        
+        /* Style results properly */
+        .gsc-webResult.gsc-result {
+            border-bottom: 1px solid #f1f3f4 !important;
+            padding: 20px 0 !important;
+            transition: background-color 0.2s ease !important;
+            max-width: none !important;
+            margin: 0 !important;
+        }
+        
+        .gsc-webResult.gsc-result:hover {
+            background-color: #f8f9fa !important;
+            padding: 20px 10px !important;
+        }
+        
+        .gs-result .gs-title {
+            font-size: 18px !important;
+            color: #1a0dab !important;
+            text-decoration: none !important;
+            line-height: 1.4 !important;
+            font-weight: 500 !important;
+            display: block !important;
+            margin-bottom: 8px !important;
+        }
+        
+        .gs-result .gs-title:hover {
+            text-decoration: underline !important;
+        }
+        
+        .gs-result .gs-snippet {
+            color: #4d5156 !important;
+            font-size: 14px !important;
+            line-height: 1.6 !important;
+            margin-top: 8px !important;
+        }
+        
+        .gsc-results .gsc-result {
+            max-width: none !important;
+            width: 100% !important;
+        }
+        
+        .gsc-table-result {
+            width: 100% !important;
+            max-width: none !important;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #e6f7ff;
             font-size: 14px;
+        }
+        
+        /* Responsive design for search wrapper */
+        @media (max-width: 768px) {
+            .search-wrapper {
+                padding: 30px 25px;
+                margin: 20px;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .tagline {
+                font-size: 1rem;
+            }
+            
+            .gsc-input-box {
+                height: 55px !important;
+                padding: 0 20px !important;
+            }
+            
+            .gsc-input input {
+                font-size: 16px !important;
+            }
+            
+            .gsc-input input::placeholder {
+                font-size: 16px !important;
+            }
+            
+            .custom-search-button {
+                padding: 10px 25px;
+                font-size: 15px;
+                min-width: 130px;
+            }
+            
+            .gsc-webResult.gsc-result {
+                padding: 15px 0 !important;
+            }
+            
+            .gsc-webResult.gsc-result:hover {
+                padding: 15px 8px !important;
+            }
+            
+            .gs-result .gs-title {
+                font-size: 16px !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .search-wrapper {
+                padding: 25px 20px;
+            }
+            
+            .gsc-input-box {
+                height: 50px !important;
+                padding: 0 15px !important;
+            }
+            
+            .custom-search-button {
+                padding: 9px 22px;
+                font-size: 14px;
+                min-width: 120px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="search-container">
-        <div class="search-header">
-            <button class="back-button" onclick="goBack()">
-                <i class="fas fa-arrow-left"></i>
-            </button>
-            <div class="search-input-container">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" id="searchInput" placeholder="Search games..." autocomplete="off">
+    <div class="search-wrapper">
+        <div class="logo-container">
+            <div class="logo">www.tevra.in</div>
+            <div class="tagline"></div>
+        </div>
+        
+        <div class="search-container">
+            <!-- Google Custom Search -->
+            <div class="gcse-search"></div>
+            
+            <!-- Custom search button container -->
+            <div class="button-container">
+                <button class="custom-search-button" id="customSearchButton">
+                    <span>🔍</span> Search
+                </button>
             </div>
         </div>
         
-        <div class="results-container" id="resultsContainer">
-            <div class="no-results">Type something to search for games</div>
-        </div>
-
-        <div class="debug-toggle">
-            <button class="debug-btn" onclick="toggleDebug()">Show Debug Info</button>
-        </div>
-        
-        <div class="debug-info" id="debugInfo">
-            <h3>Debug Information</h3>
-            <div id="debugContent">Debug information will appear here</div>
+        <div class="footer">
+            Powered by Google Custom Search
         </div>
     </div>
 
+    <script async src="https://cse.google.com/cse.js?cx=84cf91b414b12455c"></script>
     <script>
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyCi5n-L_ogUif2Bsq7l8qfU9Yoq9h7J6VE",
-            authDomain: "cryptonix-67333.firebaseapp.com",
-            databaseURL: "https://cryptonix-67333-default-rtdb.firebaseio.com",
-            projectId: "cryptonix-67333",
-            storageBucket: "cryptonix-67333.firebasestorage.app",
-            appId: "1:701360318410:web:050c6ced8857cc0d2b5133",
-        };
-
-        // Debug function
-        function debugLog(message) {
-            console.log(message);
-            const debugContent = document.getElementById('debugContent');
-            debugContent.innerHTML += `<p>${new Date().toLocaleTimeString()}: ${message}</p>`;
-        }
-
-        // Toggle debug info
-        function toggleDebug() {
-            const debugInfo = document.getElementById('debugInfo');
-            debugInfo.style.display = debugInfo.style.display === 'none' ? 'block' : 'none';
-        }
-
-        // Initialize Firebase
-        try {
-            firebase.initializeApp(firebaseConfig);
-            debugLog("Firebase initialized successfully");
-        } catch (error) {
-            debugLog("Error initializing Firebase: " + error.message);
-        }
-        
-        const db = firebase.database();
-
-        // DOM elements
-        const searchInput = document.getElementById('searchInput');
-        const resultsContainer = document.getElementById('resultsContainer');
-
-        // Reference to games in database
-        const gamesRef = db.ref('games');
-
-        // Function to go back - FIXED
-        function goBack() {
-            // Check if there's a previous page in history
-            if (window.history.length > 1) {
-                window.history.back();
-            } else {
-                // If no history, redirect to main page
-                window.location.href = '../index.html';
-            }
-        }
-
-        // Function to search games
-        function searchGames(query) {
-            if (!query.trim()) {
-                resultsContainer.innerHTML = '<div class="no-results">Type something to search for games</div>';
-                return;
-            }
-
-            resultsContainer.innerHTML = '<div class="loading">Searching...</div>';
-            debugLog("Searching for: " + query);
-
-            gamesRef.once('value')
-                .then(snapshot => {
-                    const gamesData = snapshot.val();
-                    debugLog("Received data from Firebase: " + (gamesData ? "Data received successfully" : "No data"));
+        // Wait for the Google CSE to load
+        window.addEventListener('load', function() {
+            // Function to enhance the search input
+            function enhanceSearchInput() {
+                const searchInput = document.querySelector('.gsc-input input');
+                if (searchInput) {
+                    // Apply enhanced styles
+                    searchInput.style.height = '100%';
+                    searchInput.style.border = 'none';
+                    searchInput.style.outline = 'none';
+                    searchInput.style.background = 'transparent';
+                    searchInput.style.width = '100%';
+                    searchInput.style.fontSize = '18px';
+                    searchInput.style.textAlign = 'center';
+                    searchInput.style.color = '#003366';
+                    searchInput.style.fontWeight = '400';
+                    searchInput.style.padding = '0 10px';
                     
-                    const results = [];
-
-                    if (gamesData) {
-                        // Convert object to array and search
-                        for (const key in gamesData) {
-                            if (gamesData.hasOwnProperty(key)) {
-                                const game = gamesData[key];
-                                // Case insensitive search
-                                if (game.name && game.name.toLowerCase().includes(query.toLowerCase())) {
-                                    results.push({...game, id: key});
-                                }
-                            }
+                    // Set placeholder text
+                    searchInput.placeholder = 'google Search......';
+                    
+                    // Create style for placeholder
+                    const style = document.createElement('style');
+                    style.textContent = `
+                        .gsc-input input::placeholder {
+                            color: #6699cc !important;
+                            font-size: 18px !important;
+                            font-weight: 400 !important;
+                            text-align: center !important;
+                            opacity: 1 !important;
+                            letter-spacing: 0.5px !important;
                         }
-                    }
-
-                    debugLog("Found " + results.length + " results");
-                    displayResults(results);
-                })
-                .catch(error => {
-                    console.error("Error searching games:", error);
-                    debugLog("Error searching games: " + error.message);
-                    resultsContainer.innerHTML = '<div class="no-results">Error searching games. Please check debug info.</div>';
-                });
-        }
-
-        // Function to display results
-        function displayResults(results) {
-            if (results.length === 0) {
-                resultsContainer.innerHTML = '<div class="no-results">No games found. Try a different search term.</div>';
-                return;
-            }
-
-            let html = '';
-            results.forEach(game => {
-                // URL validation and formatting
-                let gameUrl = game.url;
-                if (!gameUrl.startsWith('http://') && !gameUrl.startsWith('https://')) {
-                    gameUrl = 'https://' + gameUrl;
+                    `;
+                    document.head.appendChild(style);
                 }
                 
-                // Escape special characters for HTML
-                const gameName = game.name.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-                const gameDescription = (game.description || 'No description available').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                // Hide Google's default button
+                const googleSearchButton = document.querySelector('.gsc-search-button');
+                if (googleSearchButton) {
+                    googleSearchButton.style.display = 'none';
+                }
                 
-                html += `
-                    <div class="result-item" onclick="openGame('${gameUrl.replace(/'/g, "\\'")}')">
-                        <div class="result-title">${gameName}</div>
-                        <div class="result-description">${gameDescription}</div>
-                        <div class="result-url">${gameUrl}</div>
-                    </div>
-                `;
-            });
-
-            resultsContainer.innerHTML = html;
-        }
-
-        // Function to open game URL
-        function openGame(url) {
-            if (url) {
-                window.open(url, '_blank');
+                // Enhance input box
+                const inputBox = document.querySelector('.gsc-input-box');
+                if (inputBox) {
+                    inputBox.style.borderRadius = '50px';
+                    inputBox.style.height = '60px';
+                    inputBox.style.padding = '0 25px';
+                    inputBox.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.05)';
+                }
             }
-        }
-
-        // Event listener for search input
-        let searchTimeout;
-        searchInput.addEventListener('input', function() {
-            clearTimeout(searchTimeout);
-            const query = this.value;
             
-            searchTimeout = setTimeout(() => {
-                searchGames(query);
-            }, 300); // 300ms debounce
-        });
-
-        // Focus on input when page loads
-        window.onload = function() {
-            searchInput.focus();
-            
-            // Check if there's a query parameter
-            const urlParams = new URLSearchParams(window.location.search);
-            const query = urlParams.get('q');
-            if (query) {
-                searchInput.value = query;
-                searchGames(query);
+            // Function to ensure button stays small
+            function enhanceSearchButton() {
+                const button = document.getElementById('customSearchButton');
+                if (button) {
+                    button.style.width = 'auto';
+                    button.style.display = 'inline-block';
+                    button.style.padding = '12px 30px';
+                    button.style.fontSize = '16px';
+                }
             }
-
-            // Test Firebase connection
-            debugLog("Testing Firebase connection...");
-            gamesRef.once('value')
-                .then(snapshot => {
-                    const gamesData = snapshot.val();
-                    if (gamesData) {
-                        debugLog("Firebase connection successful. Found " + Object.keys(gamesData).length + " games in database.");
-                    } else {
-                        debugLog("Firebase connection successful but no games found in database.");
-                    }
-                })
-                .catch(error => {
-                    debugLog("Firebase connection failed: " + error.message);
-                    debugLog("Please make sure you've updated Firebase rules to allow read access to 'games'");
+            
+            // Function to apply responsive positioning for results
+            function applyResponsiveResultsPosition() {
+                // Remove all Google's dialog and overlay elements
+                const elementsToRemove = [
+                    '.gsc-dialog',
+                    '.gsc-dialog-container',
+                    '.gsc-modal-background-image',
+                    '.gsc-dialog-box',
+                    '.gsc-modal-background',
+                    '.gsc-dialog-container'
+                ];
+                
+                elementsToRemove.forEach(selector => {
+                    const elements = document.querySelectorAll(selector);
+                    elements.forEach(element => {
+                        element.style.display = 'none';
+                        element.style.visibility = 'hidden';
+                        element.remove();
+                    });
                 });
-        };
+                
+                // Apply responsive positioning based on screen size
+                const resultsWrapper = document.querySelector('.gsc-results-wrapper-visible');
+                if (resultsWrapper) {
+                    const screenWidth = window.innerWidth;
+                    
+                    if (screenWidth >= 1200) {
+                        // Large screens - centered with max-width
+                        resultsWrapper.style.width = '90vw';
+                        resultsWrapper.style.maxWidth = '1400px';
+                        resultsWrapper.style.left = '50%';
+                        resultsWrapper.style.transform = 'translateX(-50%)';
+                        resultsWrapper.style.top = '-10';
+                        resultsWrapper.style.bottom = '30px';
+                        resultsWrapper.style.height = '90vh';
+                        resultsWrapper.style.borderRadius = '15px';
+                        resultsWrapper.style.boxShadow = '0 25px 50px rgba(0, 0, 0, 0.3)';
+                    } else if (screenWidth >= 768) {
+                        // Medium screens
+                        resultsWrapper.style.width = '95vw';
+                        resultsWrapper.style.left = '2.5vw';
+                        resultsWrapper.style.top = '2.5vh';
+                        resultsWrapper.style.bottom = '30px';
+                        resultsWrapper.style.height = '95vh';
+                        resultsWrapper.style.borderRadius = '10px';
+                        resultsWrapper.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.25)';
+                        resultsWrapper.style.transform = 'none';
+                    } else {
+                        // Small screens - full screen
+                        resultsWrapper.style.width = '100vw';
+                        resultsWrapper.style.left = '0';
+                        resultsWrapper.style.top = '0';
+                        resultsWrapper.style.bottom = '30px';
+                        resultsWrapper.style.height = '100vh';
+                        resultsWrapper.style.borderRadius = '0';
+                        resultsWrapper.style.boxShadow = 'none';
+                        resultsWrapper.style.transform = 'none';
+                    }
+                    
+                    resultsWrapper.style.position = 'fixed';
+                    resultsWrapper.style.background = 'white';
+                    resultsWrapper.style.zIndex = '1000';
+                    resultsWrapper.style.margin = '0';
+                    resultsWrapper.style.padding = '0';
+                }
+                
+                // Remove any close buttons
+                const closeButtons = document.querySelectorAll('[class*="close"], [class*="cancel"], [class*="dismiss"]');
+                closeButtons.forEach(button => {
+                    button.style.display = 'none';
+                    button.remove();
+                });
+            }
+            
+            // Close results function using Escape key
+            function closeResults() {
+                const resultsWrapper = document.querySelector('.gsc-results-wrapper-visible');
+                if (resultsWrapper) {
+                    resultsWrapper.style.display = 'none';
+                }
+                
+                // Clear search input
+                const searchInput = document.querySelector('.gsc-input input');
+                if (searchInput) {
+                    searchInput.value = '';
+                    searchInput.focus();
+                }
+            }
+            
+            // Apply enhancements multiple times
+            enhanceSearchInput();
+            setTimeout(enhanceSearchInput, 300);
+            setTimeout(enhanceSearchButton, 1000);
+            
+            // Continuous monitoring for Google's DOM changes
+            const fixInterval = setInterval(() => {
+                enhanceSearchInput();
+                enhanceSearchButton();
+                applyResponsiveResultsPosition();
+            }, 200);
+            
+            // Search functionality
+            document.getElementById('customSearchButton').addEventListener('click', function() {
+                const searchInput = document.querySelector('.gsc-input input');
+                if (searchInput && searchInput.value.trim() !== '') {
+                    // Add click effect
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                    
+                    // Trigger search
+                    const enterEvent = new KeyboardEvent('keydown', {
+                        key: 'Enter',
+                        code: 'Enter',
+                        keyCode: 13,
+                        which: 13,
+                        bubbles: true
+                    });
+                    searchInput.dispatchEvent(enterEvent);
+                    
+                    // Apply responsive positioning after search
+                    setTimeout(applyResponsiveResultsPosition, 300);
+                    setTimeout(applyResponsiveResultsPosition, 600);
+                    setTimeout(applyResponsiveResultsPosition, 1000);
+                }
+            });
+            
+            // Close results on ESC key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeResults();
+                }
+                if (e.key === 'Enter') {
+                    const searchInput = document.querySelector('.gsc-input input');
+                    if (searchInput && document.activeElement === searchInput) {
+                        document.getElementById('customSearchButton').click();
+                    }
+                }
+            });
+            
+            // Close results when clicking outside
+            document.addEventListener('click', function(e) {
+                const resultsWrapper = document.querySelector('.gsc-results-wrapper-visible');
+                if (resultsWrapper && resultsWrapper.style.display !== 'none') {
+                    if (e.target === document.body || !resultsWrapper.contains(e.target)) {
+                        closeResults();
+                    }
+                }
+            });
+            
+            // Handle window resize for responsive design
+            window.addEventListener('resize', function() {
+                applyResponsiveResultsPosition();
+            });
+            
+            // Aggressive MutationObserver for dynamic changes
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.type === 'childList') {
+                        setTimeout(() => {
+                            enhanceSearchInput();
+                            enhanceSearchButton();
+                            applyResponsiveResultsPosition();
+                        }, 50);
+                    }
+                });
+            });
+            
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true,
+                attributes: true,
+                attributeFilter: ['style', 'class']
+            });
+            
+            // Stop interval after 15 seconds
+            setTimeout(() => {
+                clearInterval(fixInterval);
+            }, 15000);
+        });
     </script>
 </body>
 </html>
