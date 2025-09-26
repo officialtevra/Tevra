@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CalcPro - Advanced Calculators</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
     <style>
         * {
             margin: 0;
@@ -419,6 +421,126 @@
             display: none;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
+        
+        /* Search Results Modal */
+        .search-modal {
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 600px;
+            max-height: 400px;
+            overflow-y: auto;
+            background: rgba(0, 92, 153, 0.95);
+            border-radius: 10px;
+            z-index: 1004;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            display: none;
+            backdrop-filter: blur(10px);
+        }
+        
+        .search-results {
+            padding: 15px;
+        }
+        
+        .search-result-item {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .search-result-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
+        
+        .search-result-item i {
+            color: #00ccff;
+        }
+        
+        .no-results {
+            padding: 20px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .calculator-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin: 5px 0;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .calculator-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* সার্চ রেজাল্ট আইকনের জন্য CSS */
+        .search-result-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+
+        .side-menu-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            object-fit: contain;
+        }
+
+        .fallback-icon {
+            margin-right: 10px;
+            display: none !important;
+        }
+
+        .search-result-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .search-result-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .game-logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            object-fit: cover;
+            margin-right: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .result-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .result-title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .result-description {
+            font-size: 12px;
+            opacity: 0.8;
+        }
     </style>
 </head>
 <body>
@@ -428,6 +550,13 @@
     <!-- Loading indicator -->
     <div class="iframe-loading" id="loading-indicator">
         <i class="fas fa-spinner fa-spin"></i> Loading...
+    </div>
+    
+    <!-- Search Results Modal -->
+    <div class="search-modal" id="searchModal">
+        <div class="search-results" id="searchResults">
+            <!-- Search results will be populated here -->
+        </div>
     </div>
     
     <!-- Iframe Controls -->
@@ -472,9 +601,6 @@
     
     <!-- Menu Overlay -->
     <div class="menu-overlay"></div>
-    
-    
-    
     
     <!-- Top Navigation Bar -->
     <nav class="top-nav">
@@ -527,6 +653,25 @@
     </nav>
     
     <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCi5n-L_ogUif2Bsq7l8qfU9Yoq9h7J6VE",
+            authDomain: "cryptonix-67333.firebaseapp.com",
+            databaseURL: "https://cryptonix-67333-default-rtdb.firebaseio.com",
+            projectId: "cryptonix-67333",
+            storageBucket: "cryptonix-67333.firebasestorage.app",
+            appId: "1:701360318410:web:050c6ced8857cc0d2b5133",
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const gamesRef = db.ref('games');
+        
+        // Global variables
+        let allGames = [];
+        let searchTimeout;
+
         // Toggle hamburger menu
         const menuIcon = document.querySelector('.menu-icon');
         const sideMenu = document.querySelector('.side-menu');
@@ -534,6 +679,9 @@
         const closeMenuBtn = document.querySelector('.close-menu');
         const iframe = document.getElementById('main-iframe');
         const loadingIndicator = document.getElementById('loading-indicator');
+        const searchModal = document.getElementById('searchModal');
+        const searchResults = document.getElementById('searchResults');
+        const searchInput = document.getElementById('searchInput');
         
         function openMenu() {
             sideMenu.classList.add('open');
@@ -595,6 +743,7 @@
             if (pages[page]) {
                 // Set iframe source
                 iframe.src = pages[page];
+                updateNavigationForPage(page);
             }
         }
         
@@ -642,26 +791,165 @@
         // Load home page by default
         window.addEventListener('load', function() {
             navigateTo('home');
+            loadGamesFromFirebase();
         });
-    </script>
-    
-    <script>
-        // সার্চ বক্সে ক্লিক করলে search.html ওপেন হবে
-        document.getElementById('searchInput').addEventListener('click', function() {
-            window.open('search.html', '_blank');
+        
+        // Load games from Firebase
+        function loadGamesFromFirebase() {
+            gamesRef.on('value', (snapshot) => {
+                const gamesData = snapshot.val();
+                
+                if (gamesData) {
+                    allGames = Object.entries(gamesData)
+                        .sort((a, b) => b[0].localeCompare(a[0]))
+                        .map(([key, game]) => ({ id: key, ...game }));
+                } else {
+                    allGames = [];
+                }
+            });
+        }
+        
+        // Search functionality
+        searchInput.addEventListener('input', function() {
+            const query = this.value.trim();
+            clearTimeout(searchTimeout);
+            
+            if (query.length === 0) {
+                hideSearchModal();
+                return;
+            }
+            
+            searchTimeout = setTimeout(() => {
+                performSearch(query);
+            }, 300);
         });
-
-        // Enter key press করলে search.html ওপেন হবে এবং search query নিয়ে যাবে
-        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+        
+        // Enter key press for search
+        searchInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 const query = this.value.trim();
                 if (query) {
-                    window.open(`search.html?q=${encodeURIComponent(query)}`, '_blank');
-                } else {
-                    window.open('search.html', '_blank');
+                    performSearch(query);
                 }
             }
         });
+        
+        // Perform search in Firebase data
+        function performSearch(query) {
+            const queryLower = query.toLowerCase();
+            
+            // Search only in Firebase games data (predefined calculators removed)
+            const firebaseResults = searchFirebaseGames(queryLower);
+            
+            // Use only Firebase results
+            const allResults = firebaseResults;
+            
+            displaySearchResults(allResults, query);
+        }
+        
+        // Search in Firebase games data only (predefined calculators removed)
+        function searchFirebaseGames(query) {
+            if (allGames.length === 0) return [];
+            
+            return allGames.filter(game => 
+                game.name.toLowerCase().includes(query) ||
+                (game.description && game.description.toLowerCase().includes(query)) ||
+                game.url.toLowerCase().includes(query)
+            ).map(game => ({
+                type: 'firebase',
+                name: game.name,
+                url: game.url,
+                image: game.image || '/images/gamepad.png', // Use game image or default
+                description: game.description || 'Game from database'
+            }));
+        }
+        
+        // Display search results - Firebase games with logos
+        function displaySearchResults(results, query) {
+            searchResults.innerHTML = '';
+            
+            if (results.length === 0) {
+                searchResults.innerHTML = '<div class="no-results">No results found for "' + query + '"</div>';
+            } else {
+                results.forEach(result => {
+                    const resultElement = document.createElement('div');
+                    resultElement.className = 'search-result-item';
+                    
+                    resultElement.innerHTML = `
+                        <img src="${result.image}" alt="${result.name}" class="game-logo" 
+                             onerror="this.src='/images/gamepad.png'">
+                        <div class="result-content">
+                            <div class="result-title">${result.name}</div>
+                            <div class="result-description">${result.description}</div>
+                        </div>
+                        <i class="fas fa-external-link-alt" style="opacity: 0.6;"></i>
+                    `;
+                    
+                    resultElement.addEventListener('click', () => {
+                        handleSearchResultClick(result);
+                    });
+                    
+                    searchResults.appendChild(resultElement);
+                });
+            }
+            
+            showSearchModal();
+        }
+        
+        // Handle click on search result
+        function handleSearchResultClick(result) {
+            hideSearchModal();
+            searchInput.value = '';
+            
+            // Load Firebase game URL in iframe
+            showLoading();
+            iframe.src = result.url;
+            
+            // Update navigation to home (since it's an external game)
+            updateNavigationForPage('home');
+        }
+        
+        // Show search modal
+        function showSearchModal() {
+            searchModal.style.display = 'block';
+        }
+        
+        // Hide search modal
+        function hideSearchModal() {
+            searchModal.style.display = 'none';
+        }
+        
+        // Close search modal when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!searchModal.contains(event.target) && !searchInput.contains(event.target) && 
+                !event.target.closest('.search-box')) {
+                hideSearchModal();
+            }
+        });
+        
+        // Escape key to close search modal
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && searchModal.style.display === 'block') {
+                hideSearchModal();
+            }
+        });
+        
+        // পেজের জন্য নেভিগেশন আপডেট করুন
+        function updateNavigationForPage(pageName) {
+            // বটম নেভিগেশন আপডেট
+            document.querySelectorAll('.bottom-nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            const activeNavItem = document.querySelector(`.bottom-nav-item[onclick*="${pageName}"]`);
+            if (activeNavItem) {
+                activeNavItem.classList.add('active');
+            } else {
+                // যদি না মেলে, হোমকে একটিভ করুন
+                const homeItem = document.querySelector('.bottom-nav-item[onclick*="home"]');
+                if (homeItem) homeItem.classList.add('active');
+            }
+        }
     </script>
 </body>
 </html>
