@@ -157,30 +157,30 @@
       pointer-events: none;
     }
 
-    /* থ্রি-ডট মেনু */
-    .menu-btn {
-      position: absolute;
-      margin-top: 25mm;
-      margin-left: 20px;
-      background: rgba(255, 255, 255, 0.2);
-      border: none;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      font-size: 24px;
-      color: white;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s ease;
-      z-index: 1000;
-    }
+    /* থ্রি-ডট মেনু ডান পাশে */
+.menu-btn-right {
+  position: absolute;
+  margin-top: 0mm;
+  right: 20px;                 /* ডান দিক থেকে দূরত্ব */
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 24px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
 
-    .menu-btn:hover {
-      background: rgba(255, 255, 255, 0.3);
-      transform: scale(1.1);
-    }
+.menu-btn-right:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
 
     .menu-overlay {
       position: fixed;
@@ -286,26 +286,26 @@
   </style>
 </head>
 <body>
-  <!-- থ্রি-ডট মেনু বাটন -->
-  <button class="menu-btn" id="menuBtn">⋯</button>
+  <!-- থ্রি-ডট মেনু বাটন ডান পাশে -->
+<button class="menu-btn-right" id="menuBtn">⋯</button>
 
   <!-- মেনু ওভারলে -->
   <div class="menu-overlay" id="menuOverlay"></div>
 
   <!-- মেনু উইন্ডো -->
   <div class="menu-window" id="menuWindow">
-    <h2>কার্ড সেটিংস</h2>
+    <h2>Card Setting</h2>
     
     <div class="selection-info" id="selectionInfo">
-      কার্ডে ক্লিক করে সিলেক্ট করুন
+      Click on a card to select ✅
     </div>
     
-    <button class="menu-btn-simple" id="startSelectionBtn">কার্ড সিলেক্ট শুরু করুন</button>
-    <button class="menu-btn-simple" id="swapBtn" disabled>কার্ড পজিশন পরিবর্তন করুন</button>
-    <button class="menu-btn-simple" id="resetBtn">ডিফল্ট পজিশনে রিসেট করুন</button>
+    <button class="menu-btn-simple" id="startSelectionBtn">Card Select</button>
+    <button class="menu-btn-simple" id="swapBtn" disabled> Card Position Change</button>
+    <button class="menu-btn-simple" id="resetBtn">Reset</button>
     
     <div style="margin-top: 20px; text-align: center; color: #666; font-size: 0.9rem;">
-      সিলেক্ট করা কার্ডগুলির পজিশন স্বয়ংক্রিয়ভাবে সংরক্ষণ হয়
+      The positions of the selected cards are saved automatically
     </div>
   </div>
 
@@ -427,26 +427,26 @@
       let selectedCards = [];
       let isSelectionMode = false;
       
-      // লোকাল স্টোরেজ থেকে কার্ডের অবস্থান লোড করুন
+      // Load card positions from local storage
       loadCardPositions();
       
-      // মেনু বাটন ক্লিক
+      // Menu button click
       menuBtn.addEventListener('click', function() {
         openMenu();
       });
       
-      // ওভারলে ক্লিক
+      // Overlay click
       menuOverlay.addEventListener('click', function() {
         closeMenu();
       });
       
-      // সিলেকশন শুরু করুন
+      // Start selection
       startSelectionBtn.addEventListener('click', function() {
         startSelectionMode();
         closeMenu();
       });
       
-      // কার্ড পজিশন পরিবর্তন করুন
+      // Swap card positions
       swapBtn.addEventListener('click', function() {
         if (selectedCards.length === 2) {
           swapCardPositions(selectedCards[0], selectedCards[1]);
@@ -455,60 +455,60 @@
         }
       });
       
-      // রিসেট করুন
+      // Reset
       resetBtn.addEventListener('click', function() {
-        if (confirm('আপনি কি নিশ্চিত যে আপনি কার্ডগুলির অবস্থান ডিফল্টে রিসেট করতে চান?')) {
+        if (confirm('Are you sure you want to reset card positions to default?')) {
           localStorage.removeItem('cardPositions');
           location.reload();
         }
         closeMenu();
       });
       
-      // মেনু খুলুন
+      // Open menu
       function openMenu() {
         menuOverlay.style.display = 'block';
         menuWindow.style.display = 'block';
         updateSelectionInfo();
       }
       
-      // মেনু বন্ধ করুন
+      // Close menu
       function closeMenu() {
         menuOverlay.style.display = 'none';
         menuWindow.style.display = 'none';
       }
       
-      // সিলেকশন মোড শুরু করার ফাংশন
+      // Start selection mode function
       function startSelectionMode() {
         isSelectionMode = true;
         cardContainer.classList.add('selection-mode');
-        selectionInfo.textContent = 'কার্ডে ক্লিক করে সিলেক্ট করুন';
+        selectionInfo.textContent = 'Click on cards to select';
         swapBtn.disabled = true;
         
-        console.log('সিলেকশন মোড শুরু হয়েছে');
+        console.log('Selection mode started');
         
-        // সব কার্ড থেকে সিলেকশন清除
+        // Clear all selections
         clearSelections();
         
-        // সরল ক্লিক ইভেন্ট যোগ করুন
+        // Add simple click events
         addSimpleClickEvents();
       }
       
-      // সিলেকশন মোড শেষ করার ফাংশন
+      // End selection mode function
       function endSelectionMode() {
         isSelectionMode = false;
         cardContainer.classList.remove('selection-mode');
-        selectionInfo.textContent = 'কার্ডে ক্লিক করে সিলেক্ট করুন';
+        selectionInfo.textContent = 'Click on cards to select';
         
-        console.log('সিলেকশন মোড শেষ হয়েছে');
+        console.log('Selection mode ended');
         
-        // সব কার্ড থেকে সিলেকশন清除
+        // Clear all selections
         clearSelections();
         
-        // ইভেন্ট লিসেনার সরান
+        // Remove event listeners
         removeClickEvents();
       }
       
-      // কার্ড সিলেক্ট清除
+      // Clear card selections
       function clearSelections() {
         selectedCards = [];
         document.querySelectorAll('.card-item').forEach(item => {
@@ -516,21 +516,21 @@
         });
       }
       
-      // সরল ক্লিক ইভেন্ট যোগ করুন
+      // Add simple click events
       function addSimpleClickEvents() {
         document.querySelectorAll('.card-item').forEach(item => {
           item.addEventListener('click', handleCardClick);
         });
       }
       
-      // ইভেন্ট লিসেনার সরান
+      // Remove event listeners
       function removeClickEvents() {
         document.querySelectorAll('.card-item').forEach(item => {
           item.removeEventListener('click', handleCardClick);
         });
       }
       
-      // কার্ড ক্লিক হ্যান্ডলার
+      // Card click handler
       function handleCardClick(event) {
         if (!isSelectionMode) return;
         
@@ -541,53 +541,53 @@
         toggleCardSelection(card);
       }
       
-      // কার্ড সিলেক্ট টগল
+      // Toggle card selection
       function toggleCardSelection(card) {
         if (!isSelectionMode) {
-          console.log('সিলেকশন মোড না থাকায় বাতিল');
+          console.log('Cancelled because not in selection mode');
           return;
         }
         
         const index = selectedCards.indexOf(card);
         
         if (index === -1) {
-          // সর্বোচ্চ ২টি কার্ড সিলেক্ট করতে দেয়া হবে
+          // Allow maximum 2 cards to be selected
           if (selectedCards.length < 2) {
             selectedCards.push(card);
             card.classList.add('selected');
-            console.log('কার্ড সিলেক্ট করা হয়েছে: ' + card.querySelector('.card-title').textContent);
+            console.log('Card selected: ' + card.querySelector('.card-title').textContent);
           } else {
-            console.log('ইতিমধ্যে ২টি কার্ড সিলেক্ট করা আছে');
-            alert('আপনি সর্বোচ্চ ২টি কার্ড সিলেক্ট করতে পারবেন। প্রথমে একটি কার্ড আনসিলেক্ট করুন।');
+            console.log('Already 2 cards are selected');
+            alert('You can select a maximum of 2 cards. Please unselect one first.');
           }
         } else {
           selectedCards.splice(index, 1);
           card.classList.remove('selected');
-          console.log('কার্ড আনসিলেক্ট করা হয়েছে: ' + card.querySelector('.card-title').textContent);
+          console.log('Card unselected: ' + card.querySelector('.card-title').textContent);
         }
         
-        // সিলেকশন তথ্য আপডেট
+        // Update selection info
         updateSelectionInfo();
       }
       
-      // সিলেকশন তথ্য আপডেট
+      // Update selection info
       function updateSelectionInfo() {
         if (selectedCards.length === 0) {
-          selectionInfo.textContent = 'কার্ডে ক্লিক করে সিলেক্ট করুন';
+          selectionInfo.textContent = 'Click on cards to select';
           swapBtn.disabled = true;
         } else if (selectedCards.length === 1) {
           const cardTitle = selectedCards[0].querySelector('.card-title').textContent.trim();
-          selectionInfo.textContent = `সিলেক্ট করা হয়েছে: ${cardTitle} - আরও একটি কার্ড সিলেক্ট করুন`;
+          selectionInfo.textContent = `Selected: ${cardTitle} - Select one more card`;
           swapBtn.disabled = true;
         } else if (selectedCards.length === 2) {
           const card1Title = selectedCards[0].querySelector('.card-title').textContent.trim();
           const card2Title = selectedCards[1].querySelector('.card-title').textContent.trim();
-          selectionInfo.textContent = `সিলেক্ট করা হয়েছে: ${card1Title} এবং ${card2Title}`;
+          selectionInfo.textContent = `Selected: ${card1Title} and ${card2Title}`;
           swapBtn.disabled = false;
         }
       }
       
-      // দুটি কার্ডের পজিশন পরিবর্তন - FIXED VERSION
+      // Swap positions of two cards - FIXED VERSION
       function swapCardPositions(card1, card2) {
         console.log('swapCardPositions function called');
         
@@ -607,9 +607,9 @@
           return;
         }
         
-        // কার্ডগুলির মধ্যে পজিশন পরিবর্তন
+        // Swap positions between cards
         if (index1 < index2) {
-          // card1 আগে, card2 পরে
+          // card1 before, card2 after
           if (index2 + 1 < allCards.length) {
             cardContainer.insertBefore(card2, card1);
             cardContainer.insertBefore(card1, allCards[index2 + 1]);
@@ -618,7 +618,7 @@
             cardContainer.appendChild(card1);
           }
         } else {
-          // card2 আগে, card1 পরে
+          // card2 before, card1 after
           if (index1 + 1 < allCards.length) {
             cardContainer.insertBefore(card1, card2);
             cardContainer.insertBefore(card2, allCards[index1 + 1]);
@@ -628,14 +628,14 @@
           }
         }
         
-        console.log('পজিশন পরিবর্তন সম্পন্ন');
+        console.log('Position swap completed');
         
-        // পজিশন সংরক্ষণ করুন
+        // Save positions
         saveCardPositions();
         
-        alert('কার্ড পজিশন সফলভাবে পরিবর্তন করা হয়েছে!');
+        alert('Card positions swapped successfully!');
         
-        // ভিজুয়াল কনফার্মেশনের জন্য সামান্য ডিলে
+        // Small delay for visual confirmation
         setTimeout(() => {
           cardContainer.classList.add('refreshing');
           setTimeout(() => {
@@ -644,24 +644,24 @@
         }, 10);
       }
       
-      // কার্ডের অবস্থান সংরক্ষণ করুন
+      // Save card positions
       function saveCardPositions() {
         const cardItems = Array.from(cardContainer.querySelectorAll('.card-item'));
         const positions = cardItems.map(item => item.getAttribute('data-id'));
         localStorage.setItem('cardPositions', JSON.stringify(positions));
-        console.log('পজিশন সংরক্ষণ করা হয়েছে:', positions);
+        console.log('Positions saved:', positions);
       }
       
-      // কার্ডের অবস্থান লোড করুন
+      // Load card positions
       function loadCardPositions() {
         const savedPositions = localStorage.getItem('cardPositions');
         if (savedPositions) {
           const positions = JSON.parse(savedPositions);
           const cardItems = Array.from(cardContainer.querySelectorAll('.card-item'));
           
-          console.log('লোড করা পজিশন:', positions);
+          console.log('Loaded positions:', positions);
           
-          // সঠিক ক্রমে কার্ড সাজান
+          // Arrange cards in correct order
           positions.forEach(id => {
             const card = cardItems.find(item => item.getAttribute('data-id') === id);
             if (card) {
