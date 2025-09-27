@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Meter to Feet Converter | CalcPro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-size: 400% 400%;
+            animation: gradientShift 10s ease infinite;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .converter-header {
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            padding: 30px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .converter-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            animation: shine 5s infinite linear;
+        }
+        
+        @keyframes shine {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .converter-header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .converter-header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .premium-feature {
+            background: linear-gradient(135deg, #ff8a00, #e52e71);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-left: 12px;
+            animation: pulse 2s infinite;
+            box-shadow: 0 4px 10px rgba(229, 46, 113, 0.4);
+            font-weight: 700;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 4px 10px rgba(229, 46, 113, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 6px 15px rgba(229, 46, 113, 0.6); }
+            100% { transform: scale(1); box-shadow: 0 4px 10px rgba(229, 46, 113, 0.4); }
+        }
+        
+        .converter-body {
+            padding: 35px;
+        }
+        
+        .direction-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            gap: 15px;
+        }
+        
+        .direction-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f0f0f0;
+            color: #666;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .direction-btn.active {
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            color: white;
+            box-shadow: 0 4px 10px rgba(58, 123, 213, 0.4);
+        }
+        
+        .direction-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .toggle-arrow {
+            background: linear-gradient(135deg, #ff8a00, #e52e71);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(229, 46, 113, 0.4);
+        }
+        
+        .toggle-arrow:hover {
+            transform: scale(1.1);
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 700;
+            color: #005c99;
+            font-size: 1.1rem;
+        }
+        
+        .number-input {
+            width: 100%;
+            padding: 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            background: #f9f9f9;
+        }
+        
+        .number-input:focus {
+            border-color: #3a7bd5;
+            box-shadow: 0 0 0 4px rgba(58, 123, 213, 0.2);
+            outline: none;
+            background: white;
+        }
+        
+        .convert-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(58, 123, 213, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .convert-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .convert-btn:hover::before {
+            left: 100%;
+        }
+        
+        .convert-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(58, 123, 213, 0.5);
+        }
+        
+        .convert-btn:active {
+            transform: translateY(0);
+        }
+        
+        .result-section {
+            background: linear-gradient(135deg, #ff8a00, #e52e71);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            display: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .result-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.1)"/></svg>');
+            background-size: cover;
+        }
+        
+        .result-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .conversion-result {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin: 15px 0;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .unit-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 25px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .unit-box {
+            background: rgba(255, 255, 255, 0.25);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .unit-box:hover {
+            transform: translateY(-5px);
+        }
+        
+        .unit-value {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin: 5px 0;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        
+        .unit-label {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            font-weight: 600;
+        }
+        
+        .conversion-details {
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: white;
+            font-size: 1rem;
+            opacity: 0.9;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 600px) {
+            .conversion-result {
+                font-size: 1.5rem;
+            }
+            
+            .unit-value {
+                font-size: 1.8rem;
+            }
+            
+            .converter-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .converter-body {
+                padding: 25px;
+            }
+            
+            .unit-comparison {
+                grid-template-columns: 1fr;
+            }
+            
+            .direction-toggle {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="converter-header">
+            <h1>Meter to Feet Converter <span class="premium-feature">www.tevra.in</span></h1>
+            <p>Convert length measurements between meters and feet</p>
+        </div>
+        
+        <!-- Results displayed at the bottom -->
+        <div class="result-section" id="result-section">
+            <div class="result-title">Conversion Result</div>
+            <div class="conversion-result" id="conversion-result">0 m ≈ 0 ft</div>
+            
+            <div class="unit-comparison">
+                <div class="unit-box">
+                    <div class="unit-value" id="from-value">0</div>
+                    <div class="unit-label" id="from-label">Meters</div>
+                </div>
+                <div class="unit-box">
+                    <div class="unit-value" id="to-value">0</div>
+                    <div class="unit-label" id="to-label">Feet</div>
+                </div>
+            </div>
+            
+            <div class="conversion-details">
+                <i class="fas fa-info-circle"></i> <span id="conversion-info">1 meter = 3.28084 feet</span>
+            </div>
+        </div>
+        
+        <div class="converter-body">
+            <div class="direction-toggle">
+                <button class="direction-btn active" id="meter-to-feet-btn">Meter → Feet</button>
+                <button class="toggle-arrow" id="toggle-direction">
+                    <i class="fas fa-exchange-alt"></i>
+                </button>
+                <button class="direction-btn" id="feet-to-meter-btn">Feet → Meter</button>
+            </div>
+            
+            <div class="input-group">
+                <label id="input-label" for="valueInput">Enter length in meters:</label>
+                <input type="number" id="valueInput" class="number-input" placeholder="e.g. 5.5" step="0.01" min="0">
+            </div>
+            
+            <button class="convert-btn" id="convert-btn">
+                <i class="fas fa-ruler"></i> Convert Length
+            </button>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>www.tevra.in CalcPro Premium Length Converter | &copy; 2023</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const convertBtn = document.getElementById('convert-btn');
+            const valueInput = document.getElementById('valueInput');
+            const resultSection = document.getElementById('result-section');
+            const conversionResult = document.getElementById('conversion-result');
+            const fromValue = document.getElementById('from-value');
+            const toValue = document.getElementById('to-value');
+            const fromLabel = document.getElementById('from-label');
+            const toLabel = document.getElementById('to-label');
+            const conversionInfo = document.getElementById('conversion-info');
+            const inputLabel = document.getElementById('input-label');
+            
+            const meterToFeetBtn = document.getElementById('meter-to-feet-btn');
+            const feetToMeterBtn = document.getElementById('feet-to-meter-btn');
+            const toggleDirectionBtn = document.getElementById('toggle-direction');
+            
+            let isMeterToFeet = true;
+            
+            // Set a default value
+            valueInput.value = "1.75";
+            
+            // Initially hide the result container
+            resultSection.style.display = 'none';
+            
+            // Set active button
+            function setActiveButton() {
+                if (isMeterToFeet) {
+                    meterToFeetBtn.classList.add('active');
+                    feetToMeterBtn.classList.remove('active');
+                    inputLabel.textContent = "Enter length in meters:";
+                    valueInput.placeholder = "e.g. 5.5";
+                    conversionInfo.textContent = "1 meter = 3.28084 feet";
+                } else {
+                    feetToMeterBtn.classList.add('active');
+                    meterToFeetBtn.classList.remove('active');
+                    inputLabel.textContent = "Enter length in feet:";
+                    valueInput.placeholder = "e.g. 5.7";
+                    conversionInfo.textContent = "1 foot = 0.3048 meters";
+                }
+            }
+            
+            // Toggle direction
+            toggleDirectionBtn.addEventListener('click', function() {
+                isMeterToFeet = !isMeterToFeet;
+                setActiveButton();
+                
+                // Clear result when direction changes
+                resultSection.style.display = 'none';
+            });
+            
+            // Meter to Feet button
+            meterToFeetBtn.addEventListener('click', function() {
+                if (!isMeterToFeet) {
+                    isMeterToFeet = true;
+                    setActiveButton();
+                    resultSection.style.display = 'none';
+                }
+            });
+            
+            // Feet to Meter button
+            feetToMeterBtn.addEventListener('click', function() {
+                if (isMeterToFeet) {
+                    isMeterToFeet = false;
+                    setActiveButton();
+                    resultSection.style.display = 'none';
+                }
+            });
+            
+            // Convert function
+            convertBtn.addEventListener('click', function() {
+                const value = parseFloat(valueInput.value);
+                
+                if(isNaN(value)) {
+                    alert("Please enter a valid number!");
+                    return;
+                }
+                
+                if(value < 0) {
+                    alert("Length cannot be negative!");
+                    return;
+                }
+                
+                let result;
+                
+                if (isMeterToFeet) {
+                    // Meters to Feet conversion (1 meter = 3.28084 feet)
+                    result = value * 3.28084;
+                    conversionResult.textContent = `${value} m ≈ ${result.toFixed(2)} ft`;
+                    fromValue.textContent = value;
+                    toValue.textContent = result.toFixed(2);
+                    fromLabel.textContent = "Meters";
+                    toLabel.textContent = "Feet";
+                } else {
+                    // Feet to Meters conversion (1 foot = 0.3048 meters)
+                    result = value * 0.3048;
+                    conversionResult.textContent = `${value} ft ≈ ${result.toFixed(2)} m`;
+                    fromValue.textContent = value;
+                    toValue.textContent = result.toFixed(2);
+                    fromLabel.textContent = "Feet";
+                    toLabel.textContent = "Meters";
+                }
+                
+                // Show result container with animation
+                resultSection.style.display = 'block';
+                resultSection.style.animation = 'fadeIn 0.5s ease-in-out';
+            });
+            
+            // Allow Enter key to trigger conversion
+            valueInput.addEventListener('keypress', function(e) {
+                if(e.key === 'Enter') {
+                    convertBtn.click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
