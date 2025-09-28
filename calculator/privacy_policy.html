@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy | www.tevra.in</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: #00b8e6;
+            background-size: 400% 400%;
+            animation: gradientShift 10s ease infinite;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 80px 20px 50px;
+            margin-top: -15mm;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 30px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            animation: shine 5s infinite linear;
+        }
+        
+        @keyframes shine {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .premium-feature {
+            background: linear-gradient(135deg, #ff8a00, #e52e71);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-left: 12px;
+            animation: pulse 2s infinite;
+            box-shadow: 0 4px 10px rgba(229, 46, 113, 0.4);
+            font-weight: 700;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 4px 10px rgba(229, 46, 113, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 6px 15px rgba(229, 46, 113, 0.6); }
+            100% { transform: scale(1); box-shadow: 0 4px 10px rgba(229, 46, 113, 0.4); }
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .last-updated {
+            background: linear-gradient(135deg, #ff8a00, #e52e71);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(229, 46, 113, 0.3);
+        }
+        
+        .policy-section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #f9f9f9;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid #3a7bd5;
+            transition: transform 0.3s ease;
+        }
+        
+        .policy-section:hover {
+            transform: translateY(-5px);
+        }
+        
+        .policy-section h2 {
+            color: #3a7bd5;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .policy-section h2 i {
+            color: #ff8a00;
+        }
+        
+        .policy-section p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: #555;
+        }
+        
+        .policy-section ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .policy-section li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+            color: #555;
+        }
+        
+        .highlight {
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 30px 0;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(58, 123, 213, 0.3);
+        }
+        
+        .contact-info {
+            background: #f0f8ff;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 30px;
+            border-left: 5px solid #00d2ff;
+        }
+        
+        .contact-info h3 {
+            color: #00d2ff;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .back-btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(58, 123, 213, 0.4);
+            margin-top: 20px;
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(58, 123, 213, 0.5);
+        }
+        
+        .footer {
+            text-align: center;
+            color: white;
+            font-size: 1rem;
+            opacity: 0.9;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            margin-top: 20px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 25px;
+            }
+            
+            .policy-section {
+                padding: 20px;
+            }
+            
+            .policy-section h2 {
+                font-size: 1.3rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .header p {
+                font-size: 1rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Privacy Policy <span class="premium-feature">www.tevra.in</span></h1>
+            <p>Your privacy is important to us. This policy explains how we collect, use, and protect your information.</p>
+        </div>
+        
+        <div class="content">
+            <div class="last-updated">
+                <i class="fas fa-calendar-alt"></i> Last Updated: December 1, 2023
+            </div>
+            
+            <div class="policy-section">
+                <h2><i class="fas fa-info-circle"></i> Introduction</h2>
+                <p>Welcome to www.tevra.in ("we," "our," or "us"). We are committed to protecting your privacy and ensuring you have a positive experience on our website and in using our products/services.</p>
+                <p>This Privacy Policy applies to www.tevra.in and explains how we collect, use, disclose, and safeguard your information when you visit our website or use our calculator tools.</p>
+            </div>
+            
+            <div class="policy-section">
+                <h2><i class="fas fa-database"></i> Information We Collect</h2>
+                <p>We may collect information about you in a variety of ways:</p>
+                <ul>
+                    <li><strong>Personal Data:</strong> Personally identifiable information, such as your name and email address, that you voluntarily give to us when you contact us.</li>
+                    <li><strong>Usage Data:</strong> Information automatically collected when visiting our website, including your IP address, browser type, and pages visited.</li>
+                    <li><strong>Calculator Data:</strong> Information you input into our calculator tools. This data is processed locally and not stored on our servers.</li>
+                </ul>
+            </div>
+            
+            <div class="policy-section">
+                <h2><i class="fas fa-cookie"></i> Cookies and Tracking Technologies</h2>
+                <p>We may use cookies, web beacons, tracking pixels, and other tracking technologies to help customize the Website and improve your experience.</p>
+                <p>We use cookies for:</p>
+                <ul>
+                    <li>Remembering your preferences and settings</li>
+                    <li>Analyzing site traffic and trends</li>
+                    <li>Understanding user behavior</li>
+                </ul>
+            </div>
+            
+            <div class="policy-section">
+                <h2><i class="fas fa-shield-alt"></i> How We Use Your Information</h2>
+                <p>We use the information we collect in the following ways:</p>
+                <ul>
+                    <li>To operate and maintain our website</li>
+                    <li>To improve user experience</li>
+                    <li>To respond to your comments or inquiries</li>
+                    <li>To track and analyze usage trends</li>
+                    <li>To protect against fraudulent or illegal activity</li>
+                </ul>
+            </div>
+            
+            <div class="highlight">
+                <h3><i class="fas fa-exclamation-triangle"></i> Important Note</h3>
+                <p>Our calculator tools process your data locally in your browser. We do not store or transmit your calculation data to our servers. Your privacy is our priority.</p>
+            </div>
+            
+            <div class="policy-section">
+                <h2><i class="fas fa-share-alt"></i> Disclosure of Your Information</h2>
+                <p>We do not sell, trade, or otherwise transfer to outside parties your Personally Identifiable Information except in the following circumstances:</p>
+                <ul>
+                    <li>With your consent</li>
+                    <li>To comply with legal obligations</li>
+                    <li>To protect and defend our rights or property</li>
+                    <li>With service providers who assist in our operations</li>
+                </ul>
+            </div>
+            
+            <div class="policy-section">
+                <h2><i class="fas fa-lock"></i> Security of Your Information</h2>
+                <p>We use administrative, technical, and physical security measures to help protect your personal information. While we have taken reasonable steps to secure the personal information you provide to us, please be aware that despite our efforts, no security measures are perfect or impenetrable.</p>
+            </div>
+            
+            <div class="policy-section">
+                <h2><i class="fas fa-external-link-alt"></i> Third-Party Websites</h2>
+                <p>Our website may contain links to third-party websites. We have no control over the content, policies, or practices of these websites and cannot be responsible for their privacy practices.</p>
+            </div>
+            
+            <div class="policy-section">
+                <h2><i class="fas fa-child"></i> Policy for Children</h2>
+                <p>We do not knowingly solicit information from or market to children under the age of 13. If you become aware of any data we have collected from children under age 13, please contact us.</p>
+            </div>
+            
+            <div class="policy-section">
+                <h2><i class="fas fa-edit"></i> Changes to This Privacy Policy</h2>
+                <p>We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date.</p>
+            </div>
+            
+            <div class="contact-info">
+                <h3><i class="fas fa-envelope"></i> Contact Us</h3>
+                <p>If you have questions or comments about this Privacy Policy, please contact us at:</p>
+                <p>Email: privacy@tevra.in</p>
+                <p>Website: www.tevra.in</p>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="index.html" class="back-btn">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>www.tevra.in Premium Privacy Policy | &copy; 2023</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add fade-in animation to policy sections
+            const sections = document.querySelectorAll('.policy-section');
+            sections.forEach((section, index) => {
+                section.style.animation = `fadeIn 0.5s ease-in-out ${index * 0.1}s both`;
+            });
+        });
+    </script>
+</body>
+</html>
