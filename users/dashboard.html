@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Wallet</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.css" rel="stylesheet">
+    <style>
+    body {
+        background: #007acc;
+        /* উপরের রঙগুলো আপনার পছন্দমতো পরিবর্তন করতে পারবেন */
+        min-height: 100vh; 
+        margin: 0;
+    }
+</style>
+
+
+<style>
+       /* Wallet Container Styles */
+        .wallet-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        /* Wallet Header */
+        .wallet-header {
+            background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .wallet-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        }
+        
+        .balance-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .wallet-logo {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .wallet-balance {
+            font-size: 24px;
+            font-weight: bold;
+            opacity: 0.8;
+        }
+        
+        .wallet-amount {
+            font-size: 14px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .wallet-currency {
+            font-size: 16px;
+            opacity: 0.8;
+        }
+        
+        /* Wallet Actions */
+.wallet-actions {
+    display: flex;
+    justify-content: space-between;
+    margin: 25px 0 35px;
+    gap: 15px;
+}
+
+.wallet-btn {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    text-decoration: none;
+}
+
+.send-btn {
+    background-color: #6A89CC;
+    color: white;
+}
+
+.receive-btn {
+    background-color: #78E08F;
+    color: white;
+}
+
+.buy-btn {
+    background-color: #F8C471;
+    color: white;
+}
+
+.sell-btn {
+    background-color: #E55039;
+    color: white;
+}
+
+.wallet-btn i {
+    margin-right: 8px;
+    font-size: 18px;
+}
+
+.wallet-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.wallet-actions {
+    gap: 10px; /* গ্যাপ কমিয়ে দিন */
+}
+
+.wallet-btn {
+    padding: 12px 8px; /* প্যাডিং কমিয়ে দিন */
+    font-size: 14px; /* ফন্ট সাইজ ছোট করুন */
+    white-space: nowrap; /* টেক্সট যেন লাইন ব্রেক না হয় */
+}
+        
+        /* Transaction History */
+        .history-section {
+            margin-top: 30px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+            color: #FF6B6B;
+        }
+        
+        /* App Cards */
+        .apps-section {
+            margin-top: 40px;
+        }
+        
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .app-card {
+            background-size: cover;
+            background-position: center;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+            height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;       /* আন্ডারলাইন বন্ধ */
+        }
+        
+        .app-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0.2));
+            z-index: 1;
+        }
+        
+        .app-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .app-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            color: white;
+            font-size: 20px;
+            position: relative;
+            z-index: 2;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .app-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: white;
+            margin-top: 5px;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Transaction List */
+        .transaction-list {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .transaction-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+        
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: #FF6B6B;
+        }
+        
+        .transaction-details {
+            flex: 1;
+        }
+        
+        .transaction-title {
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+        
+        .transaction-date {
+            font-size: 12px;
+            color: #888;
+        }
+        
+        .transaction-amount {
+            font-weight: 600;
+        }
+        
+        .positive {
+            color: #78E08F;
+        }
+        
+        .negative {
+            color: #E55039;
+        }
+        
+        
+    </style>
+
+ <style>
+    /* বেসিক স্টাইল রিসেট */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    /* মূল স্লাইড স্টাইল */
+    .slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 1s ease-in-out;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .slide.active {
+        opacity: 1;
+    }
+    
+    /* কার্ড স্টাইল */
+    .history-section {
+        position: relative;
+        overflow: hidden;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(5px);
+        margin: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* ব্যাকগ্রাউন্ড ইমেজ স্টাইল */
+    .card-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        opacity: 0.3;
+        z-index: 0;
+        border-radius: 12px;
+    }
+    
+    /* সেকশন টাইটেল */
+    .section-title {
+        position: relative;
+        z-index: 1;
+        padding: 15px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #ffffff;
+    }
+    
+    /* ইমেজ স্লাইডার কন্টেইনার */
+    .image-slider {
+        position: relative;
+        z-index: 1;
+        height: 180px;
+        margin: 0 15px 15px 15px;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    
+    /* ফন্ট অ্যাওয়েসম আইকন স্টাইল */
+    .fas {
+        margin-right: 10px;
+        color: #FF6B6B;
+    }
+        
+        
+    </style>
+</head>
+<body>
+    <div class="wallet-container">
+        <!-- Wallet Header -->
+        <div class="wallet-header">
+            <div class="balance-header">
+                <img src="logo.svg" alt="Wallet Logo" class="wallet-logo">
+                <div class="wallet-balance">Cryptonix (CRX)</div>
+            </div>
+            <div class="wallet-amount">
+                <span id="balanceAmount">0.00</span>
+                <span class="wallet-currency">CRX</span>
+            </div>
+            <div class="wallet-info">
+                <small>Available Balance</small>
+                <small id="lastUpdated" data-time-updated>Last updated: Just now</small>
+            </div>
+        </div>
+        
+        <!-- Wallet Actions -->
+        <div class="wallet-actions">
+    <a href="transfer.html" class="wallet-btn send-btn">
+        <i class="fas fa-paper-plane"></i> Send
+    </a>
+    <a href="QRcode.html" class="wallet-btn receive-btn">
+        <i class="fas fa-wallet"></i> Receive
+    </a>
+    <a href="buy.html" class="wallet-btn buy-btn">
+        <i class="fas fa-shopping-cart"></i> Buy
+    </a>
+    <a href="sell.html" class="wallet-btn sell-btn">
+        <i class="fas fa-money-bill-wave"></i> Sell
+    </a>
+</div>
+        
+        <!-- Transaction History -->
+        <div class="history-section">
+            <div class="section-title">
+                <i class="fas fa-exchange-alt"></i> Recent Transactions
+            </div>
+            
+            <div class="transaction-list" id="transactionsList">
+                <div class="loading-spinner"></div>
+            </div>
+        </div>
+        
+        <!-- Apps Section -->
+        <div class="apps-section">
+            <div class="section-title">
+                <i class="fas fa-th-large"></i> Quick Access
+            </div>
+            
+            <div class="apps-grid">
+                <a href="#" class="app-card" style="background-image: url('https://via.placeholder.com/300/FF6B6B/ffffff?text=Mobile')">
+                    <div class="app-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <div class="app-name">Mobile Topup</div>
+                </a>
+                
+                <a href="#" class="app-card" style="background-image: url('https://via.placeholder.com/300/78E08F/ffffff?text=Electricity')">
+                    <div class="app-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div class="app-name">Electricity</div>
+                </a>
+                
+                <a href="#" class="app-card" style="background-image: url('https://via.placeholder.com/300/6A89CC/ffffff?text=TV')">
+                    <div class="app-icon">
+                        <i class="fas fa-tv"></i>
+                    </div>
+                    <div class="app-name">TV Bill</div>
+                </a>
+                
+                <a href="#" class="app-card" style="background-image: url('https://via.placeholder.com/300/F8C471/ffffff?text=Games')">
+                    <div class="app-icon">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <div class="app-name">Games</div>
+                </a>
+                
+                <a href="#" class="app-card" style="background-image: url('https://via.placeholder.com/300/E55039/ffffff?text=Gift')">
+                    <div class="app-icon">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <div class="app-name">Gift Cards</div>
+                </a>
+                
+                <a href="#" class="app-card" style="background-image: url('https://via.placeholder.com/300/FF8E53/ffffff?text=More')">
+                    <div class="app-icon">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="app-name">More</div>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script type="module" src="js/wallet.js"></script>
+    <script type="module" src="js/ui.js"></script>
+</body>
+</html>
