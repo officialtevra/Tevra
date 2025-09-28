@@ -1,0 +1,32 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Coin Base with Rich Gold Gradient -->
+  <circle cx="100" cy="100" r="90" fill="url(#coinGradient)" stroke="#FFD700" stroke-width="4"/>
+  
+  <!-- Inner Circle -->
+  <circle cx="100" cy="100" r="70" fill="#3d2e01" filter="url(#innerShadow)"/>
+  
+  <!-- Decorative Leaves - Improved Visibility -->
+  <path d="M60 60 Q40 80 60 100 Q80 120 60 140" fill="none" stroke="#FFD700" stroke-width="2" opacity="0.7"/>
+  <path d="M140 60 Q160 80 140 100 Q120 120 140 140" fill="none" stroke="#FFD700" stroke-width="2" opacity="0.7"/>
+  
+  <!-- Crypto Icon (Hexagon with "CRX") - Moved Up -->
+  <path d="M100 45 L125 60 L125 90 L100 105 L75 90 L75 60 Z" fill="none" stroke="#FFDF00" stroke-width="3"/>
+  <text x="100" y="85" font-family="Arial" font-size="24" font-weight="bold" fill="#FFDF00" text-anchor="middle">CRX</text>
+  
+  <!-- Main Text: Better Spacing -->
+  <text x="100" y="125" font-family="Arial" font-size="18" font-weight="bold" fill="#FFE44D" text-anchor="middle">CRYPTONIX</text>
+  <text x="100" y="145" font-family="Arial" font-size="12" fill="#D4AF37" text-anchor="middle">BLOCKCHAIN</text>
+  
+  <!-- Gradient & Effects -->
+  <defs>
+    <linearGradient id="coinGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D4AF37"/>
+      <stop offset="50%" stop-color="#FFD700"/>
+      <stop offset="100%" stop-color="#CFB53B"/>
+    </linearGradient>
+    
+    <filter id="innerShadow">
+      <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#FFD700" flood-opacity="0.7"/>
+    </filter>
+  </defs>
+</svg>

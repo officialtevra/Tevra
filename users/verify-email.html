@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify Email - Digital Wallet</title>
+  <link rel="stylesheet" href="css/transaction.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <a href="index.html" class="back-button">←</a>
+      <h1>Verify Your Email</h1>
+    </header>
+    <main>
+      <div class="verification-message">
+        <p>We've sent a verification link to your email address.</p>
+        <p>Please check your inbox and click the link to verify your account.</p>
+        <p>Didn't receive the email? <a href="#" id="resendLink">Resend verification email</a></p>
+      </div>
+      <button id="continueBtn" class="btn" disabled>Continue to Login</button>
+    </main>
+  </div>
+  <script type="module">
+    import { auth, sendEmailVerification } from './js/firebase.js';
+    
+    document.getElementById('resendLink').addEventListener('click', async (e) => {
+      e.preventDefault();
+      try {
+        if (auth.currentUser) {
+          await sendEmailVerification(auth.currentUser);
+          alert('Verification email resent successfully!');
+        } else {
+          alert('Session expired. Please login again.');
+          window.location.href = 'login.html';
+        }
+      } catch (error) {
+        console.error('Resend error:', error);
+        alert('Failed to resend verification email. Please try again.');
+      }
+    });
+    
+    // Check verification status periodically
+    const checkVerification = setInterval(async () => {
+      try {
+        await auth.currentUser?.reload();
+        if (auth.currentUser?.emailVerified) {
+          clearInterval(checkVerification);
+          document.getElementById('continueBtn').disabled = false;
+          document.getElementById('continueBtn').textContent = 'Email Verified - Continue';
+        }
+      } catch (error) {
+        console.error('Verification check error:', error);
+      }
+    }, 5000);
+    
+    document.getElementById('continueBtn').addEventListener('click', () => {
+      window.location.href = 'login.html';
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile - Digital Wallet</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #007acc, #005c99);
+      color: #333;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .profile-container {
+      max-width: 500px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+    }
+    
+    .profile-header {
+      background: linear-gradient(135deg, #005c99, #003d66);
+      color: white;
+      padding: 25px 20px;
+      text-align: center;
+      position: relative;
+    }
+    
+    .back-button {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: white;
+      text-decoration: none;
+      font-size: 1.5rem;
+      font-weight: bold;
+      width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.15);
+      border: none;
+      cursor: pointer;
+    }
+    
+    .back-button:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-50%) scale(1.1);
+    }
+    
+    .profile-header h1 {
+      font-size: 1.5rem;
+      margin: 0;
+      font-weight: 600;
+    }
+    
+    .profile-main {
+      padding: 30px 25px;
+    }
+    
+    .profile-card {
+      margin-bottom: 20px;
+    }
+    
+    .profile-picture-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 25px;
+    }
+    
+    .profile-picture {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #007acc;
+      cursor: pointer;
+      position: relative;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+    
+    .profile-picture-edit {
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      background: rgba(0, 122, 204, 0.9);
+      color: white;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+    
+    .profile-picture-edit:hover {
+      background: rgba(0, 92, 153, 0.9);
+      transform: scale(1.1);
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    #imageUpload {
+      display: none;
+    }
+    
+    .profile-section {
+      margin-bottom: 25px;
+    }
+    
+    .profile-field {
+      margin-bottom: 15px;
+      padding: 12px 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border-left: 4px solid #007acc;
+    }
+    
+    .field-label {
+      font-weight: 600;
+      color: #005c99;
+      margin-right: 10px;
+    }
+    
+    .field-value {
+      color: #333;
+    }
+    
+    .section-title {
+      color: #005c99;
+      margin-bottom: 15px;
+      font-size: 1.2rem;
+      border-bottom: 2px solid #e1f0ff;
+      padding-bottom: 8px;
+    }
+    
+    .security-section {
+      margin-bottom: 25px;
+    }
+    
+    .btn {
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 8px 0;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border: none;
+      width: 100%;
+      text-align: center;
+      display: block;
+    }
+    
+    .btn.secondary {
+      background: #e1f0ff;
+      color: #007acc;
+      border: 1px solid #b3d9ff;
+    }
+    
+    .btn.secondary:hover {
+      background: #d1e7ff;
+      border-color: #007acc;
+      transform: translateY(-2px);
+      box-shadow: 0 3px 10px rgba(0, 122, 204, 0.2);
+    }
+    
+    .logout-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      margin-top: 20px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .logout-btn:hover {
+      background: linear-gradient(135deg, #c0392b, #a93226);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #005c99;
+    }
+    
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: #f8f9fa;
+    }
+    
+    .form-group input:focus, .form-group select:focus {
+      border-color: #007acc;
+      box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.2);
+      outline: none;
+      background: white;
+    }
+    
+    .form-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 25px;
+      gap: 10px;
+    }
+    
+    .form-actions .btn {
+      width: 48%;
+      margin: 0;
+    }
+    
+    /* Responsive Styles */
+    @media (max-width: 480px) {
+      body {
+        padding: 15px;
+      }
+      
+      .profile-container {
+        border-radius: 12px;
+      }
+      
+      .profile-header {
+        padding: 20px 15px;
+      }
+      
+      .profile-header h1 {
+        font-size: 1.3rem;
+      }
+      
+      .profile-main {
+        padding: 25px 20px;
+      }
+      
+      .form-actions {
+        flex-direction: column;
+      }
+      
+      .form-actions .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="profile-container">
+    <header class="profile-header">
+      <button class="back-button" onclick="window.history.back()">←</button>
+      <h1>User Profile</h1>
+    </header>
+    
+    <main class="profile-main">
+      <div class="profile-card">
+        <div class="profile-picture-container">
+          <div style="position: relative;">
+            <img id="profilePicture" src="profile.png" alt="Profile Picture" class="profile-picture">
+            <div class="profile-picture-edit" onclick="document.getElementById('imageUpload').click()">✏️</div>
+          </div>
+          <input type="file" id="imageUpload" accept="image/*">
+        </div>
+        
+        <div class="profile-section" id="profileInfo">
+          <!-- Profile data will be loaded here -->
+        </div>
+        
+        <div class="security-section">
+          <h3 class="section-title">Security Settings</h3>
+          <button id="changeMpinBtn" class="btn secondary">Change MPIN</button>
+          <button id="editProfileBtn" class="btn secondary">Edit Profile</button>
+        </div>
+        
+        <div id="mpinChangeForm" class="hidden">
+          <h3 class="section-title">Change MPIN</h3>
+          <form id="mpinForm">
+            <div class="form-group">
+              <label for="currentMpin">Current 6-digit MPIN</label>
+              <input type="password" id="currentMpin" maxlength="6" required>
+            </div>
+            <div class="form-group">
+              <label for="newMpin">New 6-digit MPIN</label>
+              <input type="password" id="newMpin" maxlength="6" required>
+            </div>
+            <button type="submit" class="btn">Update MPIN</button>
+          </form>
+        </div>
+        
+        <div id="editProfileForm" class="hidden">
+          <h3 class="section-title">Edit Profile</h3>
+          <form id="profileForm">
+            <div class="form-group">
+              <label for="editName">Full Name</label>
+              <input type="text" id="editName" required>
+            </div>
+            <div class="form-group">
+              <label for="editMobile">Mobile Number</label>
+              <input type="tel" id="editMobile" required>
+            </div>
+            <div class="form-group">
+              <label for="editDob">Date of Birth</label>
+              <input type="date" id="editDob" required>
+            </div>
+            <div class="form-group">
+              <label for="editGender">Gender</label>
+              <select id="editGender" required>
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+                <option value="prefer-not-to-say">Prefer not to say</option>
+              </select>
+            </div>
+            <div class="form-actions">
+              <button type="button" id="cancelEdit" class="btn secondary">Cancel</button>
+              <button type="submit" class="btn">Save Changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+      <button id="logoutBtn" class="logout-btn">Log Out</button>
+    </main>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+  
+  <script>
+    // Sample profile data - in a real app, this would come from Firebase
+    document.addEventListener('DOMContentLoaded', function() {
+      // Sample user data
+      const userData = {
+        name: "John Doe",
+        email: "john.doe@example.com",
+        mobile: "+1 234 567 8900",
+        dob: "1990-01-15",
+        gender: "male",
+        joinDate: "2023-01-15"
+      };
+      
+      // Populate profile info
+      const profileInfo = document.getElementById('profileInfo');
+      profileInfo.innerHTML = `
+        <div class="profile-field">
+          <span class="field-label">Full Name:</span>
+          <span class="field-value">${userData.name}</span>
+        </div>
+        <div class="profile-field">
+          <span class="field-label">Email:</span>
+          <span class="field-value">${userData.email}</span>
+        </div>
+        <div class="profile-field">
+          <span class="field-label">Mobile:</span>
+          <span class="field-value">${userData.mobile}</span>
+        </div>
+        <div class="profile-field">
+          <span class="field-label">Date of Birth:</span>
+          <span class="field-value">${new Date(userData.dob).toLocaleDateString()}</span>
+        </div>
+        <div class="profile-field">
+          <span class="field-label">Gender:</span>
+          <span class="field-value">${userData.gender.charAt(0).toUpperCase() + userData.gender.slice(1)}</span>
+        </div>
+        <div class="profile-field">
+          <span class="field-label">Member Since:</span>
+          <span class="field-value">${new Date(userData.joinDate).toLocaleDateString()}</span>
+        </div>
+      `;
+      
+      // Form toggle functionality
+      const changeMpinBtn = document.getElementById('changeMpinBtn');
+      const editProfileBtn = document.getElementById('editProfileBtn');
+      const mpinChangeForm = document.getElementById('mpinChangeForm');
+      const editProfileForm = document.getElementById('editProfileForm');
+      const cancelEdit = document.getElementById('cancelEdit');
+      const profileInfoSection = document.getElementById('profileInfo');
+      const securitySection = document.querySelector('.security-section');
+      
+      changeMpinBtn.addEventListener('click', function() {
+        mpinChangeForm.classList.remove('hidden');
+        editProfileForm.classList.add('hidden');
+        profileInfoSection.classList.add('hidden');
+        securitySection.classList.add('hidden');
+      });
+      
+      editProfileBtn.addEventListener('click', function() {
+        editProfileForm.classList.remove('hidden');
+        mpinChangeForm.classList.add('hidden');
+        profileInfoSection.classList.add('hidden');
+        securitySection.classList.add('hidden');
+        
+        // Populate form with current data
+        document.getElementById('editName').value = userData.name;
+        document.getElementById('editMobile').value = userData.mobile;
+        document.getElementById('editDob').value = userData.dob;
+        document.getElementById('editGender').value = userData.gender;
+      });
+      
+      cancelEdit.addEventListener('click', function() {
+        editProfileForm.classList.add('hidden');
+        mpinChangeForm.classList.add('hidden');
+        profileInfoSection.classList.remove('hidden');
+        securitySection.classList.remove('hidden');
+      });
+      
+      // Form submissions
+      document.getElementById('mpinForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('MPIN changed successfully!');
+        this.reset();
+        mpinChangeForm.classList.add('hidden');
+        profileInfoSection.classList.remove('hidden');
+        securitySection.classList.remove('hidden');
+      });
+      
+      document.getElementById('profileForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Profile updated successfully!');
+        editProfileForm.classList.add('hidden');
+        profileInfoSection.classList.remove('hidden');
+        securitySection.classList.remove('hidden');
+      });
+      
+      // Logout functionality
+      document.getElementById('logoutBtn').addEventListener('click', function() {
+        if (confirm('Are you sure you want to log out?')) {
+          alert('Logged out successfully!');
+          // In a real app, you would redirect to login page
+          // window.location.href = 'login.html';
+        }
+      });
+      
+      // Profile picture upload
+      document.getElementById('imageUpload').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            document.getElementById('profilePicture').src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
