@@ -3,497 +3,470 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Password Reset - Digital Wallet</title>
-  <!-- Include Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <title>Digital Wallet Chat</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    :root {
+      --primary-color: #128C7E;
+      --secondary-color: #25D366;
+      --bg-color: #e5ddd5;
+      --message-bg: #ffffff;
+      --own-message-bg: #DCF8C6;
+      --text-color: #262626;
+      --time-color: #666;
+      --header-height: 60px;
+      --input-height: 70px;
+    }
+    
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
     }
     
     body {
-      background: linear-gradient(135deg, #007acc, #005c99);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
-    
-    .container {
-      background: white;
-      border-radius: 15px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-      width: 100%;
-      max-width: 450px;
+      background-color: var(--bg-color);
+      height: 100vh;
       overflow: hidden;
     }
     
-    header {
-      background: linear-gradient(135deg, #005c99, #003d66);
-      color: white;
-      padding: 25px 20px;
-      text-align: center;
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      max-width: 100%;
+      margin: 0 auto;
+      background-color: white;
       position: relative;
+    }
+    
+    /* Header Styles */
+    .header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 0 15px;
+      height: var(--header-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .header-left {
+      display: flex;
+      align-items: center;
     }
     
     .back-button {
-      position: absolute;
-      left: 20px;
-      top: 50%;
-      transform: translateY(-50%);
       color: white;
       text-decoration: none;
-      font-size: 1.5rem;
-      font-weight: bold;
-      width: 35px;
-      height: 35px;
+      font-size: 20px;
+      margin-right: 15px;
+    }
+    
+    .user-info {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      transition: all 0.3s ease;
-      background: rgba(255, 255, 255, 0.15);
+      flex-direction: column;
     }
     
-    .back-button:hover {
-      background: rgba(255, 255, 255, 0.25);
-      transform: translateY(-50%) scale(1.1);
+    .user-name {
+      font-weight: 500;
+      font-size: 16px;
     }
     
-    h1 {
-      font-size: 1.5rem;
-      margin: 0;
-      font-weight: 600;
+    .user-status {
+      font-size: 12px;
+      opacity: 0.8;
     }
     
-    main {
-      padding: 30px 25px;
+    .header-actions {
+      display: flex;
+      gap: 15px;
     }
     
-    .form-group {
-      margin-bottom: 20px;
-    }
-    
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 600;
-      color: #005c99;
-    }
-    
-    input {
-      width: 100%;
-      padding: 14px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      font-size: 1rem;
-      transition: all 0.3s ease;
-      background: #f8f9fa;
-    }
-    
-    input:focus {
-      border-color: #007acc;
-      box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.2);
-      outline: none;
-      background: white;
-    }
-    
-    .btn {
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, #007acc, #005c99);
+    .header-action-btn {
       color: white;
+      background: none;
       border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 600;
+      font-size: 18px;
       cursor: pointer;
-      transition: all 0.3s ease;
     }
     
-    .btn:hover {
-      background: linear-gradient(135deg, #005c99, #004d80);
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0, 92, 153, 0.3);
-    }
     
-    .btn:disabled {
-      background: #ccc;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
     
-    p {
-      text-align: center;
-      margin-top: 20px;
-      color: #666;
-    }
-    
-    a {
-      color: #007acc;
-      text-decoration: none;
-      font-weight: 600;
-      transition: all 0.3s ease;
-    }
-    
-    a:hover {
-      color: #005c99;
-      text-decoration: underline;
+    /* Chat Container */
+    .chat-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+      background-image: url('https://web.whatsapp.com/img/bg-chat-tile-light_a4be512e7195b6b733d9110b408f075d.png');
+      background-repeat: repeat;
+      display: flex;
+      flex-direction: column;
     }
     
     .message {
-      padding: 12px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      text-align: center;
-      display: none;
-    }
-    
-    .success {
-      background: #e6f7ee;
-      color: #2ecc71;
-      border: 1px solid #2ecc71;
-    }
-    
-    .error {
-      background: #fee;
-      color: #e74c3c;
-      border: 1px solid #e74c3c;
-    }
-    
-    .reset-steps {
-      display: none;
-    }
-    
-    .step-indicator {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 25px;
+      max-width: 70%;
+      margin-bottom: 10px;
+      padding: 8px 12px;
+      border-radius: 7.5px;
       position: relative;
+      word-wrap: break-word;
+      animation: fadeIn 0.3s ease;
     }
     
-    .step-indicator::before {
-      content: '';
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .incoming-message {
+      background-color: var(--message-bg);
+      align-self: flex-start;
+      box-shadow: 0 1px 0.5px rgba(0,0,0,0.13);
+      margin-right: auto;
+    }
+    
+    .outgoing-message {
+      background-color: var(--own-message-bg);
+      align-self: flex-end;
+      margin-left: auto;
+    }
+    
+    .message-content {
+      font-size: 15px;
+      line-height: 1.4;
+      margin-bottom: 5px;
+      white-space: pre-wrap;
+    }
+    
+    .message-time {
+      font-size: 11px;
+      color: var(--time-color);
+      text-align: right;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 3px;
+    }
+    
+    /* Input Container */
+    .input-container {
+      background-color: #f0f0f0;
+      padding: 10px 15px;
+      display: flex;
+      align-items: center;
+      height: var(--input-height);
+      position: sticky;
+      bottom: 0;
+    }
+    
+    .input-actions {
+      display: flex;
+      gap: 10px;
+      margin-right: 10px;
+    }
+    
+    .input-action-btn {
+      background: none;
+      border: none;
+      color: var(--time-color);
+      font-size: 20px;
+      cursor: pointer;
+    }
+    
+    .message-input {
+      flex: 1;
+      border: none;
+      border-radius: 20px;
+      padding: 10px 15px;
+      font-size: 15px;
+      outline: none;
+      resize: none;
+      max-height: 100px;
+      background-color: white;
+    }
+    
+    .send-btn {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      margin-left: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .send-btn:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+    
+    /* User Avatar Styles */
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      overflow: hidden;
+      margin-right: 10px;
+      background-color: #128C7E;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+    }
+    
+    .avatar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    /* Default Icon Style */
+    .user-avatar.default-icon::after {
+      content: "\f086";
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+      font-size: 18px;
+    }
+    
+    /* Image Message Styles */
+    .message-image {
+      position: relative;
+      margin-bottom: 5px;
+      max-width: 100%;
+    }
+    
+    .uploaded-image {
+      max-width: 100%;
+      max-height: 300px;
+      border-radius: 8px;
+      display: block;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .image-actions {
       position: absolute;
-      top: 50%;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: #ddd;
-      transform: translateY(-50%);
-      z-index: 1;
+      bottom: 10px;
+      right: 10px;
+      display: flex;
+      gap: 5px;
     }
     
-    .step {
+    .action-btn {
+      background: rgba(0,0,0,0.6);
+      color: white;
+      border: none;
+      border-radius: 50%;
       width: 30px;
       height: 30px;
-      border-radius: 50%;
-      background: white;
-      border: 2px solid #ddd;
       display: flex;
-      justify-content: center;
       align-items: center;
-      font-weight: bold;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .action-btn:hover {
+      background: rgba(0,0,0,0.8);
+      transform: scale(1.1);
+    }
+    
+    /* Dropdown Menu Styles */
+    .dropdown {
       position: relative;
-      z-index: 2;
-      font-size: 0.9rem;
+      display: inline-block;
     }
     
-    .step.active {
-      background: #007acc;
-      color: white;
-      border-color: #007acc;
-    }
-    
-    .step.completed {
-      background: #2ecc71;
-      color: white;
-      border-color: #2ecc71;
-    }
-    
-    .loader {
-      border: 3px solid #f3f3f3;
-      border-radius: 50%;
-      border-top: 3px solid #007acc;
-      width: 20px;
-      height: 20px;
-      animation: spin 1s linear infinite;
-      margin: 0 auto;
+    .dropdown-content {
       display: none;
+      position: absolute;
+      right: 0;
+      background-color: white;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      z-index: 1000;
+      border-radius: 5px;
     }
     
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+    .dropdown-content a {
+      color: #333;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+      font-size: 14px;
+    }
+    
+    .dropdown-content a:hover {
+      background-color: #f5f5f5;
+    }
+    
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+    
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.4);
+    }
+    
+    .modal-content {
+      background-color: white;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 500px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .close-modal {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    
+    .close-modal:hover {
+      color: black;
+    }
+    
+    #searchInput {
+      width: 100%;
+      padding: 12px 15px;
+      margin: 15px 0;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      font-size: 16px;
+    }
+    
+    .search-results {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    
+    .search-result-item {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+    }
+    
+    .search-result-item:hover {
+      background-color: #f5f5f5;
+    }
+    
+    .highlight {
+      background-color: #ffeb3b;
+      padding: 0 2px;
+      border-radius: 3px;
+    }
+    
+    .highlight-message {
+      animation: highlight 2s ease;
+    }
+    
+    @keyframes highlight {
+      0% { background-color: rgba(255, 235, 59, 0.5); }
+      100% { background-color: transparent; }
+    }
+    
+    .no-results {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 600px) {
+      .message {
+        max-width: 85%;
+      }
+      
+      .uploaded-image {
+        max-height: 200px;
+      }
+      
+      .modal-content {
+        width: 90%;
+        margin: 20% auto;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <a href="login.html" class="back-button">←</a>
-      <h1>Reset Your Password</h1>
-    </header>
-    
-    <main>
-      <div id="message" class="message"></div>
-      
-      <div class="step-indicator">
-        <div class="step completed">1</div>
-        <div class="step active">2</div>
-        <div class="step">3</div>
-      </div>
-      
-      <div id="step1" class="reset-steps">
-        <p>Enter your email address and we'll send you a link to reset your password.</p>
-        <form id="resetRequestForm">
-          <div class="form-group">
-            <label for="email">Email Address</label>
-            <input type="email" id="email" required>
-          </div>
-          <button type="submit" class="btn" id="submitBtn">Send Reset Link</button>
-          <div class="loader" id="loader1"></div>
-        </form>
-      </div>
-      
-      <div id="step2" class="reset-steps">
-        <p>Check your email for a reset link. If you don't see it, check your spam folder.</p>
-        <div class="form-group">
-          <label for="resetCode">Reset Code (Optional)</label>
-          <input type="text" id="resetCode" placeholder="Enter code from email (if applicable)">
+  <div class="app-container">
+    <!-- Header Section -->
+    <div class="header">
+      <div class="header-left">
+        <a href="index.html" class="back-button"><i class="fas fa-arrow-left"></i></a>
+        <div class="user-avatar">
+          <img src="profile.png" alt="Community Chat" class="avatar-img">
         </div>
-        <button type="button" class="btn" id="verifyCodeBtn">Verify Code</button>
-        <div class="loader" id="loader2"></div>
-        <p style="margin-top: 15px;">Didn't receive the email? <a href="#" id="resendLink">Resend</a></p>
+        <div class="user-info">
+          <div class="user-name">Cryptonix Chat</div>
+          <div class="user-status">Online</div>
+        </div>
       </div>
-      
-      <div id="step3" class="reset-steps">
-        <p>Please enter your new password below.</p>
-        <form id="resetPasswordForm">
-          <div class="form-group">
-            <label for="newPassword">New Password (8-12 characters)</label>
-            <input type="password" id="newPassword" minlength="8" maxlength="12" required>
+      <div class="header-actions">
+        <button class="header-action-btn" id="searchBtn"><i class="fas fa-search"></i></button>
+        <div class="dropdown">
+          <button class="header-action-btn" id="menuBtn"><i class="fas fa-ellipsis-vertical"></i></button>
+          <div class="dropdown-content">
+            <a href="#" id="viewProfile">View Profile</a>
+            <a href="#" id="clearChat">Clear Chat</a>
+            <a href="#" id="logoutBtn">Logout</a>
           </div>
-          <div class="form-group">
-            <label for="confirmPassword">Confirm New Password</label>
-            <input type="password" id="confirmPassword" required>
-          </div>
-          <button type="submit" class="btn" id="resetPasswordBtn">Reset Password</button>
-          <div class="loader" id="loader3"></div>
-        </form>
+        </div>
       </div>
-      
-      <p>Remember your password? <a href="login.html">Back to Login</a></p>
-    </main>
+    </div>
+    
+    
+    
+    <!-- Chat Container -->
+    <div class="chat-container" id="chatContainer">
+      <!-- Messages will load here -->
+    </div>
+    
+    <!-- Input Section -->
+    <div class="input-container">
+      <div class="input-actions">
+        <button class="input-action-btn"><i class="fas fa-paperclip"></i></button>
+        <input type="file" id="imageUpload" accept="image/*" capture="camera" style="display: none;">
+        <button class="input-action-btn" id="cameraBtn"><i class="fas fa-camera"></i></button>
+      </div>
+      <textarea class="message-input" id="messageInput" placeholder="Type your message here..." rows="1"></textarea>
+      <button class="send-btn" id="sendBtn" disabled><i class="fas fa-paper-plane"></i></button>
+    </div>
   </div>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Initialize Firebase with your config - REPLACE THIS
-const firebaseConfig = {
-    apiKey: "AIzaSyCz6eHmBmoDSTwZdX8gCPihQ626Ad8XhHk",
-    authDomain: "tevra-161ec.firebaseapp.com",
-    databaseURL: "https://tevra-161ec-default-rtdb.firebaseio.com",
-    projectId: "tevra-161ec",
-    storageBucket: "tevra-161ec.firebasestorage.app",
-    messagingSenderId: "137873925109",
-    appId: "1:137873925109:web:51bf2b7aa91aa30ba6f6bc",
-    measurementId: "G-5JXFT6P09B"
-};
-      
-      // Initialize Firebase
-      firebase.initializeApp(firebaseConfig);
-      
-      const messageEl = document.getElementById('message');
-      const step1 = document.getElementById('step1');
-      const step2 = document.getElementById('step2');
-      const step3 = document.getElementById('step3');
-      const resetRequestForm = document.getElementById('resetRequestForm');
-      const verifyCodeBtn = document.getElementById('verifyCodeBtn');
-      const resetPasswordForm = document.getElementById('resetPasswordForm');
-      const resendLink = document.getElementById('resendLink');
-      const steps = document.querySelectorAll('.step');
-      const loader1 = document.getElementById('loader1');
-      const loader2 = document.getElementById('loader2');
-      const loader3 = document.getElementById('loader3');
-      const submitBtn = document.getElementById('submitBtn');
-      const resetPasswordBtn = document.getElementById('resetPasswordBtn');
-      
-      let userEmail = '';
-      
-      // Show first step initially
-      showStep(1);
-      
-      // Handle reset request form submission
-      resetRequestForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        userEmail = document.getElementById('email').value;
-        
-        if (!userEmail) {
-          showMessage('Please enter your email address', 'error');
-          return;
-        }
-        
-        if (!isValidEmail(userEmail)) {
-          showMessage('Please enter a valid email address', 'error');
-          return;
-        }
-        
-        // Show loading state
-        submitBtn.style.display = 'none';
-        loader1.style.display = 'block';
-        
-        // Send password reset email using Firebase
-        firebase.auth().sendPasswordResetEmail(userEmail)
-          .then(() => {
-            showMessage('Password reset link sent to your email!', 'success');
-            showStep(2);
-            updateSteps(2);
-          })
-          .catch((error) => {
-            let errorMessage = 'Error sending reset email. ';
-            switch (error.code) {
-              case 'auth/user-not-found':
-                errorMessage += 'No account found with this email address.';
-                break;
-              case 'auth/invalid-email':
-                errorMessage += 'Email address is invalid.';
-                break;
-              case 'auth/too-many-requests':
-                errorMessage += 'Too many attempts. Please try again later.';
-                break;
-              default:
-                errorMessage += 'Please try again.';
-            }
-            showMessage(errorMessage, 'error');
-          })
-          .finally(() => {
-            // Hide loading state
-            submitBtn.style.display = 'block';
-            loader1.style.display = 'none';
-          });
-      });
-      
-      // Handle resend link
-      resendLink.addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        if (!userEmail) {
-          showMessage('Please enter your email again', 'error');
-          showStep(1);
-          updateSteps(1);
-          return;
-        }
-        
-        // Show loading state
-        verifyCodeBtn.style.display = 'none';
-        loader2.style.display = 'block';
-        
-        // Resend password reset email
-        firebase.auth().sendPasswordResetEmail(userEmail)
-          .then(() => {
-            showMessage('Reset link sent again! Check your email.', 'success');
-          })
-          .catch((error) => {
-            showMessage('Error resending email. Please try again.', 'error');
-          })
-          .finally(() => {
-            // Hide loading state
-            verifyCodeBtn.style.display = 'block';
-            loader2.style.display = 'none';
-          });
-      });
-      
-      // Handle code verification (optional step)
-      verifyCodeBtn.addEventListener('click', function() {
-        // This is optional as Firebase handles the reset via email link
-        // In a real implementation, you might verify an OTP code here
-        showStep(3);
-        updateSteps(3);
-      });
-      
-      // Handle password reset form submission
-      resetPasswordForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const newPassword = document.getElementById('newPassword').value;
-        const confirmPassword = document.getElementById('confirmPassword').value;
-        
-        if (newPassword !== confirmPassword) {
-          showMessage('Passwords do not match', 'error');
-          return;
-        }
-        
-        if (newPassword.length < 8 || newPassword.length > 12) {
-          showMessage('Password must be 8-12 characters long', 'error');
-          return;
-        }
-        
-        // Show loading state
-        resetPasswordBtn.style.display = 'none';
-        loader3.style.display = 'block';
-        
-        // In a real implementation, you would apply the password change
-        // This would typically happen after the user clicks the email link
-        // For demonstration, we'll simulate success
-        
-        setTimeout(() => {
-          showMessage('Password reset successfully! You can now login with your new password.', 'success');
-          
-          // Redirect to login page after a delay
-          setTimeout(() => {
-            window.location.href = 'login.html';
-          }, 2000);
-        }, 1500);
-      });
-      
-      // Function to show a specific step
-      function showStep(stepNumber) {
-        step1.style.display = 'none';
-        step2.style.display = 'none';
-        step3.style.display = 'none';
-        
-        if (stepNumber === 1) step1.style.display = 'block';
-        if (stepNumber === 2) step2.style.display = 'block';
-        if (stepNumber === 3) step3.style.display = 'block';
-      }
-      
-      // Function to update step indicators
-      function updateSteps(currentStep) {
-        steps.forEach((step, index) => {
-          step.classList.remove('active', 'completed');
-          
-          if (index + 1 < currentStep) {
-            step.classList.add('completed');
-          } else if (index + 1 === currentStep) {
-            step.classList.add('active');
-          }
-        });
-      }
-      
-      // Function to show messages
-      function showMessage(text, type) {
-        messageEl.textContent = text;
-        messageEl.className = 'message ' + type;
-        messageEl.style.display = 'block';
-        
-        // Auto hide after 5 seconds
-        setTimeout(() => {
-          messageEl.style.display = 'none';
-        }, 5000);
-      }
-      
-      // Email validation function
-      function isValidEmail(email) {
-        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return re.test(email);
-      }
-    });
-  </script>
+  
+  <!-- Search Modal -->
+  <div id="searchModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <h3>Search in Chat</h3>
+      <input type="text" id="searchInput" placeholder="Search for messages...">
+      <div id="searchResults" class="search-results"></div>
+    </div>
+  </div>
+  
+  <script type="module" src="js/chat.js"></script>
 </body>
 </html>
