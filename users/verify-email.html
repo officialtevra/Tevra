@@ -4,12 +4,222 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Verify Email - Digital Wallet</title>
-  <link rel="stylesheet" href="css/transaction.css">
+
+    <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    :root {
+      --primary: #007acc;
+      --primary-dark: #005c99;
+      --primary-darker: #003d66;
+      --secondary: #00c9a7;
+      --accent: #ff6b6b;
+      --light: #f8f9fa;
+      --dark: #2c3e50;
+      --gray: #6c757d;
+      --success: #28a745;
+      --warning: #ffc107;
+      --danger: #dc3545;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      --radius: 12px;
+      --transition: all 0.3s ease;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: var(--dark);
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 480px;
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    header {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary-darker));
+      color: white;
+      padding: 25px 20px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .back-button {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: white;
+      text-decoration: none;
+      font-size: 1.5rem;
+      font-weight: bold;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: var(--transition);
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(5px);
+    }
+    
+    .back-button:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-50%) scale(1.1);
+    }
+    
+    header h1 {
+      font-size: 1.5rem;
+      margin: 0;
+      font-weight: 600;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    main {
+      padding: 30px 25px;
+    }
+    
+    .verification-message {
+      background: var(--light);
+      border-radius: var(--radius);
+      padding: 25px;
+      margin-bottom: 25px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      border-left: 4px solid var(--primary);
+    }
+    
+    .verification-message p {
+      margin-bottom: 15px;
+      line-height: 1.6;
+      color: var(--dark);
+    }
+    
+    .verification-message p:last-of-type {
+      margin-bottom: 0;
+    }
+    
+    #resendLink {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+    
+    #resendLink:hover {
+      color: var(--primary-dark);
+      text-decoration: underline;
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 16px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 2px 8px rgba(0, 122, 204, 0.3);
+    }
+    
+    .btn:hover:not(:disabled) {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 122, 204, 0.4);
+    }
+    
+    .btn:disabled {
+      background: var(--gray);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .btn-success {
+      background: var(--success);
+      box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+    }
+    
+    .btn-success:hover:not(:disabled) {
+      background: #218838;
+      box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+    }
+    
+    /* Verification Icon */
+    .verification-icon {
+      font-size: 3rem;
+      color: var(--primary);
+      margin-bottom: 20px;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    
+    /* Responsive Styles */
+    @media (max-width: 480px) {
+      body {
+        padding: 15px;
+        align-items: flex-start;
+      }
+      
+      .container {
+        border-radius: var(--radius);
+      }
+      
+      header {
+        padding: 20px 15px;
+      }
+      
+      header h1 {
+        font-size: 1.3rem;
+      }
+      
+      main {
+        padding: 25px 20px;
+      }
+      
+      .verification-message {
+        padding: 20px;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <a href="index.html" class="back-button">←</a>
+      <a href="login.html" class="back-button">←</a>
       <h1>Verify Your Email</h1>
     </header>
     <main>
