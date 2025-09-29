@@ -1,0 +1,225 @@
+/* Base Styles */
+:root {
+  /* Updated Color Scheme from Wallet Design */
+  --primary: #4361ee;       /* Main blue */
+  --primary-dark: #3a0ca3;  /* Darker blue */
+  --primary-light: #4cc9f0; /* Light blue (receive button) */
+  --secondary: #f8fafc;     /* Background */
+  --accent-pink: #f72585;   /* Send button */
+  --accent-purple: #7209b7; /* History button */
+  --text: #1e293b;          /* Main text */
+  --text-light: #64748b;    /* Secondary text */
+  --error: #dc2626;         /* Error messages */
+  --success: #16a34a;       /* Success messages */
+  --border: #e2e8f0;        /* Borders */
+  --white: #ffffff;         /* Pure white */
+  --card-bg: #ffffff;       /* Card backgrounds */
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: var(--text);
+  background-color: var(--secondary);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  min-height: 100vh;
+}
+
+/* Header Styles */
+header {
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+h1 {
+  font-size: 1.8rem;
+  color: var(--primary);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Button Styles */
+.btn {
+  display: inline-block;
+  background-color: var(--primary);
+  color: var(--white);
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn.secondary {
+  background-color: transparent;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+}
+
+.btn.small {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
+/* Form Styles */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+input, select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+input:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+}
+
+/* Dashboard Styles */
+.dashboard-grid {
+  display: grid;
+  gap: 2rem;
+}
+
+.balance-card {
+  background: var(--white);
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: var(--white);
+}
+
+.amount {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
+.quick-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* Transaction Styles */
+.transactions-list {
+  margin-top: 2rem;
+}
+
+.transaction-item {
+  background: var(--white);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s;
+}
+
+.transaction-item:hover {
+  transform: translateY(-3px);
+}
+
+.transaction-amount.positive {
+  color: var(--primary-light);
+  font-weight: 600;
+}
+
+.transaction-amount.negative {
+  color: var(--accent-pink);
+  font-weight: 600;
+}
+
+/* Utility Classes */
+.hidden {
+  display: none;
+}
+
+/* Action Buttons */
+.action-btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.3s;
+}
+
+.send-btn {
+  background-color: var(--accent-pink);
+  color: var(--white);
+}
+
+.receive-btn {
+  background-color: var(--primary-light);
+  color: var(--white);
+}
+
+.history-btn {
+  background-color: var(--accent-purple);
+  color: var(--white);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+  
+  .quick-actions {
+    flex-direction: column;
+  }
+  
+  .btn, .action-btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (min-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr 2fr;
+  }
+}
