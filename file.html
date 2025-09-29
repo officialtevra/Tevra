@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub File Explorer with Upload</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 20px;
+    min-height: 100vh;
+    color: #333;
+    line-height: 1.6;
+  }
+  
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  header {
+    background: #2c3e50;
+    color: white;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  header i {
+    font-size: 24px;
+  }
+  
+  header h1 {
+    font-size: 22px;
+    font-weight: 600;
+  }
+  
+  .action-buttons {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .action-btn {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    transition: background 0.3s;
+  }
+  
+  .action-btn:hover {
+    background: #2980b9;
+  }
+  
+  .action-btn.back-btn {
+    background: #95a5a6;
+  }
+  
+  .action-btn.back-btn:hover {
+    background: #7f8c8d;
+  }
+  
+  .breadcrumb {
+    background: #ecf0f1;
+    padding: 12px 20px;
+    font-size: 14px;
+    color: #7f8c8d;
+    border-bottom: 1px solid #dce4e8;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .breadcrumb span {
+    color: #3498db;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  
+  .breadcrumb span:hover {
+    text-decoration: underline;
+  }
+  
+  .breadcrumb .separator {
+    color: #bdc3c7;
+  }
+  
+  .file-explorer {
+    padding: 20px;
+    max-height: 500px;
+    overflow-y: auto;
+  }
+  
+  .file-list {
+    list-style: none;
+  }
+  
+  .file-list li {
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+    cursor: pointer;
+  }
+  
+  .file-list li:hover {
+    background-color: #f8f9fa;
+  }
+  
+  .file-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+  }
+  
+  .folder i {
+    color: #f39c12;
+    font-size: 18px;
+  }
+  
+  .file i {
+    color: #3498db;
+    font-size: 16px;
+  }
+  
+  .folder-name, .file-name {
+    font-size: 15px;
+    color: #2c3e50;
+  }
+  
+  .file-actions {
+    display: flex;
+    gap: 10px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  
+  .file-list li:hover .file-actions {
+    opacity: 1;
+  }
+  
+  .file-action-btn {
+    background: none;
+    border: none;
+    color: #7f8c8d;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.2s;
+  }
+  
+  .file-action-btn:hover {
+    background: #e74c3c;
+    color: white;
+  }
+  
+  .file-action-btn.download:hover {
+    background: #27ae60;
+  }
+  
+  .upload-section {
+    padding: 20px;
+    border-top: 1px solid #ecf0f1;
+    background: #f8f9fa;
+  }
+  
+  .upload-area {
+    border: 2px dashed #bdc3c7;
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+  
+  .upload-area:hover {
+    border-color: #3498db;
+    background: #e8f4fd;
+  }
+  
+  .upload-area i {
+    font-size: 48px;
+    color: #3498db;
+    margin-bottom: 15px;
+  }
+  
+  .upload-area h3 {
+    margin-bottom: 10px;
+    color: #2c3e50;
+  }
+  
+  .upload-area p {
+    color: #7f8c8d;
+    margin-bottom: 15px;
+  }
+  
+  .file-input {
+    display: none;
+  }
+  
+  .upload-btn {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.3s;
+  }
+  
+  .upload-btn:hover {
+    background: #2980b9;
+  }
+  
+  .nested {
+    margin-left: 30px;
+    display: none;
+  }
+  
+  .expanded > .nested {
+    display: block;
+  }
+  
+  .expanded > .file-item > .folder > i {
+    transform: rotate(90deg);
+  }
+  
+  .file-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+  }
+  
+  .file-link:hover {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  .loading {
+    padding: 15px;
+    text-align: center;
+    color: #7f8c8d;
+    font-style: italic;
+  }
+  
+  .empty-folder {
+    padding: 15px;
+    text-align: center;
+    color: #95a5a6;
+    font-style: italic;
+  }
+  
+  footer {
+    background: #ecf0f1;
+    padding: 15px 20px;
+    text-align: center;
+    font-size: 13px;
+    color: #7f8c8d;
+    border-top: 1px solid #dce4e8;
+  }
+  
+  footer a {
+    color: #3498db;
+    text-decoration: none;
+  }
+  
+  footer a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Scrollbar styling */
+  .file-explorer::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .file-explorer::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+  
+  .file-explorer::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+  }
+  
+  .file-explorer::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+  }
+  
+  /* Modal for upload confirmation */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  .modal h3 {
+    margin-bottom: 15px;
+    color: #2c3e50;
+  }
+  
+  .modal p {
+    margin-bottom: 20px;
+    color: #7f8c8d;
+  }
+  
+  .modal-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+  
+  .modal-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .modal-btn.confirm {
+    background: #27ae60;
+    color: white;
+  }
+  
+  .modal-btn.cancel {
+    background: #e74c3c;
+    color: white;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="header-left">
+      <i class="fas fa-folder-open"></i>
+      <h1>GitHub File Explorer</h1>
+    </div>
+    <div class="action-buttons">
+      <button class="action-btn back-btn" id="backBtn" disabled>
+        <i class="fas fa-arrow-left"></i> Back
+      </button>
+      <button class="action-btn" id="uploadBtn">
+        <i class="fas fa-upload"></i> Upload File
+      </button>
+    </div>
+  </header>
+  
+  <div class="breadcrumb" id="breadcrumb">
+    <span class="breadcrumb-item" data-path="">tevrasite</span>
+    <span class="separator">/</span>
+    <span class="breadcrumb-item" data-path="">Tevra</span>
+    <span class="separator">/</span>
+    <span class="breadcrumb-item" data-path="calculator">calculator</span>
+  </div>
+  
+  <div class="file-explorer">
+    <ul class="file-list" id="fileList">
+      <li class="loading">
+        <i class="fas fa-spinner fa-spin"></i> Loading files...
+      </li>
+    </ul>
+  </div>
+  
+  <div class="upload-section">
+    <div class="upload-area" id="uploadArea">
+      <i class="fas fa-cloud-upload-alt"></i>
+      <h3>Upload Files to This Folder</h3>
+      <p>Drag & drop files here or click to browse</p>
+      <button class="upload-btn">
+        <i class="fas fa-folder-open"></i> Select Files
+      </button>
+      <input type="file" class="file-input" id="fileInput" multiple>
+    </div>
+  </div>
+  
+  <footer>
+    Repository: <a href="https://github.com/tevrasite/Tevra" target="_blank">github.com/tevrasite/Tevra</a>
+  </footer>
+</div>
+
+<!-- Upload Confirmation Modal -->
+<div class="modal" id="uploadModal">
+  <div class="modal-content">
+    <h3>Upload File</h3>
+    <p>You are about to upload a file to the current folder. This is a demonstration and the file will not actually be uploaded to GitHub.</p>
+    <div class="modal-buttons">
+      <button class="modal-btn cancel" id="cancelUpload">Cancel</button>
+      <button class="modal-btn confirm" id="confirmUpload">Upload</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const owner = "tevrasite";
+const repo = "Tevra";
+const basePath = "calculator";
+const branch = "07fcf93090402bd5f96c39de79590f4d73d9bedd";
+
+const fileListUl = document.getElementById("fileList");
+const breadcrumb = document.getElementById("breadcrumb");
+const backBtn = document.getElementById("backBtn");
+const uploadBtn = document.getElementById("uploadBtn");
+const uploadArea = document.getElementById("uploadArea");
+const fileInput = document.getElementById("fileInput");
+const uploadModal = document.getElementById("uploadModal");
+const cancelUpload = document.getElementById("cancelUpload");
+const confirmUpload = document.getElementById("confirmUpload");
+
+let currentPath = basePath;
+let pathHistory = [basePath];
+
+// Function to get file icon based on extension
+function getFileIcon(filename) {
+  const ext = filename.split('.').pop().toLowerCase();
+  const iconMap = {
+    'js': 'fa-file-code',
+    'html': 'fa-file-code',
+    'css': 'fa-file-code',
+    'json': 'fa-file-code',
+    'md': 'fa-file-alt',
+    'txt': 'fa-file-alt',
+    'pdf': 'fa-file-pdf',
+    'jpg': 'fa-file-image',
+    'jpeg': 'fa-file-image',
+    'png': 'fa-file-image',
+    'gif': 'fa-file-image',
+    'svg': 'fa-file-image',
+    'zip': 'fa-file-archive',
+    'rar': 'fa-file-archive',
+    '7z': 'fa-file-archive'
+  };
+  
+  return iconMap[ext] || 'fa-file';
+}
+
+// Update breadcrumb
+function updateBreadcrumb() {
+  const pathParts = currentPath.split('/');
+  let breadcrumbHTML = '';
+  let accumulatedPath = '';
+  
+  // Add repository parts
+  breadcrumbHTML += `<span class="breadcrumb-item" data-path="">${owner}</span>`;
+  breadcrumbHTML += `<span class="separator">/</span>`;
+  breadcrumbHTML += `<span class="breadcrumb-item" data-path="">${repo}</span>`;
+  breadcrumbHTML += `<span class="separator">/</span>`;
+  
+  // Add path parts
+  pathParts.forEach((part, index) => {
+    accumulatedPath += (accumulatedPath ? '/' : '') + part;
+    breadcrumbHTML += `<span class="breadcrumb-item" data-path="${accumulatedPath}">${part}</span>`;
+    if (index < pathParts.length - 1) {
+      breadcrumbHTML += `<span class="separator">/</span>`;
+    }
+  });
+  
+  breadcrumb.innerHTML = breadcrumbHTML;
+  
+  // Add event listeners to breadcrumb items
+  document.querySelectorAll('.breadcrumb-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const path = item.getAttribute('data-path');
+      if (path !== currentPath) {
+        navigateToPath(path);
+      }
+    });
+  });
+  
+  // Update back button state
+  backBtn.disabled = pathHistory.length <= 1;
+}
+
+// Navigate to a specific path
+function navigateToPath(path) {
+  currentPath = path;
+  pathHistory.push(path);
+  updateBreadcrumb();
+  loadFiles();
+}
+
+// Go back to previous path
+function goBack() {
+  if (pathHistory.length > 1) {
+    pathHistory.pop(); // Remove current path
+    currentPath = pathHistory[pathHistory.length - 1];
+    updateBreadcrumb();
+    loadFiles();
+  }
+}
+
+// Fetch files and folders from GitHub API
+async function fetchFiles(folderPath) {
+  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${folderPath}?ref=${branch}`;
+  try {
+    const res = await fetch(apiUrl);
+    const data = await res.json();
+
+    if (Array.isArray(data)) {
+      // Sort folders first, then files
+      data.sort((a, b) => {
+        if (a.type === b.type) return a.name.localeCompare(b.name);
+        return a.type === "dir" ? -1 : 1;
+      });
+
+      return data;
+    } else {
+      return [];
+    }
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}
+
+// Load files for current path
+async function loadFiles() {
+  // Remove loading message if present
+  const loadingEl = fileListUl.querySelector('.loading');
+  if (loadingEl) loadingEl.remove();
+  
+  const emptyMsg = fileListUl.querySelector('.empty-folder');
+  if (emptyMsg) emptyMsg.remove();
+  
+  // Add loading message
+  fileListUl.innerHTML = '<li class="loading"><i class="fas fa-spinner fa-spin"></i> Loading files...</li>';
+  
+  const files = await fetchFiles(currentPath);
+  
+  // Clear list
+  fileListUl.innerHTML = '';
+  
+  if (files.length === 0) {
+    const emptyMsg = document.createElement('li');
+    emptyMsg.className = 'empty-folder';
+    emptyMsg.innerHTML = '<i class="far fa-folder-open"></i> This folder is empty';
+    fileListUl.appendChild(emptyMsg);
+    return;
+  }
+
+  files.forEach(item => {
+    const li = document.createElement("li");
+
+    if (item.type === "dir") {
+      li.innerHTML = `
+        <div class="file-item">
+          <div class="folder">
+            <i class="fas fa-folder"></i>
+            <span class="folder-name">${item.name}</span>
+          </div>
+        </div>
+        <div class="file-actions">
+          <button class="file-action-btn download" title="Download Folder">
+            <i class="fas fa-download"></i>
+          </button>
+        </div>
+      `;
+      
+      const nestedUl = document.createElement("ul");
+      nestedUl.classList.add("nested");
+      li.appendChild(nestedUl);
+
+      // Add loading element for nested folders
+      const loadingLi = document.createElement('li');
+      loadingLi.className = 'loading';
+      loadingLi.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+      nestedUl.appendChild(loadingLi);
+
+      // Click to expand/collapse
+      li.querySelector(".file-item").addEventListener("click", async (e) => {
+        e.stopPropagation();
+        li.classList.toggle("expanded");
+        
+        // Load subfolder contents if not already loaded
+        if (nestedUl.childElementCount === 1) { // Only has loading element
+          await createList(item.path, nestedUl);
+        }
+      });
+      
+      // Double click to open folder
+      li.addEventListener("dblclick", () => {
+        navigateToPath(item.path);
+      });
+      
+      // Download button
+      li.querySelector('.file-action-btn.download').addEventListener('click', (e) => {
+        e.stopPropagation();
+        alert(`Downloading folder: ${item.name}\n\nNote: This is a demonstration. In a real application, this would download the folder.`);
+      });
+    } else {
+      const fileIcon = getFileIcon(item.name);
+      li.innerHTML = `
+        <div class="file-item">
+          <i class="far ${fileIcon}"></i>
+          <span class="file-name">${item.name}</span>
+        </div>
+        <div class="file-actions">
+          <button class="file-action-btn download" title="Download File">
+            <i class="fas fa-download"></i>
+          </button>
+        </div>
+      `;
+      
+      // Click to view file
+      li.querySelector(".file-item").addEventListener("click", () => {
+        window.open(item.html_url, '_blank');
+      });
+      
+      // Download button
+      li.querySelector('.file-action-btn.download').addEventListener('click', (e) => {
+        e.stopPropagation();
+        // In a real application, this would download the file
+        // For demo, we'll just open in new tab
+        window.open(item.download_url || item.html_url, '_blank');
+      });
+    }
+
+    fileListUl.appendChild(li);
+  });
+}
+
+// Create the file/folder list for nested folders
+async function createList(folderPath, parentUl) {
+  // Remove loading message if present
+  const loadingEl = parentUl.querySelector('.loading');
+  if (loadingEl) loadingEl.remove();
+  
+  const files = await fetchFiles(folderPath);
+  
+  if (files.length === 0) {
+    const emptyMsg = document.createElement('li');
+    emptyMsg.className = 'empty-folder';
+    emptyMsg.innerHTML = '<i class="far fa-folder-open"></i> This folder is empty';
+    parentUl.appendChild(emptyMsg);
+    return;
+  }
+
+  files.forEach(item => {
+    const li = document.createElement("li");
+
+    if (item.type === "dir") {
+      li.innerHTML = `
+        <div class="file-item">
+          <div class="folder">
+            <i class="fas fa-folder"></i>
+            <span class="folder-name">${item.name}</span>
+          </div>
+        </div>
+        <div class="file-actions">
+          <button class="file-action-btn download" title="Download Folder">
+            <i class="fas fa-download"></i>
+          </button>
+        </div>
+      `;
+      
+      const nestedUl = document.createElement("ul");
+      nestedUl.classList.add("nested");
+      li.appendChild(nestedUl);
+
+      // Add loading element for nested folders
+      const loadingLi = document.createElement('li');
+      loadingLi.className = 'loading';
+      loadingLi.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+      nestedUl.appendChild(loadingLi);
+
+      // Click to expand/collapse
+      li.querySelector(".file-item").addEventListener("click", async (e) => {
+        e.stopPropagation();
+        li.classList.toggle("expanded");
+        
+        // Load subfolder contents if not already loaded
+        if (nestedUl.childElementCount === 1) { // Only has loading element
+          await createList(item.path, nestedUl);
+        }
+      });
+      
+      // Download button
+      li.querySelector('.file-action-btn.download').addEventListener('click', (e) => {
+        e.stopPropagation();
+        alert(`Downloading folder: ${item.name}\n\nNote: This is a demonstration. In a real application, this would download the folder.`);
+      });
+    } else {
+      const fileIcon = getFileIcon(item.name);
+      li.innerHTML = `
+        <div class="file-item">
+          <i class="far ${fileIcon}"></i>
+          <span class="file-name">${item.name}</span>
+        </div>
+        <div class="file-actions">
+          <button class="file-action-btn download" title="Download File">
+            <i class="fas fa-download"></i>
+          </button>
+        </div>
+      `;
+      
+      // Click to view file
+      li.querySelector(".file-item").addEventListener("click", () => {
+        window.open(item.html_url, '_blank');
+      });
+      
+      // Download button
+      li.querySelector('.file-action-btn.download').addEventListener('click', (e) => {
+        e.stopPropagation();
+        // In a real application, this would download the file
+        // For demo, we'll just open in new tab
+        window.open(item.download_url || item.html_url, '_blank');
+      });
+    }
+
+    parentUl.appendChild(li);
+  });
+}
+
+// Upload functionality
+function setupUpload() {
+  // Click on upload area to trigger file input
+  uploadArea.addEventListener('click', () => {
+    fileInput.click();
+  });
+  
+  // Upload button click
+  uploadBtn.addEventListener('click', () => {
+    fileInput.click();
+  });
+  
+  // File input change
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files.length > 0) {
+      // Show upload confirmation modal
+      uploadModal.style.display = 'flex';
+    }
+  });
+  
+  // Cancel upload
+  cancelUpload.addEventListener('click', () => {
+    uploadModal.style.display = 'none';
+    fileInput.value = '';
+  });
+  
+  // Confirm upload
+  confirmUpload.addEventListener('click', () => {
+    const files = fileInput.files;
+    if (files.length > 0) {
+      // In a real application, you would upload files to GitHub API here
+      // For this demo, we'll just show a success message
+      alert(`Successfully uploaded ${files.length} file(s) to ${currentPath}\n\nNote: This is a demonstration. Files were not actually uploaded.`);
+      
+      // Reset file input and close modal
+      fileInput.value = '';
+      uploadModal.style.display = 'none';
+      
+      // Refresh file list to show new files (in a real app)
+      // loadFiles();
+    }
+  });
+}
+
+// Initialize the application
+function init() {
+  updateBreadcrumb();
+  loadFiles();
+  setupUpload();
+  
+  // Back button event
+  backBtn.addEventListener('click', goBack);
+}
+
+// Start the application
+init();
+</script>
+
+</body>
+</html>
