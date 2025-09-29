@@ -3,664 +3,1241 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elegant Google Search</title>
+    <title>Tevra Search</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: #0099ff;
+            background: linear-gradient(135deg, #007acc, #005c99);
+            color: #333;
             min-height: 100vh;
             display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            padding: 20px;
-            margin-top: 10mm;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            margin-top: 40mm;
+            margin-bottom: 40mm;
         }
         
-        .search-wrapper {
+        .main-wrapper {
             width: 100%;
-            max-width: 500px;
-            background: #0099ff;
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            
-            padding: 40px 35px;
-            
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         
-        .logo-container {
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         
-        .logo {
-            font-size: 2.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #ffffff, #e6f7ff, #cceeff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 10px;
+        .header h1 {
+            color: white;
+            font-size: 2rem;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            font-weight: 600;
         }
         
-        .tagline {
-            color: #e6f7ff;
-            font-size: 1.1rem;
-            font-weight: 400;
+        .header p {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.95rem;
+            max-width: 400px;
+            margin: 0 auto;
+            line-height: 1.4;
+            text-align: center;
         }
         
-        /* Google CSE Container */
+        /* Search Box Styles */
         .search-container {
+            width: 100%;
             margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         
-        /* Custom search box styling */
-        .gsc-control-cse {
-            padding: 0 !important;
-            background: transparent !important;
-            border: none !important;
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 12px 18px;
+            width: 95%;
+            max-width: 500px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(5px);
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
-        .gsc-input-box {
-            border: 2px solid #e6f7ff !important;
-            border-radius: 50px !important;
-            height: 60px !important;
-            padding: 0 25px !important;
-            background: white !important;
-            transition: all 0.3s ease !important;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
+        .search-box:focus-within {
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
         }
         
-        .gsc-input-box:hover {
-            border-color: #ffffff !important;
-            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15) !important;
-        }
-        
-        .gsc-input-box:focus-within {
-            border-color: #ffffff !important;
-            box-shadow: 0 4px 25px rgba(255, 255, 255, 0.2) !important;
-            transform: translateY(-1px);
-        }
-        
-        .gsc-input {
-            padding: 0 !important;
-            height: 100% !important;
-        }
-        
-        .gsc-input input {
-            height: 100% !important;
-            border: none !important;
-            outline: none !important;
-            background: transparent !important;
-            font-size: 18px !important;
-            color: #003366 !important;
-            padding: 0 10px !important;
-            text-align: center !important;
-            font-weight: 400 !important;
-            width: 100% !important;
-        }
-        
-        .gsc-input input::placeholder {
-            color: #6699cc !important;
-            font-size: 18px !important;
-            font-weight: 400 !important;
-            text-align: center !important;
-            opacity: 1 !important;
-            letter-spacing: 0.5px !important;
-        }
-        
-        /* Hide Google's default button */
-        .gsc-search-button {
-            display: none !important;
-        }
-        
-        /* Custom search button - SMALL AND ELEGANT */
-        .custom-search-button {
-            background: linear-gradient(135deg, #ffffff, #e6f7ff);
-            color: #0099ff;
+        .search-box input {
+            background: transparent;
             border: none;
-            border-radius: 50px;
-            padding: 12px 30px;
-            font-size: 16px;
+            color: white;
+            padding: 6px;
+            width: 100%;
+            outline: none;
+            font-size: 1rem;
+        }
+        
+        .search-box input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        .search-box i {
+            color: white;
+            margin-left: 8px;
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        
+        /* Search Button */
+        .search-button {
+            background: rgba(255, 255, 255, 0.25);
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            color: white;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-top: 20px;
-            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
-            letter-spacing: 0.5px;
-            position: relative;
-            overflow: hidden;
-            width: auto;
-            display: inline-block;
-            min-width: 140px;
+            display: block;
+            margin: 0 auto;
+            width: 200px;
+            max-width: 80%;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
         
-        .custom-search-button:hover {
+        .search-button:hover {
+            background: rgba(255, 255, 255, 0.35);
+            transform: translateY(-1px);
+        }
+        
+        /* Recent Searches Section */
+        .recent-searches {
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .recent-title {
+            font-size: 1rem;
+            color: white;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            width: 95%;
+            max-width: 500px;
+        }
+        
+        .recent-title i {
+            margin-right: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .recent-list {
+            display: flex;
+            overflow-x: auto;
+            gap: 8px;
+            padding-bottom: 8px;
+            scrollbar-width: thin;
+            width: 95%;
+            max-width: 500px;
+            justify-content: flex-start;
+        }
+        
+        .recent-list::-webkit-scrollbar {
+            height: 4px;
+        }
+        
+        .recent-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
+        
+        .recent-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+        }
+        
+        .recent-item {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 6px 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            flex-shrink: 0;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.85rem;
+        }
+        
+        .recent-item:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        
+        .recent-item i {
+            margin-right: 5px;
+            font-size: 0.8rem;
+        }
+        
+        /* Results Container */
+        .results-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            max-height: 350px;
+            overflow-y: auto;
+            display: none;
+            width: 95%;
+            max-width: 500px;
+        }
+        
+        .results-title {
+            font-size: 1.1rem;
+            color: #005c99;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(0, 92, 153, 0.2);
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .results-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .result-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border-left: 3px solid #007acc;
+        }
+        
+        .result-item:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
         }
         
-        .custom-search-button:active {
-            transform: translateY(0);
+        .result-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #007acc, #005c99);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            color: white;
+            font-size: 1rem;
+            flex-shrink: 0;
         }
         
-        .custom-search-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
+        .result-content {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .result-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #005c99;
+            margin-bottom: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .result-description {
+            font-size: 0.8rem;
+            color: #666;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .result-time {
+            font-size: 0.75rem;
+            color: #999;
+            margin-top: 3px;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 20px 15px;
+            color: #666;
+        }
+        
+        .no-results i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #ccc;
+        }
+        
+        .no-results p {
+            font-size: 0.9rem;
+        }
+
+        /* Firebase Results */
+        .firebase-result {
+            border-left: 3px solid #00cc88;
+        }
+
+        .game-logo {
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            object-fit: cover;
+            margin-right: 12px;
+            border: 1px solid rgba(0, 92, 153, 0.2);
+            flex-shrink: 0;
+        }
+        
+        /* Card Section - Enhanced Responsive Styles */
+        .card-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            justify-items: center;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .card-item {
+            text-align: center;
+            margin: 5px;
+            transition: all 0.3s ease;
+            position: relative;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .card {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background-size: cover;
+            background-position: center;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .card:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+
+        .card-title {
+            margin-top: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            line-height: 1.3;
+            padding: 0 5px;
+            text-align: center;
+        }
+        
+        /* Detailed Card Styles */
+        .detailed-card {
+            width: 350px;
+            height: 230px;
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            flex-shrink: 0;
+            scroll-snap-align: center;
+            margin: 15px;
+        }
+        
+        .card-hero {
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0,153,255,0.2), transparent);
-            transition: left 0.5s;
+            background-size: 100% 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            position: relative;
         }
         
-        .custom-search-button:hover::before {
-            left: 100%;
+        .overlay {
+            background: rgba(0,0,0,0.55);
+            color: white;
+            padding: 14px;
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 12px;
         }
         
-        /* Button container for centering */
-        .button-container {
-            text-align: center;
-            margin-top: 10px;
+        .cover {
+            width: 70px;
+            height: 70px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
         }
         
-        /* FULL SCREEN SEARCH RESULTS - RESPONSIVE DESIGN */
-        .gsc-results-wrapper-overlay, 
-        .gsc-results-wrapper-visible {
-            border: none !important;
-            box-shadow: none !important;
-            background: white !important;
-            width: 100vw !important;
-            max-width: none !important;
-            position: fixed !important;
-            top: 0 !important;
-            bottom: 20mm !important;
-            height: 100vh !important;
-            z-index: 1000 !important;
-            overflow-y: auto !important;
-            padding: 0 !important;
-            margin: 0 !important;
-            border-radius: 0 !important;
-            left: -11mm !important;
+        .text-block {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 70px;
+            width: 100%;
+            position: relative;
         }
         
-        /* For large screens (desktop) - center the results */
-        @media (min-width: 1200px) {
-            .gsc-results-wrapper-visible {
-                width: 90vw !important;
-                max-width: 1400px !important;
-                right: -10mm !important;
-                transform: translateX(-50%) !important;
-                margin-top: -10mm !important;
-                height: 90vh !important;
-                border-radius: 15px !important;
-                box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3) !important;
+        .title {
+            font-size: 16px;
+            font-weight: 700;
+            margin: 0;
+        }
+        
+        .about {
+            font-size: 10px;
+            color: #d1d5db;
+            margin: 0;
+        }
+        
+        .info-line {
+            display: flex;
+            align-items: center;
+            font-size: 11px;
+            gap: 8px;
+            margin-top: 2px;
+            position: relative;
+        }
+        
+        .info-line span {
+            color: #f1f5f9;
+        }
+        
+        .btn {
+            font-size: 10px;
+            background: var(--accent);
+            border: none;
+            border-radius: 6px;
+            padding: 4px 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            position: absolute;
+            right: 5mm;
+        }
+        
+        .btn:active {
+            transform: scale(0.95);
+        }
+        
+        /* Responsive Styles */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 700px;
+                margin-top: 40px;
             }
             
-            .gsc-results-wrapper-visible .gsc-resultsbox-visible {
-                padding: 40px !important;
-                border-radius: 15px !important;
-            }
-        }
-        
-        /* For medium screens (tablets) */
-        @media (min-width: 768px) and (max-width: 1199px) {
-            .gsc-results-wrapper-visible {
-                width: 95vw !important;
-                left: -50mm !important;
-                top: 2.5vh !important;
-                height: 95vh !important;
-                border-radius: 10px !important;
-                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25) !important;
+            .header h1 {
+                font-size: 2.2rem;
+                margin-bottom: 10px;
             }
             
-            .gsc-results-wrapper-visible .gsc-resultsbox-visible {
-                padding: 30px !important;
-                border-radius: 10px !important;
-            }
-        }
-        
-        /* For small screens (mobile) - keep full screen */
-        @media (max-width: 767px) {
-            .gsc-results-wrapper-visible {
-                width: 100vw !important;
-                left: -11mm !important;
-                top: 0 !important;
-                height: 100vh !important;
-                border-radius: 0 !important;
-                box-shadow: none !important;
-            }
-            
-            .gsc-results-wrapper-visible .gsc-resultsbox-visible {
-                padding: 20px 15px !important;
-            }
-        }
-        
-        /* COMPLETELY REMOVE ALL GOOGLE'S OVERLAY ELEMENTS */
-        .gsc-results-wrapper-visible .gsc-dialog,
-        .gsc-results-wrapper-visible .gsc-dialog-container,
-        .gsc-results-wrapper-visible .gsc-modal-background-image,
-        .gsc-results-wrapper-visible .gsc-dialog-box,
-        .gsc-results-wrapper-visible .gsc-modal-background,
-        .gsc-results-wrapper-visible .gsc-dialog-container {
-            display: none !important;
-            visibility: hidden !important;
-            opacity: 0 !important;
-        }
-        
-        /* Remove custom close button (red X button) */
-        .custom-close-button {
-            display: none !important;
-        }
-        
-        /* Style the actual results container */
-        .gsc-results-wrapper-visible .gsc-resultsbox-visible {
-            background: white !important;
-            padding: 20px !important;
-            height: 100% !important;
-            overflow-y: auto !important;
-            width: 100% !important;
-            margin: 0 !important;
-        }
-        
-        /* Remove tabs area completely */
-        .gsc-tabsArea {
-            display: none !important;
-        }
-        
-        /* Style results properly */
-        .gsc-webResult.gsc-result {
-            border-bottom: 1px solid #f1f3f4 !important;
-            padding: 20px 0 !important;
-            transition: background-color 0.2s ease !important;
-            max-width: none !important;
-            margin: 0 !important;
-        }
-        
-        .gsc-webResult.gsc-result:hover {
-            background-color: #f8f9fa !important;
-            padding: 20px 10px !important;
-        }
-        
-        .gs-result .gs-title {
-            font-size: 18px !important;
-            color: #1a0dab !important;
-            text-decoration: none !important;
-            line-height: 1.4 !important;
-            font-weight: 500 !important;
-            display: block !important;
-            margin-bottom: 8px !important;
-        }
-        
-        .gs-result .gs-title:hover {
-            text-decoration: underline !important;
-        }
-        
-        .gs-result .gs-snippet {
-            color: #4d5156 !important;
-            font-size: 14px !important;
-            line-height: 1.6 !important;
-            margin-top: 8px !important;
-        }
-        
-        .gsc-results .gsc-result {
-            max-width: none !important;
-            width: 100% !important;
-        }
-        
-        .gsc-table-result {
-            width: 100% !important;
-            max-width: none !important;
-        }
-        
-        /* Footer */
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            color: #e6f7ff;
-            font-size: 14px;
-        }
-        
-        /* Responsive design for search wrapper */
-        @media (max-width: 768px) {
-            .search-wrapper {
-                padding: 30px 25px;
-                margin: 20px;
-            }
-            
-            .logo {
-                font-size: 2rem;
-            }
-            
-            .tagline {
+            .header p {
                 font-size: 1rem;
             }
             
-            .gsc-input-box {
-                height: 55px !important;
-                padding: 0 20px !important;
+            .search-box {
+                padding: 14px 20px;
+                margin-bottom: 15px;
+                max-width: 550px;
             }
             
-            .gsc-input input {
-                font-size: 16px !important;
+            .search-box input {
+                font-size: 1.1rem;
             }
             
-            .gsc-input input::placeholder {
-                font-size: 16px !important;
+            .search-button {
+                padding: 12px 25px;
+                font-size: 1rem;
+                width: 220px;
             }
             
-            .custom-search-button {
-                padding: 10px 25px;
-                font-size: 15px;
-                min-width: 130px;
+            .recent-title {
+                font-size: 1.1rem;
+                margin-bottom: 15px;
+                max-width: 550px;
             }
             
-            .gsc-webResult.gsc-result {
-                padding: 15px 0 !important;
+            .recent-item {
+                padding: 8px 15px;
+                font-size: 0.9rem;
             }
             
-            .gsc-webResult.gsc-result:hover {
-                padding: 15px 8px !important;
+            .results-container {
+                padding: 20px;
+                max-height: 100%;
+                max-width: 100%;
             }
             
-            .gs-result .gs-title {
-                font-size: 16px !important;
+            .results-title {
+                font-size: 1.2rem;
+                margin-bottom: 15px;
+            }
+            
+            .result-item {
+                padding: 12px 15px;
+            }
+            
+            .result-icon, .game-logo {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .result-title {
+                font-size: 1rem;
+            }
+            
+            .result-description {
+                font-size: 0.85rem;
+            }
+            
+            /* Card section for tablets */
+            .card-section {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                gap: 15px;
+            }
+            
+            .card {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .card-title {
+                font-size: 0.95rem;
+                margin-top: 10px;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 800px;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .search-button {
+                width: 200px;
+            }
+            
+            .results-container {
+                max-height: 450px;
+                max-width: 600px;
+            }
+            
+            /* Card section for desktop */
+            .card-section {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 20px;
+                max-width: 900px;
+            }
+            
+            .card {
+                width: 130px;
+                height: 130px;
             }
         }
         
         @media (max-width: 480px) {
-            .search-wrapper {
-                padding: 25px 20px;
+            body {
+                padding: 10px;
             }
             
-            .gsc-input-box {
-                height: 50px !important;
-                padding: 0 15px !important;
+            .container {
+                margin-top: 15px;
             }
             
-            .custom-search-button {
-                padding: 9px 22px;
-                font-size: 14px;
-                min-width: 120px;
+            .header {
+                margin-bottom: 20px;
             }
+            
+            .header h1 {
+                font-size: 1.7rem;
+            }
+            
+            .header p {
+                font-size: 0.9rem;
+            }
+            
+            .search-box {
+                padding: 10px 15px;
+                max-width: 400px;
+            }
+            
+            .search-button {
+                width: 180px;
+                padding: 9px 18px;
+                font-size: 0.9rem;
+            }
+            
+            .recent-title {
+                font-size: 0.95rem;
+                max-width: 400px;
+            }
+            
+            .recent-item {
+                padding: 5px 10px;
+                font-size: 0.8rem;
+            }
+            
+            .results-container {
+                padding: 12px;
+                max-height: 300px;
+                max-width: 400px;
+            }
+            
+            .result-item {
+                padding: 8px 10px;
+            }
+            
+            .result-icon, .game-logo {
+                width: 32px;
+                height: 32px;
+                margin-right: 10px;
+            }
+            
+            .result-title {
+                font-size: 0.9rem;
+            }
+            
+            .result-description {
+                font-size: 0.75rem;
+            }
+            
+            /* Card section for mobile */
+            .card-section {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+                gap: 8px;
+                max-width: 500px;
+            }
+            
+            .card {
+                width: 85px;
+                height: 85px;
+            }
+            
+            .card-title {
+                font-size: 0.75rem;
+                margin-top: 6px;
+            }
+        }
+
+        /* Extra small devices */
+        @media (max-width: 360px) {
+            .card-section {
+                grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+                gap: 6px;
+                max-width: 400px;
+            }
+            
+            .card {
+                width: 75px;
+                height: 75px;
+            }
+            
+            .card-title {
+                font-size: 0.7rem;
+            }
+            
+            .search-box {
+                max-width: 320px;
+            }
+            
+            .recent-title {
+                max-width: 320px;
+            }
+            
+            .results-container {
+                max-width: 320px;
+            }
+        }
+        
+        /* Animation for results container */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .results-container[style*="display: block"] {
+            animation: fadeIn 0.3s ease forwards;
         }
     </style>
 </head>
 <body>
-    <div class="search-wrapper">
-        <div class="logo-container">
-            <div class="logo">www.tevra.in</div>
-            <div class="tagline"></div>
-        </div>
-        
-        <div class="search-container">
-            <!-- Google Custom Search -->
-            <div class="gcse-search"></div>
+    <div class="main-wrapper">
+        <div class="container">
+            <div class="header">
+                <h1>Tevra Search</h1>
+            </div>
             
-            <!-- Custom search button container -->
-            <div class="button-container">
-                <button class="custom-search-button" id="customSearchButton">
-                    <span>🔍</span> Search
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search calculators, tools...">
+                    <i class="fas fa-search"></i>
+                </div>
+                
+                <button class="search-button" id="searchButton">
+                    <i class="fas fa-search"></i>
+                    Search
                 </button>
+            </div>
+            
+            <div class="recent-searches">
+                <h3 class="recent-title"><i class="fas fa-history"></i> Recent Searches</h3>
+                <div class="recent-list" id="recentList">
+                    <!-- Recent searches will be populated here -->
+                </div>
+            </div>
+            
+            <div class="results-container" id="resultsContainer">
+                <h2 class="results-title">Search Results</h2>
+                <div class="results-list" id="resultsList">
+                    <!-- Search results will be populated here -->
+                </div>
             </div>
         </div>
         
-        <div class="footer">
-            Powered by Google Custom Search
+        <div class="card-section" id="cardContainer">
+            <div class="card-item" data-id="basic-calculator">
+                <a href="basic-calculator.html" class="card-link">
+                    <div class="card" style="background-image: url('image/besic_calcluter.png');"></div>
+                    <div class="card-title">Basic Calculator</div>
+                </a>
+            </div>
+            <div class="card-item" data-id="right-angle">
+                <a href="right-angle.html" class="card-link">
+                    <div class="card" style="background-image: url('image/right-angle.png');"></div>
+                    <div class="card-title">Right Angle</div>
+                </a>
+            </div>
+            <div class="card-item" data-id="financial-calculator">
+                <a href="financial-calculator.html" class="card-link">
+                    <div class="card" style="background-image: url('image/financial-calculato_3.jpg');"></div>
+                    <div class="card-title">Financial Calculator</div>
+                </a>
+            </div>
+            <div class="card-item" data-id="scientific-calculator">
+                <a href="scientific-calculator.html" class="card-link">
+                    <div class="card" style="background-image: url('image/Scientific-Calculator2.jpg');"></div>
+                    <div class="card-title">Scientific Calculator</div>
+                </a>
+            </div>
+            
+            <div class="card-item" data-id="bmi-calculator">
+                <a href="bmi-calculator.html" class="card-link">
+                    <div class="card" style="background-image: url('image/bmi_calculator.jpg');"></div>
+                    <div class="card-title">BMI Calculator</div>
+                </a>
+            </div>
+            
+            <div class="card-item" data-id="age-calculator">
+                <a href="age-calculator.html" class="card-link">
+                    <div class="card" style="background-image: url('image/CalcPro_age.jpg');"></div>
+                    <div class="card-title">Age Calculator</div>
+                </a>
+            </div>
         </div>
     </div>
+    
+    <!-- Detailed Cards Section -->
+    <div style="display: flex; flex-wrap: wrap; justify-content: center; margin-top: 30px; width: 100%; max-width: 1200px;">
+        <!-- Card 1 -->
+        <div class="detailed-card">
+            <div class="card-hero" style="background:url('https://picsum.photos/id/1015/800/400') no-repeat center;">
+                <div class="overlay">
+                    <img src="https://picsum.photos/id/1011/70" alt="cover" class="cover">
+                    <div class="text-block">
+                        <div class="title">Lagao Ghut • প্রেমের গান</div>
+                        <div class="about">হৃদয়স্পর্শী গান যা ভালোবাসা ও বেদনার অনুভব প্রকাশ করে।</div>
+                        <div class="info-line">
+                            <span>⭐ 4.2</span>
+                            <span>4.6 MB</span>
+                            <span>3:45 • MP3</span>
+                            <button class="btn">ডাউনলোড</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <script async src="https://cse.google.com/cse.js?cx=84cf91b414b12455c"></script>
+        <!-- Card 2 -->
+        <div class="detailed-card">
+            <div class="card-hero" style="background:url('https://picsum.photos/id/1016/800/400') no-repeat center;">
+                <div class="overlay">
+                    <img src="https://picsum.photos/id/1027/70" alt="cover" class="cover">
+                    <div class="text-block">
+                        <div class="title">প্রেমের রঙ</div>
+                        <div class="about">মেলোডি আর কথার মিশ্রণে রোমান্টিক ছোঁয়া।</div>
+                        <div class="info-line">
+                            <span>⭐ 4.5</span>
+                            <span>5.2 MB</span>
+                            <span>4:12 • MP3</span>
+                            <button class="btn">ডাউনলোড</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="detailed-card">
+            <div class="card-hero" style="background:url('https://picsum.photos/id/1020/800/400') no-repeat center;">
+                <div class="overlay">
+                    <img src="https://picsum.photos/id/1005/70" alt="cover" class="cover">
+                    <div class="text-block">
+                        <div class="title">স্মৃতির ডায়েরি</div>
+                        <div class="about">পুরনো দিনের আবেগঘন কণ্ঠস্বর।</div>
+                        <div class="info-line">
+                            <span>⭐ 4.8</span>
+                            <span>6.0 MB</span>
+                            <span>5:01 • MP3</span>
+                            <button class="btn">ডাউনলোড</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="detailed-card">
+            <div class="card-hero" style="background:url('https://picsum.photos/id/1035/800/400') no-repeat center;">
+                <div class="overlay">
+                    <img src="https://picsum.photos/id/1025/70" alt="cover" class="cover">
+                    <div class="text-block">
+                        <div class="title">ভালোবাসার আলো</div>
+                        <div class="about">নতুন প্রজন্মের জন্য হৃদয় ছোঁয়া মিউজিক।</div>
+                        <div class="info-line">
+                            <span>⭐ 4.1</span>
+                            <span>3.8 MB</span>
+                            <span>3:22 • MP3</span>
+                            <button class="btn">ডাউনলোড</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="detailed-card">
+            <div class="card-hero" style="background:url('https://picsum.photos/id/1043/800/400') no-repeat center;">
+                <div class="overlay">
+                    <img src="https://picsum.photos/id/1022/70" alt="cover" class="cover">
+                    <div class="text-block">
+                        <div class="title">রাত্রির সুর</div>
+                        <div class="about">নীরব রাতকে সঙ্গ দেবে মিষ্টি সুরেলা কণ্ঠ।</div>
+                        <div class="info-line">
+                            <span>⭐ 4.7</span>
+                            <span>4.9 MB</span>
+                            <span>4:05 • MP3</span>
+                            <button class="btn">ডাউনলোড</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="detailed-card">
+            <div class="card-hero" style="background:url('https://picsum.photos/id/1067/800/400') no-repeat center;">
+                <div class="overlay">
+                    <img src="https://picsum.photos/id/1032/70" alt="cover" class="cover">
+                    <div class="text-block">
+                        <div class="title">বেদনার ছায়া</div>
+                        <div class="about">দুঃখ-ভালোবাসার দ্বন্দ্ব নিয়ে বিশেষ গান।</div>
+                        <div class="info-line">
+                            <span>⭐ 4.3</span>
+                            <span>5.5 MB</span>
+                            <span>4:33 • MP3</span>
+                            <button class="btn">ডাউনলোড</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 7 -->
+        <div class="detailed-card">
+            <div class="card-hero" style="background:url('https://picsum.photos/id/1074/800/400') no-repeat center;">
+                <div class="overlay">
+                    <img src="https://picsum.photos/id/1041/70" alt="cover" class="cover">
+                    <div class="text-block">
+                        <div class="title">মনের জানালা</div>
+                        <div class="about">মনের গহীনে জমে থাকা কথাগুলো গানে প্রকাশ।</div>
+                        <div class="info-line">
+                            <span>⭐ 4.6</span>
+                            <span>4.4 MB</span>
+                            <span>3:55 • MP3</span>
+                            <button class="btn">ডাউনলোড</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 8 -->
+        <div class="detailed-card">
+            <div class="card-hero" style="background:url('https://picsum.photos/id/1080/800/400') no-repeat center;">
+                <div class="overlay">
+                    <img src="https://picsum.photos/id/1050/70" alt="cover" class="cover">
+                    <div class="text-block">
+                        <div class="title">ভালোবাসার চিঠি</div>
+                        <div class="about">অন্তরের আবেগ মিশে আছে প্রতিটি শব্দে।</div>
+                        <div class="info-line">
+                            <span>⭐ 4.4</span>
+                            <span>4.1 MB</span>
+                            <span>3:40 • MP3</span>
+                            <button class="btn">ডাউনলোড</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 9 -->
+        <div class="detailed-card">
+            <div class="card-hero" style="background:url('https://picsum.photos/id/109/800/400') no-repeat center;">
+                <div class="overlay">
+                    <img src="https://picsum.photos/id/1057/70" alt="cover" class="cover">
+                    <div class="text-block">
+                        <div class="title">অভিমান</div>
+                        <div class="about">অভিমান ভরা ভালোবাসার সুরেলা গান।</div>
+                        <div class="info-line">
+                            <span>⭐ 4.0</span>
+                            <span>4.8 MB</span>
+                            <span>4:20 • MP3</span>
+                            <button class="btn">ডাউনলোড</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 10 -->
+        <div class="detailed-card">
+            <div class="card-hero" style="background:url('https://picsum.photos/id/110/800/400') no-repeat center;">
+                <div class="overlay">
+                    <img src="https://picsum.photos/id/1062/70" alt="cover" class="cover">
+                    <div class="text-block">
+                        <div class="title">শেষ বিদায়</div>
+                        <div class="about">বিদায়ের কষ্ট আর আবেগের গল্প।</div>
+                        <div class="info-line">
+                            <span>⭐ 4.9</span>
+                            <span>6.2 MB</span>
+                            <span>5:15 • MP3</span>
+                            <button class="btn">ডাউনলোড</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <script>
-        // Wait for the Google CSE to load
-        window.addEventListener('load', function() {
-            // Function to enhance the search input
-            function enhanceSearchInput() {
-                const searchInput = document.querySelector('.gsc-input input');
-                if (searchInput) {
-                    // Apply enhanced styles
-                    searchInput.style.height = '100%';
-                    searchInput.style.border = 'none';
-                    searchInput.style.outline = 'none';
-                    searchInput.style.background = 'transparent';
-                    searchInput.style.width = '100%';
-                    searchInput.style.fontSize = '18px';
-                    searchInput.style.textAlign = 'center';
-                    searchInput.style.color = '#003366';
-                    searchInput.style.fontWeight = '400';
-                    searchInput.style.padding = '0 10px';
-                    
-                    // Set placeholder text
-                    searchInput.placeholder = 'google Search......';
-                    
-                    // Create style for placeholder
-                    const style = document.createElement('style');
-                    style.textContent = `
-                        .gsc-input input::placeholder {
-                            color: #6699cc !important;
-                            font-size: 18px !important;
-                            font-weight: 400 !important;
-                            text-align: center !important;
-                            opacity: 1 !important;
-                            letter-spacing: 0.5px !important;
-                        }
-                    `;
-                    document.head.appendChild(style);
-                }
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCz6eHmBmoDSTwZdX8gCPihQ626Ad8XhHk",
+            authDomain: "tevra-161ec.firebaseapp.com",
+            databaseURL: "https://tevra-161ec-default-rtdb.firebaseio.com",
+            projectId: "tevra-161ec",
+            storageBucket: "tevra-161ec.firebasestorage.app",
+            appId: "1:137873925109:web:51bf2b7aa91aa30ba6f6bc",
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const gamesRef = db.ref('games');
+        
+        // Global variables
+        let allGames = [];
+        let searchTimeout;
+
+        // DOM elements
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const resultsList = document.getElementById('resultsList');
+        const recentList = document.getElementById('recentList');
+        
+        // Sample data for search results (fallback if Firebase fails)
+        const sampleData = [
+            { id: 1, title: "Basic Calculator", description: "Simple calculations", icon: "fas fa-calculator", category: "Calculator", url: "basic-calculator.html" },
+            { id: 2, title: "Scientific Calculator", description: "Advanced calculations", icon: "fas fa-square-root-alt", category: "Calculator", url: "scientific-calculator.html" },
+            { id: 3, title: "Financial Calculator", description: "Financial planning", icon: "fas fa-chart-line", category: "Calculator", url: "financial-calculator.html" },
+            { id: 4, title: "BMI Calculator", description: "Body Mass Index", icon: "fas fa-weight", category: "Health", url: "bmi-calculator.html" },
+            { id: 5, title: "Age Calculator", description: "Calculate age", icon: "fas fa-birthday-cake", category: "Tools", url: "age-calculator.html" },
+            { id: 6, title: "Right Angle Calculator", description: "Triangle calculations", icon: "fas fa-ruler-combined", category: "Math", url: "right-angle.html" }
+        ];
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            loadGamesFromFirebase();
+            loadRecentSearches();
+            setupEventListeners();
+        });
+
+        // Load games from Firebase - FIXED VERSION
+        function loadGamesFromFirebase() {
+            gamesRef.on('value', (snapshot) => {
+                const gamesData = snapshot.val();
                 
-                // Hide Google's default button
-                const googleSearchButton = document.querySelector('.gsc-search-button');
-                if (googleSearchButton) {
-                    googleSearchButton.style.display = 'none';
+                if (gamesData) {
+                    // Convert object to array and sort by key (newest first)
+                    allGames = Object.entries(gamesData)
+                        .sort((a, b) => b[0].localeCompare(a[0]))
+                        .map(([key, game]) => ({ 
+                            id: key, 
+                            title: game.name || 'Untitled',
+                            description: game.description || 'No description available',
+                            icon: "fas fa-cube",
+                            category: "Game",
+                            url: game.url || '#',
+                            image: game.image || ''
+                        }));
+                    console.log('Games loaded from Firebase:', allGames.length);
+                } else {
+                    console.log('No data available in Firebase, using sample data');
+                    allGames = sampleData;
                 }
-                
-                // Enhance input box
-                const inputBox = document.querySelector('.gsc-input-box');
-                if (inputBox) {
-                    inputBox.style.borderRadius = '50px';
-                    inputBox.style.height = '60px';
-                    inputBox.style.padding = '0 25px';
-                    inputBox.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.05)';
-                }
+            }, (error) => {
+                console.error('Error loading games from Firebase:', error);
+                allGames = sampleData;
+            });
+        }
+
+        // Load recent searches from localStorage
+        function loadRecentSearches() {
+            const recentSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
+            updateRecentSearchesUI(recentSearches);
+        }
+
+        // Update recent searches UI
+        function updateRecentSearchesUI(recentSearches) {
+            recentList.innerHTML = '';
+            
+            if (recentSearches.length === 0) {
+                recentList.innerHTML = '<div class="recent-item">No recent searches</div>';
+                return;
             }
             
-            // Function to ensure button stays small
-            function enhanceSearchButton() {
-                const button = document.getElementById('customSearchButton');
-                if (button) {
-                    button.style.width = 'auto';
-                    button.style.display = 'inline-block';
-                    button.style.padding = '12px 30px';
-                    button.style.fontSize = '16px';
-                }
-            }
-            
-            // Function to apply responsive positioning for results
-            function applyResponsiveResultsPosition() {
-                // Remove all Google's dialog and overlay elements
-                const elementsToRemove = [
-                    '.gsc-dialog',
-                    '.gsc-dialog-container',
-                    '.gsc-modal-background-image',
-                    '.gsc-dialog-box',
-                    '.gsc-modal-background',
-                    '.gsc-dialog-container'
-                ];
-                
-                elementsToRemove.forEach(selector => {
-                    const elements = document.querySelectorAll(selector);
-                    elements.forEach(element => {
-                        element.style.display = 'none';
-                        element.style.visibility = 'hidden';
-                        element.remove();
-                    });
+            recentSearches.slice(0, 5).forEach(searchTerm => {
+                const recentItem = document.createElement('div');
+                recentItem.className = 'recent-item';
+                recentItem.innerHTML = `<i class="fas fa-clock"></i> ${searchTerm}`;
+                recentItem.addEventListener('click', () => {
+                    searchInput.value = searchTerm;
+                    performSearch(searchTerm);
                 });
-                
-                // Apply responsive positioning based on screen size
-                const resultsWrapper = document.querySelector('.gsc-results-wrapper-visible');
-                if (resultsWrapper) {
-                    const screenWidth = window.innerWidth;
-                    
-                    if (screenWidth >= 1200) {
-                        // Large screens - centered with max-width
-                        resultsWrapper.style.width = '90vw';
-                        resultsWrapper.style.maxWidth = '1400px';
-                        resultsWrapper.style.left = '50%';
-                        resultsWrapper.style.transform = 'translateX(-50%)';
-                        resultsWrapper.style.top = '-10';
-                        resultsWrapper.style.bottom = '30px';
-                        resultsWrapper.style.height = '90vh';
-                        resultsWrapper.style.borderRadius = '15px';
-                        resultsWrapper.style.boxShadow = '0 25px 50px rgba(0, 0, 0, 0.3)';
-                    } else if (screenWidth >= 768) {
-                        // Medium screens
-                        resultsWrapper.style.width = '95vw';
-                        resultsWrapper.style.left = '2.5vw';
-                        resultsWrapper.style.top = '2.5vh';
-                        resultsWrapper.style.bottom = '30px';
-                        resultsWrapper.style.height = '95vh';
-                        resultsWrapper.style.borderRadius = '10px';
-                        resultsWrapper.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.25)';
-                        resultsWrapper.style.transform = 'none';
-                    } else {
-                        // Small screens - full screen
-                        resultsWrapper.style.width = '100vw';
-                        resultsWrapper.style.left = '0';
-                        resultsWrapper.style.top = '0';
-                        resultsWrapper.style.bottom = '30px';
-                        resultsWrapper.style.height = '100vh';
-                        resultsWrapper.style.borderRadius = '0';
-                        resultsWrapper.style.boxShadow = 'none';
-                        resultsWrapper.style.transform = 'none';
-                    }
-                    
-                    resultsWrapper.style.position = 'fixed';
-                    resultsWrapper.style.background = 'white';
-                    resultsWrapper.style.zIndex = '1000';
-                    resultsWrapper.style.margin = '0';
-                    resultsWrapper.style.padding = '0';
-                }
-                
-                // Remove any close buttons
-                const closeButtons = document.querySelectorAll('[class*="close"], [class*="cancel"], [class*="dismiss"]');
-                closeButtons.forEach(button => {
-                    button.style.display = 'none';
-                    button.remove();
-                });
-            }
-            
-            // Close results function using Escape key
-            function closeResults() {
-                const resultsWrapper = document.querySelector('.gsc-results-wrapper-visible');
-                if (resultsWrapper) {
-                    resultsWrapper.style.display = 'none';
-                }
-                
-                // Clear search input
-                const searchInput = document.querySelector('.gsc-input input');
-                if (searchInput) {
-                    searchInput.value = '';
-                    searchInput.focus();
-                }
-            }
-            
-            // Apply enhancements multiple times
-            enhanceSearchInput();
-            setTimeout(enhanceSearchInput, 300);
-            setTimeout(enhanceSearchButton, 1000);
-            
-            // Continuous monitoring for Google's DOM changes
-            const fixInterval = setInterval(() => {
-                enhanceSearchInput();
-                enhanceSearchButton();
-                applyResponsiveResultsPosition();
-            }, 200);
-            
-            // Search functionality
-            document.getElementById('customSearchButton').addEventListener('click', function() {
-                const searchInput = document.querySelector('.gsc-input input');
-                if (searchInput && searchInput.value.trim() !== '') {
-                    // Add click effect
-                    this.style.transform = 'scale(0.95)';
-                    setTimeout(() => {
-                        this.style.transform = '';
-                    }, 150);
-                    
-                    // Trigger search
-                    const enterEvent = new KeyboardEvent('keydown', {
-                        key: 'Enter',
-                        code: 'Enter',
-                        keyCode: 13,
-                        which: 13,
-                        bubbles: true
-                    });
-                    searchInput.dispatchEvent(enterEvent);
-                    
-                    // Apply responsive positioning after search
-                    setTimeout(applyResponsiveResultsPosition, 300);
-                    setTimeout(applyResponsiveResultsPosition, 600);
-                    setTimeout(applyResponsiveResultsPosition, 1000);
+                recentList.appendChild(recentItem);
+            });
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Search button click
+            searchButton.addEventListener('click', () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    performSearch(searchTerm);
                 }
             });
             
-            // Close results on ESC key
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    closeResults();
-                }
+            // Enter key in search input
+            searchInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
-                    const searchInput = document.querySelector('.gsc-input input');
-                    if (searchInput && document.activeElement === searchInput) {
-                        document.getElementById('customSearchButton').click();
+                    const searchTerm = searchInput.value.trim();
+                    if (searchTerm) {
+                        performSearch(searchTerm);
                     }
                 }
             });
             
-            // Close results when clicking outside
-            document.addEventListener('click', function(e) {
-                const resultsWrapper = document.querySelector('.gsc-results-wrapper-visible');
-                if (resultsWrapper && resultsWrapper.style.display !== 'none') {
-                    if (e.target === document.body || !resultsWrapper.contains(e.target)) {
-                        closeResults();
-                    }
+            // Real-time search with debounce
+            searchInput.addEventListener('input', () => {
+                clearTimeout(searchTimeout);
+                const searchTerm = searchInput.value.trim();
+                
+                if (searchTerm.length > 1) {
+                    searchTimeout = setTimeout(() => {
+                        performSearch(searchTerm, false);
+                    }, 300);
+                } else {
+                    resultsContainer.style.display = 'none';
                 }
             });
+        }
+
+        // Perform search
+        function performSearch(searchTerm, saveToRecent = true) {
+            if (saveToRecent) {
+                saveRecentSearch(searchTerm);
+            }
             
-            // Handle window resize for responsive design
-            window.addEventListener('resize', function() {
-                applyResponsiveResultsPosition();
+            const filteredResults = allGames.filter(game => {
+                const titleMatch = game.title.toLowerCase().includes(searchTerm.toLowerCase());
+                const descMatch = game.description.toLowerCase().includes(searchTerm.toLowerCase());
+                const categoryMatch = game.category.toLowerCase().includes(searchTerm.toLowerCase());
+                return titleMatch || descMatch || categoryMatch;
             });
             
-            // Aggressive MutationObserver for dynamic changes
-            const observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutation) {
-                    if (mutation.type === 'childList') {
-                        setTimeout(() => {
-                            enhanceSearchInput();
-                            enhanceSearchButton();
-                            applyResponsiveResultsPosition();
-                        }, 50);
+            displaySearchResults(filteredResults, searchTerm);
+        }
+
+        // Save recent search to localStorage
+        function saveRecentSearch(searchTerm) {
+            let recentSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
+            
+            // Remove if already exists
+            recentSearches = recentSearches.filter(item => item !== searchTerm);
+            
+            // Add to beginning
+            recentSearches.unshift(searchTerm);
+            
+            // Keep only last 5 searches
+            if (recentSearches.length > 5) {
+                recentSearches = recentSearches.slice(0, 5);
+            }
+            
+            localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
+            updateRecentSearchesUI(recentSearches);
+        }
+
+        // Display search results - UPDATED VERSION
+        function displaySearchResults(results, searchTerm) {
+            resultsList.innerHTML = '';
+            
+            if (results.length === 0) {
+                resultsList.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-search"></i>
+                        <p>No results found for "${searchTerm}"</p>
+                        <p>Try different keywords</p>
+                    </div>
+                `;
+            } else {
+                results.forEach(result => {
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'result-item';
+                    
+                    // Add firebase-result class for Firebase data
+                    if (result.id && typeof result.id === 'string' && result.id.includes('-')) {
+                        resultItem.classList.add('firebase-result');
                     }
+                    
+                    // Use image if available, otherwise use icon
+                    const iconOrImage = result.image ? 
+                        `<img src="${result.image}" alt="${result.title}" class="game-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">` : 
+                        '';
+                    
+                    resultItem.innerHTML = `
+                        <div class="result-icon" style="${result.image ? 'display:none' : 'display:flex'}">
+                            <i class="${result.icon || 'fas fa-cube'}"></i>
+                        </div>
+                        ${iconOrImage}
+                        <div class="result-content">
+                            <div class="result-title">${result.title}</div>
+                            <div class="result-description">${result.description}</div>
+                            <div class="result-time">${result.category || 'General'}</div>
+                        </div>
+                    `;
+                    
+                    resultItem.addEventListener('click', () => {
+                        if (result.url && result.url !== '#') {
+                            window.location.href = result.url;
+                        }
+                    });
+                    
+                    resultsList.appendChild(resultItem);
                 });
-            });
+            }
             
-            observer.observe(document.body, {
-                childList: true,
-                subtree: true,
-                attributes: true,
-                attributeFilter: ['style', 'class']
+            resultsContainer.style.display = 'block';
+        }
+
+        // Card click tracking
+        document.querySelectorAll('.card-item').forEach(card => {
+            card.addEventListener('click', function() {
+                const cardId = this.getAttribute('data-id');
+                console.log(`Card clicked: ${cardId}`);
             });
-            
-            // Stop interval after 15 seconds
-            setTimeout(() => {
-                clearInterval(fixInterval);
-            }, 15000);
         });
     </script>
 </body>
