@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tevra Search</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #007acc, #005c99);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            margin-top: 0mm;
+            margin-bottom: 40mm;
+        }
+        
+        .main-wrapper {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .header h1 {
+            color: white;
+            font-size: 2rem;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            font-weight: 600;
+        }
+        
+        .header p {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.95rem;
+            max-width: 400px;
+            margin: 0 auto;
+            line-height: 1.4;
+            text-align: center;
+        }
+        
+        /* Search Box Styles */
+        .search-container {
+            width: 100%;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 12px 18px;
+            width: 95%;
+            max-width: 500px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(5px);
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .search-box:focus-within {
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+        }
+        
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 6px;
+            width: 100%;
+            outline: none;
+            font-size: 1rem;
+        }
+        
+        .search-box input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        .search-box i {
+            color: white;
+            margin-left: 8px;
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        
+        /* Search Button */
+        .search-button {
+            background: rgba(255, 255, 255, 0.25);
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 0 auto;
+            width: 200px;
+            max-width: 80%;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .search-button:hover {
+            background: rgba(255, 255, 255, 0.35);
+            transform: translateY(-1px);
+        }
+        
+        /* Recent Searches Section */
+        .recent-searches {
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        
+        .recent-title {
+            font-size: 1rem;
+            color: white;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            width: 95%;
+            max-width: 500px;
+        }
+        
+        .recent-title i {
+            margin-right: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .recent-list {
+            display: flex;
+            overflow-x: auto;
+            gap: 8px;
+            padding-bottom: 8px;
+            scrollbar-width: thin;
+            width: 95%;
+            max-width: 500px;
+            justify-content: flex-start;
+        }
+        
+        .recent-list::-webkit-scrollbar {
+            height: 4px;
+        }
+        
+        .recent-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
+        
+        .recent-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+        }
+        
+        .recent-item {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 6px 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            flex-shrink: 0;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.85rem;
+        }
+        
+        .recent-item:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        
+        .recent-item i {
+            margin-right: 5px;
+            font-size: 0.8rem;
+        }
+        
+        /* Results Container */
+        .results-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            max-height: 350px;
+            overflow-y: auto;
+            display: none;
+            width: 95%;
+            max-width: 500px;
+        }
+        
+        .results-title {
+            font-size: 1.1rem;
+            color: #005c99;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(0, 92, 153, 0.2);
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .results-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .result-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border-left: 3px solid #007acc;
+        }
+        
+        .result-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+        }
+        
+        .result-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #007acc, #005c99);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            color: white;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .result-content {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .result-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #005c99;
+            margin-bottom: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .result-description {
+            font-size: 0.8rem;
+            color: #666;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .result-time {
+            font-size: 0.75rem;
+            color: #999;
+            margin-top: 3px;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 20px 15px;
+            color: #666;
+        }
+        
+        .no-results i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #ccc;
+        }
+        
+        .no-results p {
+            font-size: 0.9rem;
+        }
+
+        /* Firebase Results */
+        .firebase-result {
+            border-left: 3px solid #00cc88;
+        }
+
+        .game-logo {
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            object-fit: cover;
+            margin-right: 12px;
+            border: 1px solid rgba(0, 92, 153, 0.2);
+            flex-shrink: 0;
+        }
+        
+        /* Card Section - Enhanced Responsive Styles */
+        .card-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            justify-items: center;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .card-item {
+            text-align: center;
+            margin: 5px;
+            transition: all 0.3s ease;
+            position: relative;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .card {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background-size: cover;
+            background-position: center;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .card:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+
+        .card-title {
+            margin-top: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            line-height: 1.3;
+            padding: 0 5px;
+            text-align: center;
+        }
+        
+        /* Detailed Card Styles */
+        .detailed-card {
+            width: 350px;
+            height: 230px;
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            flex-shrink: 0;
+            scroll-snap-align: center;
+            margin: 15px;
+        }
+        
+        .card-hero {
+            width: 100%;
+            height: 100%;
+            background-size: 100% 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            position: relative;
+        }
+        
+        .overlay {
+            background: rgba(0,0,0,0.55);
+            color: white;
+            padding: 14px;
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        
+        .cover {
+            width: 70px;
+            height: 70px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        
+        .text-block {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 70px;
+            width: 100%;
+            position: relative;
+        }
+        
+        .title {
+            font-size: 16px;
+            font-weight: 700;
+            margin: 0;
+        }
+        
+        .about {
+            font-size: 10px;
+            color: #d1d5db;
+            margin: 0;
+        }
+        
+        .info-line {
+            display: flex;
+            align-items: center;
+            font-size: 11px;
+            gap: 8px;
+            margin-top: 2px;
+            position: relative;
+        }
+        
+        .info-line span {
+            color: #f1f5f9;
+        }
+        
+        .btn {
+            font-size: 10px;
+            background: var(--accent);
+            border: none;
+            border-radius: 6px;
+            padding: 4px 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            position: absolute;
+            right: 5mm;
+        }
+        
+        .btn:active {
+            transform: scale(0.95);
+        }
+        
+        /* Responsive Styles */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 700px;
+                margin-top: 40px;
+            }
+            
+            .header h1 {
+                font-size: 2.2rem;
+                margin-bottom: 10px;
+            }
+            
+            .header p {
+                font-size: 1rem;
+            }
+            
+            .search-box {
+                padding: 14px 20px;
+                margin-bottom: 15px;
+                max-width: 550px;
+            }
+            
+            .search-box input {
+                font-size: 1.1rem;
+            }
+            
+            .search-button {
+                padding: 12px 25px;
+                font-size: 1rem;
+                width: 220px;
+            }
+            
+            .recent-title {
+                font-size: 1.1rem;
+                margin-bottom: 15px;
+                max-width: 550px;
+            }
+            
+            .recent-item {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .results-container {
+                padding: 20px;
+                max-height: 100%;
+                max-width: 100%;
+            }
+            
+            .results-title {
+                font-size: 1.2rem;
+                margin-bottom: 15px;
+            }
+            
+            .result-item {
+                padding: 12px 15px;
+            }
+            
+            .result-icon, .game-logo {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .result-title {
+                font-size: 1rem;
+            }
+            
+            .result-description {
+                font-size: 0.85rem;
+            }
+            
+            /* Card section for tablets */
+            .card-section {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                gap: 15px;
+            }
+            
+            .card {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .card-title {
+                font-size: 0.95rem;
+                margin-top: 10px;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 800px;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .search-button {
+                width: 200px;
+            }
+            
+            .results-container {
+                max-height: 450px;
+                max-width: 600px;
+            }
+            
+            /* Card section for desktop */
+            .card-section {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 20px;
+                max-width: 900px;
+            }
+            
+            .card {
+                width: 130px;
+                height: 130px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                margin-top: 15px;
+            }
+            
+            .header {
+                margin-bottom: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.7rem;
+            }
+            
+            .header p {
+                font-size: 0.9rem;
+            }
+            
+            .search-box {
+                padding: 10px 15px;
+                max-width: 400px;
+            }
+            
+            .search-button {
+                width: 180px;
+                padding: 9px 18px;
+                font-size: 0.9rem;
+            }
+            
+            .recent-title {
+                font-size: 0.95rem;
+                max-width: 400px;
+            }
+            
+            .recent-item {
+                padding: 5px 10px;
+                font-size: 0.8rem;
+            }
+            
+            .results-container {
+                padding: 12px;
+                max-height: 300px;
+                max-width: 400px;
+            }
+            
+            .result-item {
+                padding: 8px 10px;
+            }
+            
+            .result-icon, .game-logo {
+                width: 32px;
+                height: 32px;
+                margin-right: 10px;
+            }
+            
+            .result-title {
+                font-size: 0.9rem;
+            }
+            
+            .result-description {
+                font-size: 0.75rem;
+            }
+            
+            /* Card section for mobile */
+            .card-section {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+                gap: 8px;
+                max-width: 500px;
+            }
+            
+            .card {
+                width: 85px;
+                height: 85px;
+            }
+            
+            .card-title {
+                font-size: 0.75rem;
+                margin-top: 6px;
+            }
+        }
+
+        /* Extra small devices */
+        @media (max-width: 360px) {
+            .card-section {
+                grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+                gap: 6px;
+                max-width: 400px;
+            }
+            
+            .card {
+                width: 75px;
+                height: 75px;
+            }
+            
+            .card-title {
+                font-size: 0.7rem;
+            }
+            
+            .search-box {
+                max-width: 320px;
+            }
+            
+            .recent-title {
+                max-width: 320px;
+            }
+            
+            .results-container {
+                max-width: 320px;
+            }
+        }
+        
+        /* Animation for results container */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .results-container[style*="display: block"] {
+            animation: fadeIn 0.3s ease forwards;
+        }
+        
+                .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin-top: 0mm;
+        }
+        
+        .logo-card {
+            background: linear-gradient(135deg, #007acc, #005c99);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .logo-container {
+            position: relative;
+            
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            margin-top: 7mm;
+        }
+        
+        .logo-circle {
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 4px solid transparent;
+            animation: rotate 8s linear infinite;
+        }
+        
+        .logo-circle:nth-child(1) {
+            border-top-color: #6a11cb;
+            border-bottom-color: #6a11cb;
+            animation-duration: 6s;
+        }
+        
+        .logo-circle:nth-child(2) {
+            border-left-color: white;
+            border-right-color: white;
+            animation-duration: 8s;
+            animation-direction: reverse;
+            width: 160px;
+            height: 160px;
+        }
+        
+        .logo-circle:nth-child(3) {
+            border-top-color: #ff4b4b;
+            border-right-color: #ff4b4b;
+            animation-duration: 10s;
+            width: 140px;
+            height: 140px;
+        }
+        
+        .logo-text {
+            position: relative;
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(45deg, #6a11cb, #2575fc, #ff4b4b, #2575fc, #6a11cb);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 2px;
+            animation: gradientText 4s ease infinite, pulse 2s ease-in-out infinite;
+            /* উন্নতি: টেক্সট আউটলাইন যোগ */
+            text-shadow: 0px 0px 3px rgba(0, 0, 0, 0.1);
+            padding: 5px;
+        }
+        
+        .logo-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, #6a11cb, #2575fc);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 20px rgba(37, 117, 252, 0.4);
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .logo-icon-inner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid white;
+            border-radius: 12px;
+            position: relative;
+            animation: rotate 5s linear infinite;
+        }
+        
+        .logo-icon-inner::after {
+            content: "";
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: white;
+            border-radius: 50%;
+            top: -8px;
+            right: -8px;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        /* T letter in the center */
+        .center-t {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 40px;
+            font-weight: 900;
+            color: white;
+            z-index: 10;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+         /* Animations */
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes gradientText {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes symbolPulse {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+        
+        @keyframes float {
+            0% { transform: translate(-50%, -50%); }
+            50% { transform: translate(-50%, -55%); }
+            100% { transform: translate(-50%, -50%); }
+        }
+        
+        @keyframes fadeInOut {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+
+        /* উন্নতি: মোবাইল রেস্পন্সিভনেস */
+        @media (max-width: 600px) {
+            .logo-card {
+                padding: 25px;
+            }
+            
+            .logo-container {
+                height: 160px;
+            }
+            
+            .logo-circle {
+                width: 140px;
+                height: 140px;
+            }
+            
+            .logo-circle:nth-child(2) {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .logo-circle:nth-child(3) {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .logo-icon {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .logo-icon-inner {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .logo-text {
+                font-size: 36px;
+            }
+            
+            .center-t {
+                font-size: 30px;
+            }
+            
+            .tagline {
+                font-size: 18px;
+            }
+            
+            button {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .logo-text {
+                font-size: 32px;
+            }
+            
+            .center-t {
+                font-size: 28px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            button {
+                width: 100%;
+                max-width: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+	
+	<div class="container">
+        <div class="logo-card">
+            <div class="logo-container">
+                <div class="logo-circle"></div>
+                <div class="logo-circle"></div>
+                <div class="logo-circle"></div>
+                
+                <div class="logo-icon">
+                    <div class="logo-icon-inner"></div>
+                </div>
+                
+                <div class="center-t">T</div>
+              </div>
+                
+                
+                
+    <div class="main-wrapper">
+        <div class="container">
+            <div class="header">
+                <h1>Tevra Search</h1>
+            </div>
+            
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search calculators, tools...">
+                    <i class="fas fa-search"></i>
+                </div>
+                
+                <button class="search-button" id="searchButton">
+                    <i class="fas fa-search"></i>
+                    Search
+                </button>
+            </div>
+            
+            <div class="results-container" id="resultsContainer">
+                <h2 class="results-title">Search Results</h2>
+                <div class="results-list" id="resultsList">
+                    <!-- Search results will be populated here -->
+                </div>
+            </div>
+            
+            <div class="recent-searches">
+                <h3 class="recent-title"><i class="fas fa-history"></i> Recent Searches</h3>
+                <div class="recent-list" id="recentList">
+                    <!-- Recent searches will be populated here -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-section" id="cardContainer">
+            <div class="card-item" data-id="basic-calculator">
+                <a href="calculator/main.html" class="card-link">
+                    <div class="card" style="background-image: url('calculator/image/20250929_223342.jpg');"></div>
+                    <div class="card-title">All Calculator</div>
+                </a>
+            </div>
+            <div class="card-item" data-id="right-angle">
+                <a href="right-angle.html" class="card-link">
+                    <div class="card" style="background-image: url('image/right-angle.png');"></div>
+                    <div class="card-title">Right Angle</div>
+                </a>
+            </div>
+            <div class="card-item" data-id="financial-calculator">
+                <a href="financial-calculator.html" class="card-link">
+                    <div class="card" style="background-image: url('image/financial-calculato_3.jpg');"></div>
+                    <div class="card-title">Financial Calculator</div>
+                </a>
+            </div>
+            <div class="card-item" data-id="scientific-calculator">
+                <a href="scientific-calculator.html" class="card-link">
+                    <div class="card" style="background-image: url('image/Scientific-Calculator2.jpg');"></div>
+                    <div class="card-title">Scientific Calculator</div>
+                </a>
+            </div>
+            
+            <div class="card-item" data-id="bmi-calculator">
+                <a href="bmi-calculator.html" class="card-link">
+                    <div class="card" style="background-image: url('image/bmi_calculator.jpg');"></div>
+                    <div class="card-title">BMI Calculator</div>
+                </a>
+            </div>
+            
+            <div class="card-item" data-id="age-calculator">
+                <a href="age-calculator.html" class="card-link">
+                    <div class="card" style="background-image: url('image/CalcPro_age.jpg');"></div>
+                    <div class="card-title">Age Calculator</div>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Detailed Cards Section -->
+<div style="display: flex; flex-wrap: wrap; justify-content: center; margin-top: 30px; width: 100%; max-width: 1200px;">
+    
+    <!-- Card 1 -->
+    <a href="song1.html" style="text-decoration:none; color:inherit;">
+        <div class="detailed-card">
+            <div class="card-hero" style="background:url('https://picsum.photos/id/1015/800/400') no-repeat center;">
+                <div class="overlay">
+                    <img src="https://picsum.photos/id/1011/70" alt="cover" class="cover">
+                    <div class="text-block">
+                        <div class="title">Lagao Ghut • প্রেমের গান</div>
+                        <div class="about">হৃদয়স্পর্শী গান যা ভালোবাসা ও বেদনার অনুভব প্রকাশ করে।</div>
+                        <div class="info-line">
+                            <span>⭐ 4.2</span>
+                            <span>4.6 MB</span>
+                            <span>3:45 • MP3</span>
+                            <button class="btn">ডাউনলোড</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </a>
+
+    <!-- Card 2 -->
+    <a href="song2.html" style="text-decoration:none; color:inherit;">
+        <div class="detailed-card">
+            <div class="card-hero" style="background:url('https://picsum.photos/id/1016/800/400') no-repeat center;">
+                <div class="overlay">
+                    <img src="https://picsum.photos/id/1027/70" alt="cover" class="cover">
+                    <div class="text-block">
+                        <div class="title">প্রেমের রঙ</div>
+                        <div class="about">মেলোডি আর কথার মিশ্রণে রোমান্টিক ছোঁয়া।</div>
+                        <div class="info-line">
+                            <span>⭐ 4.5</span>
+                            <span>5.2 MB</span>
+                            <span>4:12 • MP3</span>
+                            <button class="btn">ডাউনলোড</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </a>
+
+    <!-- Card 3 -->
+    <a href="song3.html" style="text-decoration:none; color:inherit;">
+        <div class="detailed-card">
+            <div class="card-hero" style="background:url('https://picsum.photos/id/1020/800/400') no-repeat center;">
+                <div class="overlay">
+                    <img src="https://picsum.photos/id/1005/70" alt="cover" class="cover">
+                    <div class="text-block">
+                        <div class="title">স্মৃতির ডায়েরি</div>
+                        <div class="about">পুরনো দিনের আবেগঘন কণ্ঠস্বর।</div>
+                        <div class="info-line">
+                            <span>⭐ 4.8</span>
+                            <span>6.0 MB</span>
+                            <span>5:01 • MP3</span>
+                            <button class="btn">ডাউনলোড</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </a>
+
+    <!-- Card 4 -->
+    <a href="song4.html" style="text-decoration:none; color:inherit;">
+        <div class="detailed-card">
+            <div class="card-hero" style="background:url('https://picsum.photos/id/1035/800/400') no-repeat center;">
+                <div class="overlay">
+                    <img src="https://picsum.photos/id/1025/70" alt="cover" class="cover">
+                    <div class="text-block">
+                        <div class="title">ভালোবাসার আলো</div>
+                        <div class="about">নতুন প্রজন্মের জন্য হৃদয় ছোঁয়া মিউজিক।</div>
+                        <div class="info-line">
+                            <span>⭐ 4.1</span>
+                            <span>3.8 MB</span>
+                            <span>3:22 • MP3</span>
+                            <button class="btn">ডাউনলোড</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </a>
+
+    <!-- Card 5 -->
+    <a href="song5.html" style="text-decoration:none; color:inherit;">
+        <div class="detailed-card">
+            <div class="card-hero" style="background:url('https://picsum.photos/id/1043/800/400') no-repeat center;">
+                <div class="overlay">
+                    <img src="https://picsum.photos/id/1022/70" alt="cover" class="cover">
+                    <div class="text-block">
+                        <div class="title">রাত্রির সুর</div>
+                        <div class="about">নীরব রাতকে সঙ্গ দেবে মিষ্টি সুরেলা কণ্ঠ।</div>
+                        <div class="info-line">
+                            <span>⭐ 4.7</span>
+                            <span>4.9 MB</span>
+                            <span>4:35 • MP3</span>
+                            <button class="btn">ডাউনলোড</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </a>
+
+</div>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyC6xR0y7YQJQYQYQYQYQYQYQYQYQYQYQYQY",
+            authDomain: "tevra-search.firebaseapp.com",
+            databaseURL: "https://tevra-search-default-rtdb.firebaseio.com",
+            projectId: "tevra-search",
+            storageBucket: "tevra-search.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdefghijklmnopqrstuvwxyz"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // DOM elements
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const recentList = document.getElementById('recentList');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const resultsList = document.getElementById('resultsList');
+        const cardContainer = document.getElementById('cardContainer');
+
+        // Search functionality
+        function performSearch() {
+            const query = searchInput.value.trim();
+            if (query === '') return;
+
+            // Save to recent searches
+            saveToRecentSearches(query);
+            
+            // Display results
+            displaySearchResults(query);
+            
+            // Show results container
+            resultsContainer.style.display = 'block';
+        }
+
+        // Save search to recent searches
+        function saveToRecentSearches(query) {
+            let recentSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
+            
+            // Remove if already exists
+            recentSearches = recentSearches.filter(item => item !== query);
+            
+            // Add to beginning
+            recentSearches.unshift(query);
+            
+            // Keep only last 5 searches
+            if (recentSearches.length > 5) {
+                recentSearches = recentSearches.slice(0, 5);
+            }
+            
+            localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
+            displayRecentSearches();
+        }
+
+        // Display recent searches
+        function displayRecentSearches() {
+            const recentSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
+            recentList.innerHTML = '';
+            
+            recentSearches.forEach(search => {
+                const recentItem = document.createElement('div');
+                recentItem.className = 'recent-item';
+                recentItem.innerHTML = `<i class="fas fa-clock"></i> ${search}`;
+                recentItem.addEventListener('click', () => {
+                    searchInput.value = search;
+                    performSearch();
+                });
+                recentList.appendChild(recentItem);
+            });
+        }
+
+        // Display search results
+        function displaySearchResults(query) {
+            resultsList.innerHTML = '';
+            
+            // Get all calculator cards
+            const cards = document.querySelectorAll('.card-item');
+            let foundResults = false;
+            
+            cards.forEach(card => {
+                const title = card.querySelector('.card-title').textContent.toLowerCase();
+                const dataId = card.getAttribute('data-id').toLowerCase();
+                
+                if (title.includes(query.toLowerCase()) || dataId.includes(query.toLowerCase())) {
+                    foundResults = true;
+                    
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'result-item';
+                    resultItem.innerHTML = `
+                        <div class="game-logo" style="background-image: url('${card.querySelector('.card').style.backgroundImage.replace(/url\(['"](.+)['"]\)/, '$1')}');"></div>
+                        <div class="result-content">
+                            <div class="result-title">${card.querySelector('.card-title').textContent}</div>
+                            <div class="result-description">Calculator tool for ${card.querySelector('.card-title').textContent}</div>
+                            <div class="result-time">Just now</div>
+                        </div>
+                    `;
+                    
+                    resultItem.addEventListener('click', () => {
+                        window.location.href = card.querySelector('a').href;
+                    });
+                    
+                    resultsList.appendChild(resultItem);
+                }
+            });
+            
+            // If no results found
+            if (!foundResults) {
+                resultsList.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-search"></i>
+                        <p>No results found for "${query}"</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Event listeners
+        searchButton.addEventListener('click', performSearch);
+        
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        // Initialize recent searches on page load
+        displayRecentSearches();
+    </script>
+</body>
+</html>
