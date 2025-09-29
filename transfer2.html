@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transfer Money - Digital Wallet</title>
+  <link rel="stylesheet" href="css/transaction.css">
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f9f9f9;
+      padding: 20px;
+    }
+
+    .form-group {
+      margin: 2rem auto;
+      width: 90%;
+      max-width: 500px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: #333;
+    }
+
+    .input-with-icons {
+      position: relative;
+    }
+
+    .input-with-icons input {
+      width: 100%;
+      padding: 0.75rem;
+      padding-right: 70px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .input-icons {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      background: #eee;
+      border: none;
+      padding: 8px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .icon-btn:hover {
+      background: #ddd;
+    }
+
+    .icon-btn svg {
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+
+    .scanner-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 1000;
+    }
+
+    .scanner-container {
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    #qr-reader {
+      width: 100% !important;
+      margin: 0 auto;
+      border: 2px solid white;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .scan-instruction {
+      color: white;
+      margin-top: 1rem;
+      font-size: 1.1rem;
+    }
+
+    .scanner-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .cancel-scan, .upload-image {
+      background: #ff4444;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.2s;
+    }
+
+    .upload-image {
+      background: #2196f3;
+    }
+
+    .cancel-scan:hover {
+      background: #cc0000;
+    }
+
+    .upload-image:hover {
+      background: #1976d2;
+    }
+
+    .back-button {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      margin-bottom: 1rem;
+      color: #333;
+    }
+
+    .camera-switch {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.2s;
+      margin-top: 1rem;
+    }
+
+    .camera-switch:hover {
+      background: #3e8e41;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <button class="back-button" onclick="window.history.back()">←</button>
+    <header>
+      <h1>Transfer Money</h1>
+    </header>
+    
+    <main>
+      <form id="transferForm">
+        <div class="form-group">
+          <label for="recipientUid">Recipient Wallet Address</label>
+          <div class="input-with-icons">
+            <input type="text" id="recipientUid" placeholder="Enter CRX address (38 characters)" required>
+            <div class="input-icons">
+              <button type="button" class="icon-btn paste-btn" title="Paste from clipboard">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                  <rect x="8" y="2" width="8" height="4" rx="1"/>
+                </svg>
+              </button>
+              <button type="button" class="icon-btn scan-btn" title="Scan QR code">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M3 7V5a2 2 0 0 1 2-2h2m10 0h2a2 2 0 0 1 2 2v2m0 10v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="amount">Amount (CRX)</label>
+          <input type="number" id="amount" min="1" step="0.01" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="mpin">Your 6-digit MPIN</label>
+          <input type="password" id="mpin" maxlength="6" pattern="\d{6}" required>
+        </div>
+        
+        <button type="submit" class="btn" id="transferBtn">Transfer Now</button>
+      </form>
+    </main>
+  </div>
+   
+  <script>
+    // উন্নত পেস্ট ফাংশনালিটি
+    document.querySelector('.paste-btn').addEventListener('click', async function() {
+      const inputField = document.getElementById('recipientUid');
+      try {
+        const text = await navigator.clipboard.readText();
+        if (validateCRXAddress(text)) {
+          inputField.value = text;
+        } else {
+          throw new Error('Invalid CRX format');
+        }
+      } catch (err) {
+        showAlert('Please paste (Ctrl+V) a valid CRX address manually');
+        inputField.focus();
+      }
+    });
+
+    // QR স্ক্যানার ইমপ্লিমেন্টেশন (GitHub Pages অপ্টিমাইজড)
+    document.querySelector('.scan-btn').addEventListener('click', function() {
+      const modalHtml = `
+        <div class="scanner-modal">
+          <div class="scanner-container">
+            <div id="qr-reader" style="width:500px"></div>
+            <p class="scan-instruction">Place QR code in frame</p>
+            <div class="scanner-footer">
+              <button class="upload-image">Upload Image</button>
+              <button class="cancel-scan">Cancel</button>
+            </div>
+          </div>
+        </div>`;
+      
+      const modal = createModal(modalHtml);
+      setupScanner(modal);
+    });
+
+    // ভ্যালিডেশন ফাংশন
+    function validateCRXAddress(address) {
+      return address.length === 38 && address.startsWith("CRX");
+    }
+
+    // অ্যালার্ট প্রদর্শন
+    function showAlert(message) {
+      const alertBox = document.createElement('div');
+      alertBox.className = 'custom-alert';
+      alertBox.textContent = message;
+      document.body.appendChild(alertBox);
+      setTimeout(() => alertBox.remove(), 3000);
+    }
+
+    // মোডাল তৈরি
+    function createModal(html) {
+      const modal = document.createElement('div');
+      modal.innerHTML = html;
+      document.body.appendChild(modal);
+      return modal;
+    }
+
+    // স্ক্যানার সেটআপ (GitHub Pages কম্প্যাটিবল)
+    function setupScanner(modal) {
+      const inputField = document.getElementById('recipientUid');
+      const qrScanner = new Html5Qrcode("qr-reader");
+      let activeCamera = null;
+
+      // ক্যামেরা স্টার্ট
+      function startCamera(cameraId) {
+        return qrScanner.start(
+          cameraId,
+          { fps: 10, qrbox: 250 },
+          qrSuccessHandler,
+          qrErrorHandler
+        ).then(() => { activeCamera = cameraId; });
+      }
+
+      // স্ক্যান সাকসেস হ্যান্ডলার
+      function qrSuccessHandler(decodedText) {
+        if (validateCRXAddress(decodedText)) {
+          inputField.value = decodedText;
+          closeScanner();
+        } else {
+          showAlert('Invalid CRX address in QR');
+        }
+      }
+
+      // এরর হ্যান্ডলার
+      function qrErrorHandler(error) {
+        console.error("QR Error:", error);
+        showAlert('Scanning failed. Try image upload.');
+      }
+
+      // স্ক্যানার বন্ধ
+      function closeScanner() {
+        qrScanner.stop().finally(() => modal.remove());
+      }
+
+      // ইমেজ আপলোড হ্যান্ডলার (GitHub Pages ফ্রেন্ডলি)
+      modal.querySelector('.upload-image').addEventListener('click', () => {
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.onchange = async (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+
+          try {
+            const decodedText = await qrScanner.scanFile(file, true);
+            if (validateCRXAddress(decodedText)) {
+              inputField.value = decodedText;
+              closeScanner();
+            } else {
+              showAlert('QR does not contain valid CRX address');
+            }
+          } catch (err) {
+            showAlert('Failed to scan image: ' + err.message);
+          }
+        };
+        fileInput.click();
+      });
+
+      // ক্যান্সেল বাটন
+      modal.querySelector('.cancel-scan').addEventListener('click', closeScanner);
+
+      // ক্যামেরা ইনিশিয়ালাইজেশন
+      Html5Qrcode.getCameras()
+        .then(devices => {
+          if (devices.length) {
+            const backCamera = devices.find(d => d.label.includes('back'));
+            return startCamera(backCamera?.id || devices[0].id);
+          }
+          showAlert('No camera found. Use image upload.');
+        })
+        .catch(err => {
+          console.error("Camera Error:", err);
+          showAlert('Camera access denied. Use image upload.');
+        });
+    }
+
+    // GitHub Pages-এর জন্য অতিরিক্ত স্টাইল
+    const style = document.createElement('style');
+    style.textContent = `
+      .custom-alert {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #ff4444;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        z-index: 1001;
+        animation: fadeInOut 3s;
+      }
+      @keyframes fadeInOut {
+        0%, 100% { opacity: 0; }
+        10%, 90% { opacity: 1; }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+
+  <script type="module" src="js/wallet.js"></script>
+  <script type="module" src="js/transactionWindow.js"></script>
+</body>
+</html>
