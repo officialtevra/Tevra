@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile - Digital Wallet</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    :root {
+      --primary: #007acc;
+      --primary-dark: #005c99;
+      --primary-darker: #003d66;
+      --secondary: #00c9a7;
+      --accent: #ff6b6b;
+      --light: #f8f9fa;
+      --dark: #2c3e50;
+      --gray: #6c757d;
+      --success: #28a745;
+      --warning: #ffc107;
+      --danger: #dc3545;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      --radius: 12px;
+      --transition: all 0.3s ease;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: var(--dark);
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .profile-container {
+      width: 100%;
+      max-width: 480px;
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .profile-header {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary-darker));
+      color: white;
+      padding: 25px 20px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .back-button {
+      color: white;
+      text-decoration: none;
+      font-size: 1.5rem;
+      font-weight: bold;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: var(--transition);
+      background: rgba(255, 255, 255, 0.15);
+      border: none;
+      cursor: pointer;
+      backdrop-filter: blur(5px);
+    }
+    
+    .back-button:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: scale(1.1);
+    }
+    
+    .menu-button {
+      color: white;
+      text-decoration: none;
+      font-size: 1.5rem;
+      font-weight: bold;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: var(--transition);
+      background: rgba(255, 255, 255, 0.15);
+      border: none;
+      cursor: pointer;
+      backdrop-filter: blur(5px);
+    }
+    
+    .menu-button:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: scale(1.1);
+    }
+    
+    .profile-header h1 {
+      font-size: 1.5rem;
+      margin: 0;
+      font-weight: 600;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    .profile-main {
+      padding: 0;
+    }
+    
+    .profile-card {
+      padding: 25px;
+    }
+    
+    .profile-picture-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 25px;
+      position: relative;
+    }
+    
+    .profile-picture-container {
+      position: relative;
+      margin-bottom: 15px;
+    }
+    
+    .profile-picture {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid white;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .profile-picture:hover {
+      transform: scale(1.05);
+    }
+    
+    .profile-picture-edit {
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      background: var(--secondary);
+      color: white;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: var(--transition);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      border: 2px solid white;
+    }
+    
+    .profile-picture-edit:hover {
+      background: var(--primary);
+      transform: scale(1.1);
+    }
+    
+    .profile-name {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 5px;
+    }
+    
+    .profile-email {
+      color: var(--gray);
+      font-size: 0.95rem;
+      margin-bottom: 15px;
+    }
+    
+    .social-icons {
+      display: flex;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    
+    .social-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .social-icon:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    
+    .social-facebook { background: #1877f2; }
+    .social-twitter { background: #1da1f2; }
+    .social-whatsapp { background: #25d366; }
+    .social-telegram { background: #0088cc; }
+    .social-linkedin { background: #0a66c2; }
+    
+    .hidden {
+      display: none;
+    }
+    
+    #imageUpload {
+      display: none;
+    }
+    
+    .profile-info-section {
+      margin-bottom: 25px;
+    }
+    
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    
+    .info-card {
+      background: var(--light);
+      border-radius: var(--radius);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      transition: var(--transition);
+      border-left: 4px solid var(--primary);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    .info-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .info-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(0, 122, 204, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      color: var(--primary);
+      font-size: 1.1rem;
+    }
+    
+    .info-content {
+      flex: 1;
+    }
+    
+    .info-label {
+      font-size: 0.85rem;
+      color: var(--gray);
+      margin-bottom: 4px;
+    }
+    
+    .info-value {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--dark);
+    }
+    
+    .wallet-balance {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 25px;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+    
+    .balance-label {
+      font-size: 0.9rem;
+      opacity: 0.9;
+      margin-bottom: 8px;
+    }
+    
+    .balance-amount {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+    
+    .balance-address {
+      font-size: 0.85rem;
+      opacity: 0.8;
+      font-family: monospace;
+      word-break: break-all;
+    }
+    
+    .section-title {
+      color: var(--dark);
+      margin-bottom: 15px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .section-title i {
+      color: var(--primary);
+    }
+    
+    .security-section {
+      margin-bottom: 25px;
+    }
+    
+    .action-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .btn {
+      padding: 14px 16px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-weight: 600;
+      transition: var(--transition);
+      border: none;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 0.95rem;
+    }
+    
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 2px 8px rgba(0, 122, 204, 0.3);
+    }
+    
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 122, 204, 0.4);
+    }
+    
+    .btn-secondary {
+      background: var(--light);
+      color: var(--primary);
+      border: 1px solid rgba(0, 122, 204, 0.2);
+    }
+    
+    .btn-secondary:hover {
+      background: rgba(0, 122, 204, 0.05);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+      box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+    }
+    
+    .btn-danger:hover {
+      background: #c82333;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+    }
+    
+    .logout-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--danger), #c82333);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      margin-top: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+    }
+    
+    .logout-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+    }
+    
+    .form-container {
+      background: var(--light);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--dark);
+      font-size: 0.95rem;
+    }
+    
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid #ddd;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      transition: var(--transition);
+      background: white;
+    }
+    
+    .form-group input:focus, .form-group select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0, 122, 204, 0.2);
+      outline: none;
+    }
+    
+    .form-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 25px;
+      gap: 10px;
+    }
+    
+    .form-actions .btn {
+      width: 48%;
+      margin: 0;
+    }
+    
+    /* Menu Styles */
+    .menu-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      display: none;
+    }
+    
+    .menu-container {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 280px;
+      height: 100%;
+      background: white;
+      z-index: 1001;
+      transform: translateX(100%);
+      transition: var(--transition);
+      box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .menu-container.active {
+      transform: translateX(0);
+    }
+    
+    .menu-header {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary-darker));
+      color: white;
+      padding: 25px 20px;
+      text-align: center;
+    }
+    
+    .menu-header h2 {
+      font-size: 1.3rem;
+      margin: 0;
+      font-weight: 600;
+    }
+    
+    .menu-items {
+      flex: 1;
+      padding: 20px 0;
+      overflow-y: auto;
+    }
+    
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 16px 20px;
+      color: var(--dark);
+      text-decoration: none;
+      transition: var(--transition);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      cursor: pointer;
+    }
+    
+    .menu-item:hover {
+      background: rgba(0, 122, 204, 0.05);
+      color: var(--primary);
+    }
+    
+    .menu-item i {
+      width: 24px;
+      margin-right: 15px;
+      font-size: 1.1rem;
+    }
+    
+    .menu-item span {
+      font-weight: 500;
+    }
+    
+    .menu-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .menu-close:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.1);
+    }
+    
+    /* Modal Windows */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 2000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    .modal-overlay.active {
+      display: flex;
+    }
+    
+    .modal-container {
+      background: white;
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 450px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow);
+      animation: modalFadeIn 0.3s ease-out;
+    }
+    
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    
+    .modal-header {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary-darker));
+      color: white;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+    
+    .modal-header h2 {
+      font-size: 1.3rem;
+      margin: 0;
+      font-weight: 600;
+    }
+    
+    .modal-close {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .modal-close:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.1);
+    }
+    
+    .modal-body {
+      padding: 25px;
+    }
+    
+    /* Responsive Styles */
+    @media (max-width: 480px) {
+      body {
+        padding: 15px;
+        align-items: flex-start;
+      }
+      
+      .profile-container {
+        border-radius: var(--radius);
+      }
+      
+      .profile-header {
+        padding: 20px 15px;
+      }
+      
+      .profile-header h1 {
+        font-size: 1.3rem;
+      }
+      
+      .profile-card {
+        padding: 20px;
+      }
+      
+      .action-buttons {
+        grid-template-columns: 1fr;
+      }
+      
+      .form-actions {
+        flex-direction: column;
+      }
+      
+      .form-actions .btn {
+        width: 100%;
+      }
+      
+      .menu-container {
+        width: 100%;
+      }
+      
+      .modal-container {
+        margin: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="profile-container">
+    <header class="profile-header">
+      <div class="header-content">
+        <button class="back-button" onclick="goBack()">
+          <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1>My Profile</h1>
+        <button class="menu-button" onclick="toggleMenu()">
+          <i class="fas fa-ellipsis-v"></i>
+        </button>
+      </div>
+    </header>
+    
+    <main class="profile-main">
+      <div class="profile-card">
+        <!-- Profile Picture and Basic Info -->
+        <div class="profile-picture-section" id="profilePictureSection">
+          <div class="profile-picture-container">
+            <img id="profilePicture" src="profile.png" alt="Profile Picture" class="profile-picture">
+            <div class="profile-picture-edit" onclick="document.getElementById('imageUpload').click()">
+              <i class="fas fa-camera"></i>
+            </div>
+          </div>
+          <div class="profile-name" id="profileName">Loading...</div>
+          <div class="profile-email" id="profileEmail">Loading...</div>
+          
+          <!-- Social Media Icons -->
+          <div class="social-icons">
+            <div class="social-icon social-facebook" onclick="shareOnSocialMedia('facebook')">
+              <i class="fab fa-facebook-f"></i>
+            </div>
+            <div class="social-icon social-twitter" onclick="shareOnSocialMedia('twitter')">
+              <i class="fab fa-twitter"></i>
+            </div>
+            <div class="social-icon social-whatsapp" onclick="shareOnSocialMedia('whatsapp')">
+              <i class="fab fa-whatsapp"></i>
+            </div>
+            <div class="social-icon social-telegram" onclick="shareOnSocialMedia('telegram')">
+              <i class="fab fa-telegram"></i>
+            </div>
+            <div class="social-icon social-linkedin" onclick="shareOnSocialMedia('linkedin')">
+              <i class="fab fa-linkedin-in"></i>
+            </div>
+          </div>
+          
+          <input type="file" id="imageUpload" accept="image/*">
+        </div>
+        
+        <!-- Security Settings -->
+        <div class="security-section" id="securitySection">
+          <h3 class="section-title">
+            <i class="fas fa-shield-alt"></i>
+            Security Settings
+          </h3>
+          <div class="action-buttons">
+            <button id="changeMpinBtn" class="btn btn-secondary">
+              <i class="fas fa-lock"></i>
+              Change MPIN
+            </button>
+            <button id="editProfileBtn" class="btn btn-secondary">
+              <i class="fas fa-edit"></i>
+              Edit Profile
+            </button>
+          </div>
+        </div>
+        
+        <!-- Logout Button -->
+        <button id="logoutBtn" class="logout-btn">
+          <i class="fas fa-sign-out-alt"></i>
+          Log Out
+        </button>
+      </div>
+    </main>
+  </div>
+
+  <!-- Menu Overlay -->
+  <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+  
+  <!-- Menu Container -->
+  <div class="menu-container" id="menuContainer">
+    <div class="menu-header">
+      <h2>Quick Actions</h2>
+      <button class="menu-close" onclick="toggleMenu()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="menu-items">
+      <div class="menu-item" onclick="showWalletBalanceModal()">
+        <i class="fas fa-wallet"></i>
+        <span>Your Balance</span>
+      </div>
+      <div class="menu-item" onclick="showPersonalInfoModal()">
+        <i class="fas fa-user-circle"></i>
+        <span>Personal Information</span>
+      </div>
+      <div class="menu-item" onclick="showMpinReset()">
+        <i class="fas fa-lock"></i>
+        <span>MPIN Reset</span>
+      </div>
+      <div class="menu-item" onclick="showChangePassword()">
+        <i class="fas fa-key"></i>
+        <span>Change Password</span>
+      </div>
+      <div class="menu-item" onclick="showEditProfile()">
+        <i class="fas fa-edit"></i>
+        <span>Edit Profile</span>
+      </div>
+      <div class="menu-item" onclick="shareProfile()">
+        <i class="fas fa-share-alt"></i>
+        <span>Share Profile</span>
+      </div>
+      
+      <!-- Logout Button in Menu -->
+      <div class="menu-item" style="border-bottom: none; margin-top: 20px; padding: 20px;">
+        <button class="logout-btn" onclick="logout()" style="margin: 0;">
+          <i class="fas fa-sign-out-alt"></i>
+          Log Out
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Windows -->
+  <div class="modal-overlay" id="modalOverlay">
+    <!-- Wallet Balance Modal -->
+    <div class="modal-container hidden" id="walletBalanceModal">
+      <div class="modal-header">
+        <h2><i class="fas fa-wallet"></i> Your Wallet Balance</h2>
+        <button class="modal-close" onclick="closeModal('walletBalanceModal')">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="wallet-balance" style="margin: 0;">
+          <div class="balance-label">Your Wallet Balance</div>
+          <div class="balance-amount" id="modalBalanceAmount">CRX 0.00</div>
+          <div class="balance-address" id="modalWalletAddress">Loading...</div>
+        </div>
+        
+        <div style="margin-top: 25px;">
+          <h3 style="margin-bottom: 15px; color: var(--dark);">Recent Transactions</h3>
+          <div style="background: var(--light); padding: 15px; border-radius: var(--radius);">
+            <p style="text-align: center; color: var(--gray);">No recent transactions</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Personal Information Modal -->
+    <div class="modal-container hidden" id="personalInfoModal">
+      <div class="modal-header">
+        <h2><i class="fas fa-user-circle"></i> Personal Information</h2>
+        <button class="modal-close" onclick="closeModal('personalInfoModal')">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="info-grid" id="modalProfileInfo">
+          <!-- Profile data will be loaded here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- MPIN Reset Modal -->
+    <div class="modal-container hidden" id="mpinModal">
+      <div class="modal-header">
+        <h2><i class="fas fa-key"></i> Change MPIN</h2>
+        <button class="modal-close" onclick="closeModal('mpinModal')">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="mpinForm">
+          <div class="form-group">
+            <label for="currentMpin">Current 6-digit MPIN</label>
+            <input type="password" id="currentMpin" maxlength="6" required placeholder="Enter current MPIN">
+          </div>
+          <div class="form-group">
+            <label for="newMpin">New 6-digit MPIN</label>
+            <input type="password" id="newMpin" maxlength="6" required placeholder="Enter new MPIN">
+          </div>
+          <div class="form-group">
+            <label for="confirmMpin">Confirm New MPIN</label>
+            <input type="password" id="confirmMpin" maxlength="6" required placeholder="Confirm new MPIN">
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%;">
+            <i class="fas fa-save"></i>
+            Update MPIN
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div class="modal-container hidden" id="passwordModal">
+      <div class="modal-header">
+        <h2><i class="fas fa-key"></i> Change Password</h2>
+        <button class="modal-close" onclick="closeModal('passwordModal')">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="passwordForm">
+          <div class="form-group">
+            <label for="currentPassword">Current Password</label>
+            <input type="password" id="currentPassword" required placeholder="Enter current password">
+          </div>
+          <div class="form-group">
+            <label for="newPassword">New Password</label>
+            <input type="password" id="newPassword" required placeholder="Enter new password">
+          </div>
+          <div class="form-group">
+            <label for="confirmPassword">Confirm New Password</label>
+            <input type="password" id="confirmPassword" required placeholder="Confirm new password">
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%;">
+            <i class="fas fa-save"></i>
+            Update Password
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal-container hidden" id="editProfileModal">
+      <div class="modal-header">
+        <h2><i class="fas fa-user-edit"></i> Edit Profile</h2>
+        <button class="modal-close" onclick="closeModal('editProfileModal')">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="profileForm">
+          <div class="form-group">
+            <label for="editName">Full Name</label>
+            <input type="text" id="editName" required placeholder="Enter your full name">
+          </div>
+          <div class="form-group">
+            <label for="editMobile">Mobile Number</label>
+            <input type="tel" id="editMobile" required placeholder="Enter your mobile number">
+          </div>
+          <div class="form-group">
+            <label for="editDob">Date of Birth</label>
+            <input type="date" id="editDob" required>
+          </div>
+          <div class="form-group">
+            <label for="editGender">Gender</label>
+            <select id="editGender" required>
+              <option value="">Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+              <option value="prefer-not-to-say">Prefer not to say</option>
+            </select>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('editProfileModal')">
+              <i class="fas fa-times"></i>
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save"></i>
+              Save Changes
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+  
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyCz6eHmBmoDSTwZdX8gCPihQ626Ad8XhHk",
+      authDomain: "tevra-161ec.firebaseapp.com",
+      databaseURL: "https://tevra-161ec-default-rtdb.firebaseio.com",
+      projectId: "tevra-161ec",
+      storageBucket: "tevra-161ec.firebasestorage.app",
+      appId: "1:137873925109:web:51bf2b7aa91aa30ba6f6bc",
+      measurementId: "G-5JXFT6P09B"
+    };
+
+    // Initialize Firebase
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    } else {
+      firebase.app();
+    }
+
+    const auth = firebase.auth();
+    const db = firebase.database();
+
+    // Back button functionality
+    function goBack() {
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = 'index.html'; // Fallback to dashboard
+      }
+    }
+
+    // Modal functionality
+    function showModal(modalId) {
+      const modalOverlay = document.getElementById('modalOverlay');
+      const modals = document.querySelectorAll('.modal-container');
+      
+      // Hide all modals
+      modals.forEach(modal => modal.classList.add('hidden'));
+      
+      // Show selected modal and overlay
+      document.getElementById(modalId).classList.remove('hidden');
+      modalOverlay.classList.add('active');
+      toggleMenu(); // Close menu when opening modal
+    }
+
+    function closeModal(modalId) {
+      const modalOverlay = document.getElementById('modalOverlay');
+      document.getElementById(modalId).classList.add('hidden');
+      modalOverlay.classList.remove('active');
+    }
+
+    // Menu functionality
+    function toggleMenu() {
+      const menuOverlay = document.getElementById('menuOverlay');
+      const menuContainer = document.getElementById('menuContainer');
+      
+      if (menuContainer.classList.contains('active')) {
+        menuContainer.classList.remove('active');
+        menuOverlay.style.display = 'none';
+      } else {
+        menuContainer.classList.add('active');
+        menuOverlay.style.display = 'block';
+      }
+    }
+
+    // Menu actions
+    function showWalletBalanceModal() {
+      showModal('walletBalanceModal');
+    }
+
+    function showPersonalInfoModal() {
+      showModal('personalInfoModal');
+    }
+
+    function showMpinReset() {
+      showModal('mpinModal');
+    }
+
+    function showChangePassword() {
+      showModal('passwordModal');
+    }
+
+    function showEditProfile() {
+      showModal('editProfileModal');
+    }
+
+    function shareProfile() {
+      toggleMenu();
+      const user = auth.currentUser;
+      if (user) {
+        const profileUrl = `${window.location.origin}/profile.html?user=${user.uid}`;
+        if (navigator.share) {
+          navigator.share({
+            title: 'My Digital Wallet Profile',
+            text: 'Check out my digital wallet profile!',
+            url: profileUrl
+          }).catch(console.error);
+        } else {
+          navigator.clipboard.writeText(profileUrl).then(() => {
+            alert('Profile link copied to clipboard!');
+          }).catch(() => {
+            alert(`Share this link: ${profileUrl}`);
+          });
+        }
+      }
+    }
+
+    // Social Media Sharing
+    function shareOnSocialMedia(platform) {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const profileUrl = `${window.location.origin}/profile.html?user=${user.uid}`;
+      const shareText = `Check out my digital wallet profile! ${profileUrl}`;
+      
+      let shareUrl = '';
+      
+      switch(platform) {
+        case 'facebook':
+          shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(profileUrl)}`;
+          break;
+        case 'twitter':
+          shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+          break;
+        case 'whatsapp':
+          shareUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+          break;
+        case 'telegram':
+          shareUrl = `https://t.me/share/url?url=${encodeURIComponent(profileUrl)}&text=${encodeURIComponent('Check out my digital wallet profile!')}`;
+          break;
+        case 'linkedin':
+          shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(profileUrl)}`;
+          break;
+      }
+      
+      if (shareUrl) {
+        window.open(shareUrl, '_blank', 'width=600,height=400');
+      }
+    }
+
+    // Helper function to format gender display
+    function formatGender(gender) {
+      return gender.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    }
+
+    // Load user profile
+    function loadUserProfile(user) {
+      db.ref(`users/${user.uid}`).once('value').then((snapshot) => {
+        const userData = snapshot.val();
+        
+        if (!userData) {
+          console.log('No user data found');
+          return;
+        }
+        
+        console.log('User data loaded:', userData);
+        
+        // Update profile picture if available
+        if (userData.profilePicture) {
+          document.getElementById('profilePicture').src = userData.profilePicture;
+        }
+        
+        // Update profile name and email
+        document.getElementById('profileName').textContent = userData.name || 'Not set';
+        document.getElementById('profileEmail').textContent = userData.email || 'Not set';
+        
+        // Update modal wallet balance
+        document.getElementById('modalBalanceAmount').textContent = `CRX ${userData.balance || '0.00'}`;
+        document.getElementById('modalWalletAddress').textContent = userData.uid || 'Not generated';
+        
+        // Format date of birth for display
+        const dobDisplay = userData.dob ? 
+          new Date(userData.dob).toLocaleDateString('en-IN', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          }) : 'Not set';
+
+        // Display profile info in modal
+        document.getElementById('modalProfileInfo').innerHTML = `
+          <div class="info-card">
+            <div class="info-icon">
+              <i class="fas fa-phone"></i>
+            </div>
+            <div class="info-content">
+              <div class="info-label">Mobile Number</div>
+              <div class="info-value">${userData.mobile || 'Not set'}</div>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="info-icon">
+              <i class="fas fa-birthday-cake"></i>
+            </div>
+            <div class="info-content">
+              <div class="info-label">Date of Birth</div>
+              <div class="info-value">${dobDisplay}</div>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="info-icon">
+              <i class="fas fa-venus-mars"></i>
+            </div>
+            <div class="info-content">
+              <div class="info-label">Gender</div>
+              <div class="info-value">${userData.gender ? formatGender(userData.gender) : 'Not set'}</div>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="info-icon">
+              <i class="fas fa-calendar-plus"></i>
+            </div>
+            <div class="info-content">
+              <div class="info-label">Member Since</div>
+              <div class="info-value">${userData.createdAt ? new Date(userData.createdAt).toLocaleDateString() : 'Not available'}</div>
+            </div>
+          </div>
+        `;
+
+        // Set up edit profile form with current data
+        document.getElementById('editName').value = userData.name || '';
+        document.getElementById('editMobile').value = userData.mobile || '';
+        document.getElementById('editDob').value = userData.dob || '';
+        document.getElementById('editGender').value = userData.gender || '';
+        
+      }).catch(error => {
+        console.error('Error loading user data:', error);
+      });
+    }
+
+    // Auth state listener
+    auth.onAuthStateChanged((user) => {
+      if (!user) {
+        // User not logged in, redirect to login page
+        window.location.href = 'login.html';
+        return;
+      }
+      
+      // User is logged in, load profile data
+      loadUserProfile(user);
+    });
+
+    // Profile picture upload
+    document.getElementById('imageUpload').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const img = document.getElementById('profilePicture');
+        img.src = event.target.result;
+        
+        // Save to Firebase
+        const user = auth.currentUser;
+        if (user) {
+          db.ref(`users/${user.uid}`).update({
+            profilePicture: event.target.result
+          }).then(() => {
+            console.log('Profile picture updated');
+          }).catch(error => {
+            console.error('Error updating profile picture:', error);
+          });
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Form toggle functionality for existing buttons
+    document.getElementById('changeMpinBtn').addEventListener('click', function() {
+      showModal('mpinModal');
+    });
+    
+    document.getElementById('editProfileBtn').addEventListener('click', function() {
+      showModal('editProfileModal');
+    });
+    
+    // Change MPIN form submission
+    document.getElementById('mpinForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const currentMpin = document.getElementById('currentMpin').value;
+      const newMpin = document.getElementById('newMpin').value;
+      const confirmMpin = document.getElementById('confirmMpin').value;
+      
+      if (newMpin !== confirmMpin) {
+        alert('New MPINs do not match');
+        return;
+      }
+      
+      const user = auth.currentUser;
+      if (!user) {
+        alert('Not authenticated');
+        return;
+      }
+      
+      db.ref(`users/${user.uid}`).once('value').then((snapshot) => {
+        const userData = snapshot.val();
+        if (userData.mpin !== currentMpin) {
+          throw new Error('Current MPIN is incorrect');
+        }
+        
+        return db.ref(`users/${user.uid}`).update({ mpin: newMpin });
+      }).then(() => {
+        alert('MPIN changed successfully');
+        closeModal('mpinModal');
+        document.getElementById('currentMpin').value = '';
+        document.getElementById('newMpin').value = '';
+        document.getElementById('confirmMpin').value = '';
+      }).catch((error) => {
+        console.error('MPIN change error:', error);
+        alert(`MPIN change failed: ${error.message}`);
+      });
+    });
+    
+    // Update profile form submission
+    document.getElementById('profileForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const updatedData = {
+        name: document.getElementById('editName').value,
+        mobile: document.getElementById('editMobile').value,
+        dob: document.getElementById('editDob').value,
+        gender: document.getElementById('editGender').value,
+        lastUpdated: new Date().toISOString()
+      };
+
+      const user = auth.currentUser;
+      if (!user) {
+        alert('Not authenticated');
+        return;
+      }
+      
+      db.ref(`users/${user.uid}`).update(updatedData).then(() => {
+        alert('Profile updated successfully!');
+        closeModal('editProfileModal');
+        // Reload profile data to show updated information
+        loadUserProfile(user);
+      }).catch((error) => {
+        console.error('Profile update error:', error);
+        alert(`Profile update failed: ${error.message}`);
+      });
+    });
+    
+    // Change password form submission
+    document.getElementById('passwordForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      
+      if (newPassword !== confirmPassword) {
+        alert('New passwords do not match');
+        return;
+      }
+      
+      const user = auth.currentUser;
+      if (!user) {
+        alert('Not authenticated');
+        return;
+      }
+      
+      const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentPassword);
+      
+      user.reauthenticateWithCredential(credential).then(() => {
+        return user.updatePassword(newPassword);
+      }).then(() => {
+        alert('Password changed successfully');
+        closeModal('passwordModal');
+        document.getElementById('currentPassword').value = '';
+        document.getElementById('newPassword').value = '';
+        document.getElementById('confirmPassword').value = '';
+      }).catch((error) => {
+        console.error('Password change error:', error);
+        alert(`Password change failed: ${error.message}`);
+      });
+    });
+    
+    // Logout function
+    function logout() {
+      if (confirm('Are you sure you want to log out?')) {
+        auth.signOut().then(() => {
+          localStorage.clear();
+          sessionStorage.clear();
+          window.location.href = 'login.html';
+        }).catch((error) => {
+          console.error('Logout error:', error);
+          alert('Logout failed: ' + error.message);
+        });
+      }
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', logout);
+
+    // Close modal when clicking outside
+    document.getElementById('modalOverlay').addEventListener('click', function(e) {
+      if (e.target === this) {
+        this.classList.remove('active');
+        const modals = document.querySelectorAll('.modal-container');
+        modals.forEach(modal => modal.classList.add('hidden'));
+      }
+    });
+  </script>
+</body>
+</html>
