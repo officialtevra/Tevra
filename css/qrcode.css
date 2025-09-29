@@ -1,0 +1,84 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: #000;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.container {
+  width: 90%;
+  max-width: 400px;
+  background: #111;
+  border-radius: 16px;
+  padding: 30px 20px;
+  position: relative;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+
+  /* Move container 20mm up */
+  transform: translateY(-20mm);
+}
+
+.back-button {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  font-size: 22px;
+  background: transparent;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.back-button:hover {
+  transform: rotate(-180deg);
+}
+
+.qr-section {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.qr-box {
+  width: 150px;
+  height: 150px;
+  margin: 20px auto;
+  background: #000;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+}
+
+.wallet-uid {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+#walletAddress {
+  font-size: 14px;
+  background: #222;
+  padding: 6px 10px;
+  border-radius: 6px;
+  word-break: break-all;
+}
+
+#copyButton {
+  background: #444;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+#copyButton:hover {
+  background: #666;
+}
