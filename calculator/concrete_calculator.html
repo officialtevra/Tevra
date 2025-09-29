@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,6 +15,7 @@ body {
 
 .container { 
   margin-bottom: 20px; 
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 1.4);
 }
 
 .calculator {
@@ -202,14 +203,14 @@ label {
 </head>
 <body>
 
-<h2>🧮 Concrete Calculator</h2>
+<h2>Concrete Calculator</h2>
 
 <div id="totalContainer">
-  Total of All Calculations: <span id="grandTotal">0</span> m³
+  Total Volume: <span id="grandTotal">0</span> m³
 </div>
 
 <div class="container">
-  <button onclick="addCalculator()">Add New</button>
+  <button onclick="addCalculator()">Add New Calculator</button>
 </div>
 
 <div id="calculators"></div>
@@ -227,7 +228,7 @@ function addCalculator() {
 
   calculator.innerHTML = `
     <div class="header">
-    	<div class="result">Result: 0 m³</div>
+    	<div class="result">Volume: 0 m³</div>
       <div class="type-box">
         <label>Type:</label>
         <select class="type" onchange="updateFields(this)">
@@ -246,16 +247,16 @@ function addCalculator() {
     </div>
 
     <div class="calc-content">
-      <h3 class="title">Concrete Calculator #${calcCounter} (Slab)</h3>
+      <h3 class="title">Concrete Volume Calculator #${calcCounter} (Slab)</h3>
       <div class="fields"></div>
-      <label>Mix Ratio (Cement:Sand:Aggregate):</label>
+      <label>Concrete Mix Ratio (Cement:Sand:Aggregate):</label>
       <select class="mix">
-        <option value="1:2:4">1 : 2 : 4 (M15 approx)</option>
-        <option value="1:1.5:3">1 : 1.5 : 3 (M20 approx)</option>
-        <option value="1:1:2">1 : 1 : 2 (M25 approx)</option>
+        <option value="1:2:4">1 : 2 : 4 (M15 Grade)</option>
+        <option value="1:1.5:3">1 : 1.5 : 3 (M20 Grade)</option>
+        <option value="1:1:2">1 : 1 : 2 (M25 Grade)</option>
       </select>
-      <button onclick="calculate(this)">Calculate</button>
-      <div class="result">Result: 0 m³</div>
+      <button onclick="calculate(this)">Calculate Volume</button>
+      <div class="result">Volume: 0 m³</div>
     </div>
   `;
 
@@ -274,22 +275,22 @@ function updateFields(select) {
   const type = select.value;
 
   const title = calculator.querySelector('.title');
-  title.innerText = `Concrete Calculator #${calculator.dataset.serial} (${type})`;
+  title.innerText = `Concrete Volume Calculator #${calculator.dataset.serial} (${type})`;
 
   if (type === "Column") {
     fieldsDiv.innerHTML = `
-      <label>Radius (Meter):</label>
+      <label>Column Radius (meter):</label>
       <input type="number" class="radius" value="0.5" step="0.01">
-      <label>Height (Meter):</label>
+      <label>Column Height (meter):</label>
       <input type="number" class="height" value="3" step="0.01">
     `;
   } else {
     fieldsDiv.innerHTML = `
-      <label>Length (Meter):</label>
+      <label>Length (meter):</label>
       <input type="number" class="length" value="5" step="0.01">
-      <label>Width (Meter):</label>
+      <label>Width (meter):</label>
       <input type="number" class="width" value="3" step="0.01">
-      <label>Thickness/Height (Meter):</label>
+      <label>Height/Thickness (meter):</label>
       <input type="number" class="height" value="0.6" step="0.01">
     `;
   }
@@ -311,7 +312,10 @@ function calculate(button) {
     volume = l * w * h;
   }
 
-  calculator.querySelector('.result').innerText = `Result: ${volume.toFixed(2)} m³`;
+  // Format number with commas for thousands
+  const formattedVolume = volume.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  
+  calculator.querySelector('.result').innerText = `Volume: ${formattedVolume} m³`;
   calculator.dataset.result = volume;
   updateGrandTotal();
 }
@@ -320,7 +324,7 @@ function editCalculator(button) {
   const calculator = button.closest('.calculator');
   const typeSelect = calculator.querySelector('.type');
   updateFields(typeSelect);
-  calculator.querySelector('.result').innerText = 'Result: 0 m³';
+  calculator.querySelector('.result').innerText = 'Volume: 0 m³';
   calculator.dataset.result = 0;
   updateGrandTotal();
 }
@@ -337,7 +341,10 @@ function updateGrandTotal() {
   calculators.forEach(calc => {
     grandTotal += parseFloat(calc.dataset.result || 0);
   });
-  document.getElementById('grandTotal').innerText = grandTotal.toFixed(2);
+  
+  // Format grand total with commas for thousands
+  const formattedGrandTotal = grandTotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  document.getElementById('grandTotal').innerText = formattedGrandTotal;
 }
 </script>
 
