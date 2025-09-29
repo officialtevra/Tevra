@@ -3,30 +3,33 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GitHub Calculator Files Viewer</title>
+<title>GitHub Calculator Explorer</title>
 <style>
   body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
   h2 { color: #333; }
-  ul { list-style: none; padding-left: 0; }
-  li { margin: 5px 0; }
+  ul { list-style: none; padding-left: 20px; }
+  li { margin: 5px 0; cursor: pointer; }
   a { text-decoration: none; color: #007bff; }
   a:hover { text-decoration: underline; }
   .folder { font-weight: bold; color: #e67e22; }
+  .nested { display: none; margin-left: 15px; }
+  .expanded > .nested { display: block; }
 </style>
 </head>
 <body>
 
-<h2>Calculator Folder Files</h2>
+<h2>Calculator Folder Explorer</h2>
 <ul id="fileList"></ul>
 
 <script>
 const owner = "tevrasite";
 const repo = "Tevra";
-const path = "calculator"; // ফোল্ডার path
+const path = "calculator";
 const branch = "07fcf93090402bd5f96c39de79590f4d73d9bedd";
 
 const fileListUl = document.getElementById("fileList");
 
+// ফাইল ও ফোল্ডার লিস্ট ফেচ করার ফাংশন
 async function fetchFiles(folderPath) {
   const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${folderPath}?ref=${branch}`;
   try {
@@ -34,28 +37,53 @@ async function fetchFiles(folderPath) {
     const data = await res.json();
 
     if (Array.isArray(data)) {
-      data.forEach(item => {
-        const li = document.createElement("li");
-        if (item.type === "dir") {
-          li.innerHTML = `<span class="folder">${item.name}/</span>`;
-          fileListUl.appendChild(li);
-          // চাইলে সাবফোল্ডারও রিকার্সিভলি দেখানো যাবে
-        } else {
-          li.innerHTML = `<a href="${item.html_url}" target="_blank">${item.name}</a>`;
-          fileListUl.appendChild(li);
-        }
+      // ফোল্ডারগুলো উপরে রাখতে sort
+      data.sort((a, b) => {
+        if (a.type === b.type) return a.name.localeCompare(b.name);
+        return a.type === "dir" ? -1 : 1; // ফোল্ডার আগে
       });
+
+      return data;
     } else {
-      fileListUl.innerHTML = "<li style='color:red;'>No files found</li>";
+      return [];
     }
   } catch (error) {
     console.error(error);
-    fileListUl.innerHTML = "<li style='color:red;'>Error fetching files</li>";
+    return [];
   }
 }
 
-// কল করা হচ্ছে ফাংশন
-fetchFiles(path);
+// লিস্ট বানানোর ফাংশন
+async function createList(folderPath, parentUl) {
+  const files = await fetchFiles(folderPath);
+
+  files.forEach(item => {
+    const li = document.createElement("li");
+
+    if (item.type === "dir") {
+      li.innerHTML = `<span class="folder">${item.name}/</span>`;
+      const nestedUl = document.createElement("ul");
+      nestedUl.classList.add("nested");
+      li.appendChild(nestedUl);
+
+      // ক্লিক করলে expand/collapse
+      li.querySelector(".folder").addEventListener("click", async (e) => {
+        e.stopPropagation(); // parent লিস্টে প্রভাব না পড়ুক
+        li.classList.toggle("expanded");
+        if (nestedUl.childElementCount === 0) {
+          await createList(item.path, nestedUl); // সাবফোল্ডার লোড
+        }
+      });
+    } else {
+      li.innerHTML = `<a href="${item.html_url}" target="_blank">${item.name}</a>`;
+    }
+
+    parentUl.appendChild(li);
+  });
+}
+
+// মূল ফোল্ডার লোড করা
+createList(path, fileListUl);
 </script>
 
 </body>
