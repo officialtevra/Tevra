@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Calculator Files Viewer</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
+  h2 { color: #333; }
+  ul { list-style: none; padding-left: 0; }
+  li { margin: 5px 0; }
+  a { text-decoration: none; color: #007bff; }
+  a:hover { text-decoration: underline; }
+  .folder { font-weight: bold; color: #e67e22; }
+</style>
+</head>
+<body>
+
+<h2>Calculator Folder Files</h2>
+<ul id="fileList"></ul>
+
+<script>
+const owner = "tevrasite";
+const repo = "Tevra";
+const path = "calculator"; // ফোল্ডার path
+const branch = "07fcf93090402bd5f96c39de79590f4d73d9bedd";
+
+const fileListUl = document.getElementById("fileList");
+
+async function fetchFiles(folderPath) {
+  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${folderPath}?ref=${branch}`;
+  try {
+    const res = await fetch(apiUrl);
+    const data = await res.json();
+
+    if (Array.isArray(data)) {
+      data.forEach(item => {
+        const li = document.createElement("li");
+        if (item.type === "dir") {
+          li.innerHTML = `<span class="folder">${item.name}/</span>`;
+          fileListUl.appendChild(li);
+          // চাইলে সাবফোল্ডারও রিকার্সিভলি দেখানো যাবে
+        } else {
+          li.innerHTML = `<a href="${item.html_url}" target="_blank">${item.name}</a>`;
+          fileListUl.appendChild(li);
+        }
+      });
+    } else {
+      fileListUl.innerHTML = "<li style='color:red;'>No files found</li>";
+    }
+  } catch (error) {
+    console.error(error);
+    fileListUl.innerHTML = "<li style='color:red;'>Error fetching files</li>";
+  }
+}
+
+// কল করা হচ্ছে ফাংশন
+fetchFiles(path);
+</script>
+
+</body>
+</html>
