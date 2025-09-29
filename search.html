@@ -23,7 +23,7 @@
             flex-direction: column;
             align-items: center;
             padding: 15px;
-            margin-top: 40mm;
+            margin-top: 0mm;
             margin-bottom: 40mm;
         }
         
@@ -739,9 +739,263 @@
         .results-container[style*="display: block"] {
             animation: fadeIn 0.3s ease forwards;
         }
+        
+                .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            
+        }
+        
+        .logo-card {
+            background: linear-gradient(135deg, #007acc, #005c99);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .logo-container {
+            position: relative;
+            
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            margin-top: 7mm;
+        }
+        
+        .logo-circle {
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 4px solid transparent;
+            animation: rotate 8s linear infinite;
+        }
+        
+        .logo-circle:nth-child(1) {
+            border-top-color: #6a11cb;
+            border-bottom-color: #6a11cb;
+            animation-duration: 6s;
+        }
+        
+        .logo-circle:nth-child(2) {
+            border-left-color: white;
+            border-right-color: white;
+            animation-duration: 8s;
+            animation-direction: reverse;
+            width: 160px;
+            height: 160px;
+        }
+        
+        .logo-circle:nth-child(3) {
+            border-top-color: #ff4b4b;
+            border-right-color: #ff4b4b;
+            animation-duration: 10s;
+            width: 140px;
+            height: 140px;
+        }
+        
+        .logo-text {
+            position: relative;
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(45deg, #6a11cb, #2575fc, #ff4b4b, #2575fc, #6a11cb);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 2px;
+            animation: gradientText 4s ease infinite, pulse 2s ease-in-out infinite;
+            /* উন্নতি: টেক্সট আউটলাইন যোগ */
+            text-shadow: 0px 0px 3px rgba(0, 0, 0, 0.1);
+            padding: 5px;
+        }
+        
+        .logo-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, #6a11cb, #2575fc);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 20px rgba(37, 117, 252, 0.4);
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .logo-icon-inner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid white;
+            border-radius: 12px;
+            position: relative;
+            animation: rotate 5s linear infinite;
+        }
+        
+        .logo-icon-inner::after {
+            content: "";
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: white;
+            border-radius: 50%;
+            top: -8px;
+            right: -8px;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        /* T letter in the center */
+        .center-t {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 40px;
+            font-weight: 900;
+            color: white;
+            z-index: 10;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+         /* Animations */
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes gradientText {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes symbolPulse {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+        
+        @keyframes float {
+            0% { transform: translate(-50%, -50%); }
+            50% { transform: translate(-50%, -55%); }
+            100% { transform: translate(-50%, -50%); }
+        }
+        
+        @keyframes fadeInOut {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+
+        /* উন্নতি: মোবাইল রেস্পন্সিভনেস */
+        @media (max-width: 600px) {
+            .logo-card {
+                padding: 25px;
+            }
+            
+            .logo-container {
+                height: 160px;
+            }
+            
+            .logo-circle {
+                width: 140px;
+                height: 140px;
+            }
+            
+            .logo-circle:nth-child(2) {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .logo-circle:nth-child(3) {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .logo-icon {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .logo-icon-inner {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .logo-text {
+                font-size: 36px;
+            }
+            
+            .center-t {
+                font-size: 30px;
+            }
+            
+            .tagline {
+                font-size: 18px;
+            }
+            
+            button {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .logo-text {
+                font-size: 32px;
+            }
+            
+            .center-t {
+                font-size: 28px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            button {
+                width: 100%;
+                max-width: 250px;
+            }
+        }
     </style>
 </head>
 <body>
+	
+	<div class="container">
+        <div class="logo-card">
+            <div class="logo-container">
+                <div class="logo-circle"></div>
+                <div class="logo-circle"></div>
+                <div class="logo-circle"></div>
+                
+                <div class="logo-icon">
+                    <div class="logo-icon-inner"></div>
+                </div>
+                
+                <div class="center-t">T</div>
+              </div>
+                
+                
+                
     <div class="main-wrapper">
         <div class="container">
             <div class="header">
@@ -906,102 +1160,7 @@
                         <div class="info-line">
                             <span>⭐ 4.7</span>
                             <span>4.9 MB</span>
-                            <span>4:05 • MP3</span>
-                            <button class="btn">ডাউনলোড</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Card 6 -->
-        <div class="detailed-card">
-            <div class="card-hero" style="background:url('https://picsum.photos/id/1067/800/400') no-repeat center;">
-                <div class="overlay">
-                    <img src="https://picsum.photos/id/1032/70" alt="cover" class="cover">
-                    <div class="text-block">
-                        <div class="title">বেদনার ছায়া</div>
-                        <div class="about">দুঃখ-ভালোবাসার দ্বন্দ্ব নিয়ে বিশেষ গান।</div>
-                        <div class="info-line">
-                            <span>⭐ 4.3</span>
-                            <span>5.5 MB</span>
-                            <span>4:33 • MP3</span>
-                            <button class="btn">ডাউনলোড</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Card 7 -->
-        <div class="detailed-card">
-            <div class="card-hero" style="background:url('https://picsum.photos/id/1074/800/400') no-repeat center;">
-                <div class="overlay">
-                    <img src="https://picsum.photos/id/1041/70" alt="cover" class="cover">
-                    <div class="text-block">
-                        <div class="title">মনের জানালা</div>
-                        <div class="about">মনের গহীনে জমে থাকা কথাগুলো গানে প্রকাশ।</div>
-                        <div class="info-line">
-                            <span>⭐ 4.6</span>
-                            <span>4.4 MB</span>
-                            <span>3:55 • MP3</span>
-                            <button class="btn">ডাউনলোড</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Card 8 -->
-        <div class="detailed-card">
-            <div class="card-hero" style="background:url('https://picsum.photos/id/1080/800/400') no-repeat center;">
-                <div class="overlay">
-                    <img src="https://picsum.photos/id/1050/70" alt="cover" class="cover">
-                    <div class="text-block">
-                        <div class="title">ভালোবাসার চিঠি</div>
-                        <div class="about">অন্তরের আবেগ মিশে আছে প্রতিটি শব্দে।</div>
-                        <div class="info-line">
-                            <span>⭐ 4.4</span>
-                            <span>4.1 MB</span>
-                            <span>3:40 • MP3</span>
-                            <button class="btn">ডাউনলোড</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Card 9 -->
-        <div class="detailed-card">
-            <div class="card-hero" style="background:url('https://picsum.photos/id/109/800/400') no-repeat center;">
-                <div class="overlay">
-                    <img src="https://picsum.photos/id/1057/70" alt="cover" class="cover">
-                    <div class="text-block">
-                        <div class="title">অভিমান</div>
-                        <div class="about">অভিমান ভরা ভালোবাসার সুরেলা গান।</div>
-                        <div class="info-line">
-                            <span>⭐ 4.0</span>
-                            <span>4.8 MB</span>
-                            <span>4:20 • MP3</span>
-                            <button class="btn">ডাউনলোড</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Card 10 -->
-        <div class="detailed-card">
-            <div class="card-hero" style="background:url('https://picsum.photos/id/110/800/400') no-repeat center;">
-                <div class="overlay">
-                    <img src="https://picsum.photos/id/1062/70" alt="cover" class="cover">
-                    <div class="text-block">
-                        <div class="title">শেষ বিদায়</div>
-                        <div class="about">বিদায়ের কষ্ট আর আবেগের গল্প।</div>
-                        <div class="info-line">
-                            <span>⭐ 4.9</span>
-                            <span>6.2 MB</span>
-                            <span>5:15 • MP3</span>
+                            <span>4:35 • MP3</span>
                             <button class="btn">ডাউনলোড</button>
                         </div>
                     </div>
@@ -1009,167 +1168,55 @@
             </div>
         </div>
     </div>
-    
+
     <script>
         // Firebase configuration
         const firebaseConfig = {
-            apiKey: "AIzaSyCz6eHmBmoDSTwZdX8gCPihQ626Ad8XhHk",
-            authDomain: "tevra-161ec.firebaseapp.com",
-            databaseURL: "https://tevra-161ec-default-rtdb.firebaseio.com",
-            projectId: "tevra-161ec",
-            storageBucket: "tevra-161ec.firebasestorage.app",
-            appId: "1:137873925109:web:51bf2b7aa91aa30ba6f6bc",
+            apiKey: "AIzaSyC6xR0y7YQJQYQYQYQYQYQYQYQYQYQYQYQY",
+            authDomain: "tevra-search.firebaseapp.com",
+            databaseURL: "https://tevra-search-default-rtdb.firebaseio.com",
+            projectId: "tevra-search",
+            storageBucket: "tevra-search.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdefghijklmnopqrstuvwxyz"
         };
 
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-        const gamesRef = db.ref('games');
-        
-        // Global variables
-        let allGames = [];
-        let searchTimeout;
+        const database = firebase.database();
 
         // DOM elements
         const searchInput = document.getElementById('searchInput');
         const searchButton = document.getElementById('searchButton');
+        const recentList = document.getElementById('recentList');
         const resultsContainer = document.getElementById('resultsContainer');
         const resultsList = document.getElementById('resultsList');
-        const recentList = document.getElementById('recentList');
-        
-        // Sample data for search results (fallback if Firebase fails)
-        const sampleData = [
-            { id: 1, title: "Basic Calculator", description: "Simple calculations", icon: "fas fa-calculator", category: "Calculator", url: "basic-calculator.html" },
-            { id: 2, title: "Scientific Calculator", description: "Advanced calculations", icon: "fas fa-square-root-alt", category: "Calculator", url: "scientific-calculator.html" },
-            { id: 3, title: "Financial Calculator", description: "Financial planning", icon: "fas fa-chart-line", category: "Calculator", url: "financial-calculator.html" },
-            { id: 4, title: "BMI Calculator", description: "Body Mass Index", icon: "fas fa-weight", category: "Health", url: "bmi-calculator.html" },
-            { id: 5, title: "Age Calculator", description: "Calculate age", icon: "fas fa-birthday-cake", category: "Tools", url: "age-calculator.html" },
-            { id: 6, title: "Right Angle Calculator", description: "Triangle calculations", icon: "fas fa-ruler-combined", category: "Math", url: "right-angle.html" }
-        ];
+        const cardContainer = document.getElementById('cardContainer');
 
-        // Initialize the app
-        document.addEventListener('DOMContentLoaded', function() {
-            loadGamesFromFirebase();
-            loadRecentSearches();
-            setupEventListeners();
-        });
+        // Search functionality
+        function performSearch() {
+            const query = searchInput.value.trim();
+            if (query === '') return;
 
-        // Load games from Firebase - FIXED VERSION
-        function loadGamesFromFirebase() {
-            gamesRef.on('value', (snapshot) => {
-                const gamesData = snapshot.val();
-                
-                if (gamesData) {
-                    // Convert object to array and sort by key (newest first)
-                    allGames = Object.entries(gamesData)
-                        .sort((a, b) => b[0].localeCompare(a[0]))
-                        .map(([key, game]) => ({ 
-                            id: key, 
-                            title: game.name || 'Untitled',
-                            description: game.description || 'No description available',
-                            icon: "fas fa-cube",
-                            category: "Game",
-                            url: game.url || '#',
-                            image: game.image || ''
-                        }));
-                    console.log('Games loaded from Firebase:', allGames.length);
-                } else {
-                    console.log('No data available in Firebase, using sample data');
-                    allGames = sampleData;
-                }
-            }, (error) => {
-                console.error('Error loading games from Firebase:', error);
-                allGames = sampleData;
-            });
+            // Save to recent searches
+            saveToRecentSearches(query);
+            
+            // Display results
+            displaySearchResults(query);
+            
+            // Show results container
+            resultsContainer.style.display = 'block';
         }
 
-        // Load recent searches from localStorage
-        function loadRecentSearches() {
-            const recentSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
-            updateRecentSearchesUI(recentSearches);
-        }
-
-        // Update recent searches UI
-        function updateRecentSearchesUI(recentSearches) {
-            recentList.innerHTML = '';
-            
-            if (recentSearches.length === 0) {
-                recentList.innerHTML = '<div class="recent-item">No recent searches</div>';
-                return;
-            }
-            
-            recentSearches.slice(0, 5).forEach(searchTerm => {
-                const recentItem = document.createElement('div');
-                recentItem.className = 'recent-item';
-                recentItem.innerHTML = `<i class="fas fa-clock"></i> ${searchTerm}`;
-                recentItem.addEventListener('click', () => {
-                    searchInput.value = searchTerm;
-                    performSearch(searchTerm);
-                });
-                recentList.appendChild(recentItem);
-            });
-        }
-
-        // Set up event listeners
-        function setupEventListeners() {
-            // Search button click
-            searchButton.addEventListener('click', () => {
-                const searchTerm = searchInput.value.trim();
-                if (searchTerm) {
-                    performSearch(searchTerm);
-                }
-            });
-            
-            // Enter key in search input
-            searchInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    const searchTerm = searchInput.value.trim();
-                    if (searchTerm) {
-                        performSearch(searchTerm);
-                    }
-                }
-            });
-            
-            // Real-time search with debounce
-            searchInput.addEventListener('input', () => {
-                clearTimeout(searchTimeout);
-                const searchTerm = searchInput.value.trim();
-                
-                if (searchTerm.length > 1) {
-                    searchTimeout = setTimeout(() => {
-                        performSearch(searchTerm, false);
-                    }, 300);
-                } else {
-                    resultsContainer.style.display = 'none';
-                }
-            });
-        }
-
-        // Perform search
-        function performSearch(searchTerm, saveToRecent = true) {
-            if (saveToRecent) {
-                saveRecentSearch(searchTerm);
-            }
-            
-            const filteredResults = allGames.filter(game => {
-                const titleMatch = game.title.toLowerCase().includes(searchTerm.toLowerCase());
-                const descMatch = game.description.toLowerCase().includes(searchTerm.toLowerCase());
-                const categoryMatch = game.category.toLowerCase().includes(searchTerm.toLowerCase());
-                return titleMatch || descMatch || categoryMatch;
-            });
-            
-            displaySearchResults(filteredResults, searchTerm);
-        }
-
-        // Save recent search to localStorage
-        function saveRecentSearch(searchTerm) {
+        // Save search to recent searches
+        function saveToRecentSearches(query) {
             let recentSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
             
             // Remove if already exists
-            recentSearches = recentSearches.filter(item => item !== searchTerm);
+            recentSearches = recentSearches.filter(item => item !== query);
             
             // Add to beginning
-            recentSearches.unshift(searchTerm);
+            recentSearches.unshift(query);
             
             // Keep only last 5 searches
             if (recentSearches.length > 5) {
@@ -1177,68 +1224,82 @@
             }
             
             localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
-            updateRecentSearchesUI(recentSearches);
+            displayRecentSearches();
         }
 
-        // Display search results - UPDATED VERSION
-        function displaySearchResults(results, searchTerm) {
+        // Display recent searches
+        function displayRecentSearches() {
+            const recentSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
+            recentList.innerHTML = '';
+            
+            recentSearches.forEach(search => {
+                const recentItem = document.createElement('div');
+                recentItem.className = 'recent-item';
+                recentItem.innerHTML = `<i class="fas fa-clock"></i> ${search}`;
+                recentItem.addEventListener('click', () => {
+                    searchInput.value = search;
+                    performSearch();
+                });
+                recentList.appendChild(recentItem);
+            });
+        }
+
+        // Display search results
+        function displaySearchResults(query) {
             resultsList.innerHTML = '';
             
-            if (results.length === 0) {
-                resultsList.innerHTML = `
-                    <div class="no-results">
-                        <i class="fas fa-search"></i>
-                        <p>No results found for "${searchTerm}"</p>
-                        <p>Try different keywords</p>
-                    </div>
-                `;
-            } else {
-                results.forEach(result => {
+            // Get all calculator cards
+            const cards = document.querySelectorAll('.card-item');
+            let foundResults = false;
+            
+            cards.forEach(card => {
+                const title = card.querySelector('.card-title').textContent.toLowerCase();
+                const dataId = card.getAttribute('data-id').toLowerCase();
+                
+                if (title.includes(query.toLowerCase()) || dataId.includes(query.toLowerCase())) {
+                    foundResults = true;
+                    
                     const resultItem = document.createElement('div');
                     resultItem.className = 'result-item';
-                    
-                    // Add firebase-result class for Firebase data
-                    if (result.id && typeof result.id === 'string' && result.id.includes('-')) {
-                        resultItem.classList.add('firebase-result');
-                    }
-                    
-                    // Use image if available, otherwise use icon
-                    const iconOrImage = result.image ? 
-                        `<img src="${result.image}" alt="${result.title}" class="game-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">` : 
-                        '';
-                    
                     resultItem.innerHTML = `
-                        <div class="result-icon" style="${result.image ? 'display:none' : 'display:flex'}">
-                            <i class="${result.icon || 'fas fa-cube'}"></i>
-                        </div>
-                        ${iconOrImage}
+                        <div class="game-logo" style="background-image: url('${card.querySelector('.card').style.backgroundImage.replace(/url\(['"](.+)['"]\)/, '$1')}');"></div>
                         <div class="result-content">
-                            <div class="result-title">${result.title}</div>
-                            <div class="result-description">${result.description}</div>
-                            <div class="result-time">${result.category || 'General'}</div>
+                            <div class="result-title">${card.querySelector('.card-title').textContent}</div>
+                            <div class="result-description">Calculator tool for ${card.querySelector('.card-title').textContent}</div>
+                            <div class="result-time">Just now</div>
                         </div>
                     `;
                     
                     resultItem.addEventListener('click', () => {
-                        if (result.url && result.url !== '#') {
-                            window.location.href = result.url;
-                        }
+                        window.location.href = card.querySelector('a').href;
                     });
                     
                     resultsList.appendChild(resultItem);
-                });
-            }
+                }
+            });
             
-            resultsContainer.style.display = 'block';
+            // If no results found
+            if (!foundResults) {
+                resultsList.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-search"></i>
+                        <p>No results found for "${query}"</p>
+                    </div>
+                `;
+            }
         }
 
-        // Card click tracking
-        document.querySelectorAll('.card-item').forEach(card => {
-            card.addEventListener('click', function() {
-                const cardId = this.getAttribute('data-id');
-                console.log(`Card clicked: ${cardId}`);
-            });
+        // Event listeners
+        searchButton.addEventListener('click', performSearch);
+        
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
         });
+
+        // Initialize recent searches on page load
+        displayRecentSearches();
     </script>
 </body>
 </html>
