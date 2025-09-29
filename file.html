@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GitHub File Explorer with Upload</title>
+<title>Memory Card Style File Explorer</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
   * {
@@ -14,7 +14,7 @@
   
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     padding: 20px;
     min-height: 100vh;
     color: #333;
@@ -22,307 +22,414 @@
   }
   
   .container {
-    max-width: 900px;
+    max-width: 1200px;
     margin: 0 auto;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
     overflow: hidden;
+    backdrop-filter: blur(10px);
   }
   
   header {
-    background: #2c3e50;
+    background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
     color: white;
-    padding: 20px;
+    padding: 25px 30px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+    transform: rotate(30deg);
   }
   
   .header-left {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 20px;
+    z-index: 1;
   }
   
-  header i {
+  .logo {
+    width: 50px;
+    height: 50px;
+    background: white;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  .logo i {
     font-size: 24px;
+    color: #3498db;
   }
   
   header h1 {
-    font-size: 22px;
-    font-weight: 600;
+    font-size: 28px;
+    font-weight: 700;
+  }
+  
+  .header-stats {
+    display: flex;
+    gap: 25px;
+    z-index: 1;
+  }
+  
+  .stat {
+    text-align: center;
+  }
+  
+  .stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #f1c40f;
+  }
+  
+  .stat-label {
+    font-size: 12px;
+    opacity: 0.8;
+    margin-top: 5px;
   }
   
   .action-buttons {
     display: flex;
-    gap: 10px;
+    gap: 12px;
+    z-index: 1;
   }
   
   .action-btn {
-    background: #3498db;
+    background: rgba(255, 255, 255, 0.2);
     color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 6px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 10px 20px;
+    border-radius: 50px;
     cursor: pointer;
     display: flex;
     align-items: center;
     gap: 8px;
     font-size: 14px;
-    transition: background 0.3s;
+    font-weight: 600;
+    transition: all 0.3s;
+    backdrop-filter: blur(10px);
   }
   
   .action-btn:hover {
-    background: #2980b9;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   }
   
   .action-btn.back-btn {
-    background: #95a5a6;
-  }
-  
-  .action-btn.back-btn:hover {
-    background: #7f8c8d;
+    background: rgba(52, 152, 219, 0.7);
   }
   
   .breadcrumb {
-    background: #ecf0f1;
-    padding: 12px 20px;
-    font-size: 14px;
-    color: #7f8c8d;
-    border-bottom: 1px solid #dce4e8;
+    background: #f8f9fa;
+    padding: 18px 30px;
+    font-size: 16px;
+    color: #6c757d;
+    border-bottom: 1px solid #e9ecef;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
+    flex-wrap: wrap;
   }
   
   .breadcrumb span {
     color: #3498db;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 8px;
+    transition: all 0.2s;
   }
   
   .breadcrumb span:hover {
-    text-decoration: underline;
+    background: #e3f2fd;
+    text-decoration: none;
   }
   
   .breadcrumb .separator {
-    color: #bdc3c7;
+    color: #adb5bd;
   }
   
   .file-explorer {
-    padding: 20px;
-    max-height: 500px;
-    overflow-y: auto;
+    padding: 30px;
+    min-height: 500px;
   }
   
-  .file-list {
-    list-style: none;
-  }
-  
-  .file-list li {
-    padding: 10px 15px;
+  .view-toggle {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-radius: 6px;
-    transition: background-color 0.2s;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+    gap: 10px;
+  }
+  
+  .view-btn {
+    background: white;
+    border: 2px solid #e9ecef;
+    padding: 8px 15px;
+    border-radius: 8px;
     cursor: pointer;
+    color: #6c757d;
+    transition: all 0.2s;
   }
   
-  .file-list li:hover {
-    background-color: #f8f9fa;
+  .view-btn.active {
+    background: #3498db;
+    color: white;
+    border-color: #3498db;
   }
   
-  .file-item {
+  /* Memory Card Style */
+  .memory-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+  }
+  
+  .memory-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .memory-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+  }
+  
+  .memory-card.folder::before {
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+  }
+  
+  .memory-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    border-color: #3498db;
+  }
+  
+  .memory-card.folder:hover {
+    border-color: #f39c12;
+  }
+  
+  .card-icon {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 48px;
+    height: 60px;
     display: flex;
     align-items: center;
-    gap: 12px;
-    flex: 1;
+    justify-content: center;
   }
   
-  .folder i {
+  .folder .card-icon {
     color: #f39c12;
-    font-size: 18px;
   }
   
-  .file i {
+  .file .card-icon {
     color: #3498db;
+  }
+  
+  .card-content {
+    text-align: center;
+  }
+  
+  .card-name {
+    font-weight: 600;
     font-size: 16px;
-  }
-  
-  .folder-name, .file-name {
-    font-size: 15px;
+    margin-bottom: 8px;
     color: #2c3e50;
+    word-break: break-word;
   }
   
-  .file-actions {
+  .card-info {
+    font-size: 12px;
+    color: #6c757d;
+    margin-bottom: 12px;
+  }
+  
+  .card-actions {
     display: flex;
+    justify-content: center;
     gap: 10px;
     opacity: 0;
     transition: opacity 0.2s;
   }
   
-  .file-list li:hover .file-actions {
+  .memory-card:hover .card-actions {
     opacity: 1;
   }
   
-  .file-action-btn {
-    background: none;
+  .card-btn {
+    background: #f8f9fa;
     border: none;
-    color: #7f8c8d;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    font-size: 14px;
-    padding: 4px 8px;
-    border-radius: 4px;
     transition: all 0.2s;
+    color: #6c757d;
   }
   
-  .file-action-btn:hover {
-    background: #e74c3c;
+  .card-btn:hover {
+    background: #3498db;
     color: white;
+    transform: scale(1.1);
   }
   
-  .file-action-btn.download:hover {
+  .card-btn.download:hover {
     background: #27ae60;
   }
   
+  .card-btn.delete:hover {
+    background: #e74c3c;
+  }
+  
   .upload-section {
-    padding: 20px;
-    border-top: 1px solid #ecf0f1;
+    padding: 30px;
+    border-top: 1px solid #e9ecef;
     background: #f8f9fa;
   }
   
   .upload-area {
-    border: 2px dashed #bdc3c7;
-    border-radius: 8px;
-    padding: 30px;
+    border: 3px dashed #ced4da;
+    border-radius: 16px;
+    padding: 40px;
     text-align: center;
     transition: all 0.3s;
     cursor: pointer;
+    background: white;
   }
   
   .upload-area:hover {
     border-color: #3498db;
     background: #e8f4fd;
+    transform: translateY(-5px);
+  }
+  
+  .upload-area.dragover {
+    border-color: #27ae60;
+    background: #e8f6f3;
+    transform: scale(1.02);
   }
   
   .upload-area i {
-    font-size: 48px;
+    font-size: 64px;
     color: #3498db;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
   }
   
   .upload-area h3 {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     color: #2c3e50;
+    font-size: 24px;
   }
   
   .upload-area p {
-    color: #7f8c8d;
-    margin-bottom: 15px;
+    color: #6c757d;
+    margin-bottom: 20px;
+    font-size: 16px;
+  }
+  
+  .upload-btn {
+    background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 50px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s;
+    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+  }
+  
+  .upload-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(52, 152, 219, 0.6);
   }
   
   .file-input {
     display: none;
   }
   
-  .upload-btn {
-    background: #3498db;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 6px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: background 0.3s;
-  }
-  
-  .upload-btn:hover {
-    background: #2980b9;
-  }
-  
-  .nested {
-    margin-left: 30px;
-    display: none;
-  }
-  
-  .expanded > .nested {
-    display: block;
-  }
-  
-  .expanded > .file-item > .folder > i {
-    transform: rotate(90deg);
-  }
-  
-  .file-link {
-    text-decoration: none;
-    color: inherit;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex: 1;
-  }
-  
-  .file-link:hover {
-    text-decoration: none;
-    color: inherit;
-  }
-  
   .loading {
-    padding: 15px;
+    grid-column: 1 / -1;
     text-align: center;
-    color: #7f8c8d;
+    padding: 40px;
+    color: #6c757d;
     font-style: italic;
   }
   
   .empty-folder {
-    padding: 15px;
+    grid-column: 1 / -1;
     text-align: center;
-    color: #95a5a6;
-    font-style: italic;
+    padding: 60px 20px;
+    color: #adb5bd;
+  }
+  
+  .empty-folder i {
+    font-size: 80px;
+    margin-bottom: 20px;
+    opacity: 0.5;
+  }
+  
+  .empty-folder h3 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #6c757d;
   }
   
   footer {
-    background: #ecf0f1;
-    padding: 15px 20px;
+    background: #2c3e50;
+    padding: 25px 30px;
     text-align: center;
-    font-size: 13px;
-    color: #7f8c8d;
-    border-top: 1px solid #dce4e8;
+    font-size: 14px;
+    color: #bdc3c7;
+    border-top: 1px solid #34495e;
   }
   
   footer a {
     color: #3498db;
     text-decoration: none;
+    font-weight: 600;
   }
   
   footer a:hover {
     text-decoration: underline;
   }
   
-  /* Scrollbar styling */
-  .file-explorer::-webkit-scrollbar {
-    width: 8px;
-  }
-  
-  .file-explorer::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
-  }
-  
-  .file-explorer::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
-    border-radius: 4px;
-  }
-  
-  .file-explorer::-webkit-scrollbar-thumb:hover {
-    background: #a8a8a8;
-  }
-  
-  /* Modal for upload confirmation */
+  /* Modal Styles */
   .modal {
     display: none;
     position: fixed;
@@ -330,53 +437,103 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.7);
     z-index: 1000;
     align-items: center;
     justify-content: center;
+    backdrop-filter: blur(5px);
   }
   
   .modal-content {
     background: white;
-    padding: 30px;
-    border-radius: 8px;
+    padding: 40px;
+    border-radius: 20px;
     max-width: 500px;
     width: 90%;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    position: relative;
+  }
+  
+  .modal-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #6c757d;
   }
   
   .modal h3 {
     margin-bottom: 15px;
     color: #2c3e50;
+    font-size: 24px;
   }
   
   .modal p {
-    margin-bottom: 20px;
-    color: #7f8c8d;
+    margin-bottom: 25px;
+    color: #6c757d;
+    line-height: 1.6;
   }
   
   .modal-buttons {
     display: flex;
-    gap: 10px;
-    justify-content: flex-end;
+    gap: 15px;
+    justify-content: center;
   }
   
   .modal-btn {
-    padding: 8px 16px;
+    padding: 12px 25px;
     border: none;
-    border-radius: 4px;
+    border-radius: 50px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s;
+    min-width: 120px;
   }
   
   .modal-btn.confirm {
-    background: #27ae60;
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
     color: white;
   }
   
+  .modal-btn.confirm:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+  }
+  
   .modal-btn.cancel {
-    background: #e74c3c;
-    color: white;
+    background: #f8f9fa;
+    color: #6c757d;
+    border: 2px solid #e9ecef;
+  }
+  
+  .modal-btn.cancel:hover {
+    background: #e9ecef;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .memory-cards {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+    
+    header {
+      flex-direction: column;
+      gap: 20px;
+      text-align: center;
+    }
+    
+    .header-stats {
+      justify-content: center;
+    }
+    
+    .breadcrumb {
+      font-size: 14px;
+    }
   }
 </style>
 </head>
@@ -385,33 +542,58 @@
 <div class="container">
   <header>
     <div class="header-left">
-      <i class="fas fa-folder-open"></i>
-      <h1>GitHub File Explorer</h1>
+      <div class="logo">
+        <i class="fas fa-sd-card"></i>
+      </div>
+      <h1>Memory Card Explorer</h1>
     </div>
+    
+    <div class="header-stats">
+      <div class="stat">
+        <div class="stat-value" id="folderCount">0</div>
+        <div class="stat-label">Folders</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="fileCount">0</div>
+        <div class="stat-label">Files</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="totalSize">0 MB</div>
+        <div class="stat-label">Total Size</div>
+      </div>
+    </div>
+    
     <div class="action-buttons">
       <button class="action-btn back-btn" id="backBtn" disabled>
         <i class="fas fa-arrow-left"></i> Back
       </button>
       <button class="action-btn" id="uploadBtn">
-        <i class="fas fa-upload"></i> Upload File
+        <i class="fas fa-upload"></i> Upload
       </button>
     </div>
   </header>
   
   <div class="breadcrumb" id="breadcrumb">
-    <span class="breadcrumb-item" data-path="">tevrasite</span>
+    <span class="breadcrumb-item" data-path="">Home</span>
     <span class="separator">/</span>
-    <span class="breadcrumb-item" data-path="">Tevra</span>
-    <span class="separator">/</span>
-    <span class="breadcrumb-item" data-path="calculator">calculator</span>
+    <span class="breadcrumb-item" data-path="calculator">Calculator</span>
   </div>
   
   <div class="file-explorer">
-    <ul class="file-list" id="fileList">
-      <li class="loading">
+    <div class="view-toggle">
+      <button class="view-btn active" id="cardViewBtn">
+        <i class="fas fa-th-large"></i> Cards
+      </button>
+      <button class="view-btn" id="listViewBtn">
+        <i class="fas fa-list"></i> List
+      </button>
+    </div>
+    
+    <div class="memory-cards" id="fileGrid">
+      <div class="loading">
         <i class="fas fa-spinner fa-spin"></i> Loading files...
-      </li>
-    </ul>
+      </div>
+    </div>
   </div>
   
   <div class="upload-section">
@@ -427,18 +609,29 @@
   </div>
   
   <footer>
-    Repository: <a href="https://github.com/tevrasite/Tevra" target="_blank">github.com/tevrasite/Tevra</a>
+    Memory Card Explorer &copy; 2023 | Repository: <a href="https://github.com/tevrasite/Tevra" target="_blank">github.com/tevrasite/Tevra</a>
   </footer>
 </div>
 
-<!-- Upload Confirmation Modal -->
+<!-- Upload Modal -->
 <div class="modal" id="uploadModal">
   <div class="modal-content">
-    <h3>Upload File</h3>
-    <p>You are about to upload a file to the current folder. This is a demonstration and the file will not actually be uploaded to GitHub.</p>
+    <button class="modal-close" id="closeModal">&times;</button>
+    <h3>Upload Files</h3>
+    <p>You are about to upload files to the current folder. This is a demonstration and files will not actually be uploaded to GitHub.</p>
     <div class="modal-buttons">
       <button class="modal-btn cancel" id="cancelUpload">Cancel</button>
       <button class="modal-btn confirm" id="confirmUpload">Upload</button>
+    </div>
+  </div>
+</div>
+
+<!-- File Info Modal -->
+<div class="modal" id="fileInfoModal">
+  <div class="modal-content">
+    <button class="modal-close" id="closeFileModal">&times;</button>
+    <div id="fileModalContent">
+      <!-- Content will be inserted dynamically -->
     </div>
   </div>
 </div>
@@ -449,7 +642,7 @@ const repo = "Tevra";
 const basePath = "calculator";
 const branch = "07fcf93090402bd5f96c39de79590f4d73d9bedd";
 
-const fileListUl = document.getElementById("fileList");
+const fileGrid = document.getElementById("fileGrid");
 const breadcrumb = document.getElementById("breadcrumb");
 const backBtn = document.getElementById("backBtn");
 const uploadBtn = document.getElementById("uploadBtn");
@@ -458,9 +651,18 @@ const fileInput = document.getElementById("fileInput");
 const uploadModal = document.getElementById("uploadModal");
 const cancelUpload = document.getElementById("cancelUpload");
 const confirmUpload = document.getElementById("confirmUpload");
+const closeModal = document.getElementById("closeModal");
+const fileInfoModal = document.getElementById("fileInfoModal");
+const closeFileModal = document.getElementById("closeFileModal");
+const folderCount = document.getElementById("folderCount");
+const fileCount = document.getElementById("fileCount");
+const totalSize = document.getElementById("totalSize");
+const cardViewBtn = document.getElementById("cardViewBtn");
+const listViewBtn = document.getElementById("listViewBtn");
 
 let currentPath = basePath;
 let pathHistory = [basePath];
+let currentView = 'cards';
 
 // Function to get file icon based on extension
 function getFileIcon(filename) {
@@ -486,25 +688,28 @@ function getFileIcon(filename) {
   return iconMap[ext] || 'fa-file';
 }
 
+// Format file size
+function formatFileSize(bytes) {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
 // Update breadcrumb
 function updateBreadcrumb() {
   const pathParts = currentPath.split('/');
   let breadcrumbHTML = '';
-  let accumulatedPath = '';
   
-  // Add repository parts
-  breadcrumbHTML += `<span class="breadcrumb-item" data-path="">${owner}</span>`;
-  breadcrumbHTML += `<span class="separator">/</span>`;
-  breadcrumbHTML += `<span class="breadcrumb-item" data-path="">${repo}</span>`;
-  breadcrumbHTML += `<span class="separator">/</span>`;
+  // Add home
+  breadcrumbHTML += `<span class="breadcrumb-item" data-path="">Home</span>`;
   
   // Add path parts
   pathParts.forEach((part, index) => {
-    accumulatedPath += (accumulatedPath ? '/' : '') + part;
+    const accumulatedPath = pathParts.slice(0, index + 1).join('/');
+    breadcrumbHTML += `<span class="separator">/</span>`;
     breadcrumbHTML += `<span class="breadcrumb-item" data-path="${accumulatedPath}">${part}</span>`;
-    if (index < pathParts.length - 1) {
-      breadcrumbHTML += `<span class="separator">/</span>`;
-    }
   });
   
   breadcrumb.innerHTML = breadcrumbHTML;
@@ -567,200 +772,162 @@ async function fetchFiles(folderPath) {
 
 // Load files for current path
 async function loadFiles() {
-  // Remove loading message if present
-  const loadingEl = fileListUl.querySelector('.loading');
-  if (loadingEl) loadingEl.remove();
-  
-  const emptyMsg = fileListUl.querySelector('.empty-folder');
-  if (emptyMsg) emptyMsg.remove();
-  
-  // Add loading message
-  fileListUl.innerHTML = '<li class="loading"><i class="fas fa-spinner fa-spin"></i> Loading files...</li>';
+  // Show loading
+  fileGrid.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading files...</div>';
   
   const files = await fetchFiles(currentPath);
   
-  // Clear list
-  fileListUl.innerHTML = '';
+  // Clear grid
+  fileGrid.innerHTML = '';
   
   if (files.length === 0) {
-    const emptyMsg = document.createElement('li');
-    emptyMsg.className = 'empty-folder';
-    emptyMsg.innerHTML = '<i class="far fa-folder-open"></i> This folder is empty';
-    fileListUl.appendChild(emptyMsg);
+    fileGrid.innerHTML = `
+      <div class="empty-folder">
+        <i class="far fa-folder-open"></i>
+        <h3>This folder is empty</h3>
+        <p>Upload files to get started</p>
+      </div>
+    `;
+    updateStats(0, 0, 0);
     return;
   }
 
+  // Count folders and files
+  let folderCounter = 0;
+  let fileCounter = 0;
+  let totalBytes = 0;
+  
   files.forEach(item => {
-    const li = document.createElement("li");
-
     if (item.type === "dir") {
-      li.innerHTML = `
-        <div class="file-item">
-          <div class="folder">
-            <i class="fas fa-folder"></i>
-            <span class="folder-name">${item.name}</span>
-          </div>
-        </div>
-        <div class="file-actions">
-          <button class="file-action-btn download" title="Download Folder">
-            <i class="fas fa-download"></i>
-          </button>
-        </div>
-      `;
-      
-      const nestedUl = document.createElement("ul");
-      nestedUl.classList.add("nested");
-      li.appendChild(nestedUl);
-
-      // Add loading element for nested folders
-      const loadingLi = document.createElement('li');
-      loadingLi.className = 'loading';
-      loadingLi.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
-      nestedUl.appendChild(loadingLi);
-
-      // Click to expand/collapse
-      li.querySelector(".file-item").addEventListener("click", async (e) => {
-        e.stopPropagation();
-        li.classList.toggle("expanded");
-        
-        // Load subfolder contents if not already loaded
-        if (nestedUl.childElementCount === 1) { // Only has loading element
-          await createList(item.path, nestedUl);
-        }
-      });
-      
-      // Double click to open folder
-      li.addEventListener("dblclick", () => {
-        navigateToPath(item.path);
-      });
-      
-      // Download button
-      li.querySelector('.file-action-btn.download').addEventListener('click', (e) => {
-        e.stopPropagation();
-        alert(`Downloading folder: ${item.name}\n\nNote: This is a demonstration. In a real application, this would download the folder.`);
-      });
+      folderCounter++;
+      createFolderCard(item);
     } else {
-      const fileIcon = getFileIcon(item.name);
-      li.innerHTML = `
-        <div class="file-item">
-          <i class="far ${fileIcon}"></i>
-          <span class="file-name">${item.name}</span>
-        </div>
-        <div class="file-actions">
-          <button class="file-action-btn download" title="Download File">
-            <i class="fas fa-download"></i>
-          </button>
-        </div>
-      `;
-      
-      // Click to view file
-      li.querySelector(".file-item").addEventListener("click", () => {
-        window.open(item.html_url, '_blank');
-      });
-      
-      // Download button
-      li.querySelector('.file-action-btn.download').addEventListener('click', (e) => {
-        e.stopPropagation();
-        // In a real application, this would download the file
-        // For demo, we'll just open in new tab
-        window.open(item.download_url || item.html_url, '_blank');
-      });
+      fileCounter++;
+      totalBytes += item.size || 0;
+      createFileCard(item);
     }
-
-    fileListUl.appendChild(li);
   });
+  
+  updateStats(folderCounter, fileCounter, totalBytes);
 }
 
-// Create the file/folder list for nested folders
-async function createList(folderPath, parentUl) {
-  // Remove loading message if present
-  const loadingEl = parentUl.querySelector('.loading');
-  if (loadingEl) loadingEl.remove();
+// Update statistics
+function updateStats(folders, files, bytes) {
+  folderCount.textContent = folders;
+  fileCount.textContent = files;
+  totalSize.textContent = formatFileSize(bytes);
+}
+
+// Create folder card
+function createFolderCard(item) {
+  const card = document.createElement('div');
+  card.className = 'memory-card folder';
+  card.innerHTML = `
+    <div class="card-icon">
+      <i class="fas fa-folder"></i>
+    </div>
+    <div class="card-content">
+      <div class="card-name">${item.name}</div>
+      <div class="card-info">Folder</div>
+      <div class="card-actions">
+        <button class="card-btn open" title="Open Folder">
+          <i class="fas fa-folder-open"></i>
+        </button>
+        <button class="card-btn download" title="Download Folder">
+          <i class="fas fa-download"></i>
+        </button>
+      </div>
+    </div>
+  `;
   
-  const files = await fetchFiles(folderPath);
-  
-  if (files.length === 0) {
-    const emptyMsg = document.createElement('li');
-    emptyMsg.className = 'empty-folder';
-    emptyMsg.innerHTML = '<i class="far fa-folder-open"></i> This folder is empty';
-    parentUl.appendChild(emptyMsg);
-    return;
-  }
-
-  files.forEach(item => {
-    const li = document.createElement("li");
-
-    if (item.type === "dir") {
-      li.innerHTML = `
-        <div class="file-item">
-          <div class="folder">
-            <i class="fas fa-folder"></i>
-            <span class="folder-name">${item.name}</span>
-          </div>
-        </div>
-        <div class="file-actions">
-          <button class="file-action-btn download" title="Download Folder">
-            <i class="fas fa-download"></i>
-          </button>
-        </div>
-      `;
-      
-      const nestedUl = document.createElement("ul");
-      nestedUl.classList.add("nested");
-      li.appendChild(nestedUl);
-
-      // Add loading element for nested folders
-      const loadingLi = document.createElement('li');
-      loadingLi.className = 'loading';
-      loadingLi.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
-      nestedUl.appendChild(loadingLi);
-
-      // Click to expand/collapse
-      li.querySelector(".file-item").addEventListener("click", async (e) => {
-        e.stopPropagation();
-        li.classList.toggle("expanded");
-        
-        // Load subfolder contents if not already loaded
-        if (nestedUl.childElementCount === 1) { // Only has loading element
-          await createList(item.path, nestedUl);
-        }
-      });
-      
-      // Download button
-      li.querySelector('.file-action-btn.download').addEventListener('click', (e) => {
-        e.stopPropagation();
-        alert(`Downloading folder: ${item.name}\n\nNote: This is a demonstration. In a real application, this would download the folder.`);
-      });
-    } else {
-      const fileIcon = getFileIcon(item.name);
-      li.innerHTML = `
-        <div class="file-item">
-          <i class="far ${fileIcon}"></i>
-          <span class="file-name">${item.name}</span>
-        </div>
-        <div class="file-actions">
-          <button class="file-action-btn download" title="Download File">
-            <i class="fas fa-download"></i>
-          </button>
-        </div>
-      `;
-      
-      // Click to view file
-      li.querySelector(".file-item").addEventListener("click", () => {
-        window.open(item.html_url, '_blank');
-      });
-      
-      // Download button
-      li.querySelector('.file-action-btn.download').addEventListener('click', (e) => {
-        e.stopPropagation();
-        // In a real application, this would download the file
-        // For demo, we'll just open in new tab
-        window.open(item.download_url || item.html_url, '_blank');
-      });
+  // Open folder on click
+  card.addEventListener('click', (e) => {
+    if (!e.target.closest('.card-btn')) {
+      navigateToPath(item.path);
     }
-
-    parentUl.appendChild(li);
   });
+  
+  // Download button
+  card.querySelector('.card-btn.download').addEventListener('click', (e) => {
+    e.stopPropagation();
+    alert(`Downloading folder: ${item.name}\n\nNote: This is a demonstration. In a real application, this would download the folder.`);
+  });
+  
+  fileGrid.appendChild(card);
+}
+
+// Create file card
+function createFileCard(item) {
+  const fileIcon = getFileIcon(item.name);
+  const fileSize = formatFileSize(item.size || 0);
+  
+  const card = document.createElement('div');
+  card.className = 'memory-card file';
+  card.innerHTML = `
+    <div class="card-icon">
+      <i class="far ${fileIcon}"></i>
+    </div>
+    <div class="card-content">
+      <div class="card-name">${item.name}</div>
+      <div class="card-info">${fileSize}</div>
+      <div class="card-actions">
+        <button class="card-btn info" title="File Info">
+          <i class="fas fa-info-circle"></i>
+        </button>
+        <button class="card-btn download" title="Download File">
+          <i class="fas fa-download"></i>
+        </button>
+      </div>
+    </div>
+  `;
+  
+  // View file on click
+  card.addEventListener('click', (e) => {
+    if (!e.target.closest('.card-btn')) {
+      window.open(item.html_url, '_blank');
+    }
+  });
+  
+  // Info button
+  card.querySelector('.card-btn.info').addEventListener('click', (e) => {
+    e.stopPropagation();
+    showFileInfo(item);
+  });
+  
+  // Download button
+  card.querySelector('.card-btn.download').addEventListener('click', (e) => {
+    e.stopPropagation();
+    // In a real application, this would download the file
+    // For demo, we'll just open in new tab
+    window.open(item.download_url || item.html_url, '_blank');
+  });
+  
+  fileGrid.appendChild(card);
+}
+
+// Show file information
+function showFileInfo(item) {
+  const fileIcon = getFileIcon(item.name);
+  const fileSize = formatFileSize(item.size || 0);
+  
+  document.getElementById('fileModalContent').innerHTML = `
+    <div class="card-icon">
+      <i class="far ${fileIcon}"></i>
+    </div>
+    <h3>${item.name}</h3>
+    <div style="text-align: left; margin-top: 20px;">
+      <p><strong>Type:</strong> File</p>
+      <p><strong>Size:</strong> ${fileSize}</p>
+      <p><strong>Path:</strong> ${item.path}</p>
+      <p><strong>SHA:</strong> ${item.sha.substring(0, 8)}...</p>
+    </div>
+    <div class="modal-buttons" style="margin-top: 25px;">
+      <button class="modal-btn cancel" onclick="fileInfoModal.style.display='none'">Close</button>
+      <button class="modal-btn confirm" onclick="window.open('${item.html_url}', '_blank')">View File</button>
+    </div>
+  `;
+  
+  fileInfoModal.style.display = 'flex';
 }
 
 // Upload functionality
@@ -783,10 +950,40 @@ function setupUpload() {
     }
   });
   
+  // Drag and drop functionality
+  uploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadArea.classList.add('dragover');
+  });
+  
+  uploadArea.addEventListener('dragleave', () => {
+    uploadArea.classList.remove('dragover');
+  });
+  
+  uploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadArea.classList.remove('dragover');
+    fileInput.files = e.dataTransfer.files;
+    if (fileInput.files.length > 0) {
+      uploadModal.style.display = 'flex';
+    }
+  });
+  
   // Cancel upload
   cancelUpload.addEventListener('click', () => {
     uploadModal.style.display = 'none';
     fileInput.value = '';
+  });
+  
+  // Close modal
+  closeModal.addEventListener('click', () => {
+    uploadModal.style.display = 'none';
+    fileInput.value = '';
+  });
+  
+  // Close file modal
+  closeFileModal.addEventListener('click', () => {
+    fileInfoModal.style.display = 'none';
   });
   
   // Confirm upload
@@ -800,9 +997,29 @@ function setupUpload() {
       // Reset file input and close modal
       fileInput.value = '';
       uploadModal.style.display = 'none';
-      
-      // Refresh file list to show new files (in a real app)
-      // loadFiles();
+    }
+  });
+}
+
+// View toggle functionality
+function setupViewToggle() {
+  cardViewBtn.addEventListener('click', () => {
+    if (currentView !== 'cards') {
+      currentView = 'cards';
+      cardViewBtn.classList.add('active');
+      listViewBtn.classList.remove('active');
+      fileGrid.className = 'memory-cards';
+    }
+  });
+  
+  listViewBtn.addEventListener('click', () => {
+    if (currentView !== 'list') {
+      currentView = 'list';
+      listViewBtn.classList.add('active');
+      cardViewBtn.classList.remove('active');
+      fileGrid.className = 'file-list-view';
+      // In a real implementation, you would change the layout here
+      alert('List view would be implemented here');
     }
   });
 }
@@ -812,6 +1029,7 @@ function init() {
   updateBreadcrumb();
   loadFiles();
   setupUpload();
+  setupViewToggle();
   
   // Back button event
   backBtn.addEventListener('click', goBack);
