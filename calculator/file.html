@@ -4,22 +4,216 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GitHub Calculator Explorer</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-  body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
-  h2 { color: #333; }
-  ul { list-style: none; padding-left: 20px; }
-  li { margin: 5px 0; cursor: pointer; }
-  a { text-decoration: none; color: #007bff; }
-  a:hover { text-decoration: underline; }
-  .folder { font-weight: bold; color: #e67e22; }
-  .nested { display: none; margin-left: 15px; }
-  .expanded > .nested { display: block; }
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 20px;
+    min-height: 100vh;
+    color: #333;
+  }
+  
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  header {
+    background: #2c3e50;
+    color: white;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  header i {
+    font-size: 24px;
+  }
+  
+  header h1 {
+    font-size: 22px;
+    font-weight: 600;
+  }
+  
+  .breadcrumb {
+    background: #ecf0f1;
+    padding: 12px 20px;
+    font-size: 14px;
+    color: #7f8c8d;
+    border-bottom: 1px solid #dce4e8;
+  }
+  
+  .breadcrumb span {
+    color: #3498db;
+    font-weight: 500;
+  }
+  
+  .file-explorer {
+    padding: 20px;
+    max-height: 500px;
+    overflow-y: auto;
+  }
+  
+  .file-list {
+    list-style: none;
+  }
+  
+  .file-list li {
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+    cursor: pointer;
+  }
+  
+  .file-list li:hover {
+    background-color: #f8f9fa;
+  }
+  
+  .folder, .file {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+  }
+  
+  .folder i {
+    color: #f39c12;
+    font-size: 18px;
+  }
+  
+  .file i {
+    color: #3498db;
+    font-size: 16px;
+  }
+  
+  .folder-name, .file-name {
+    font-size: 15px;
+    color: #2c3e50;
+  }
+  
+  .nested {
+    margin-left: 30px;
+    display: none;
+  }
+  
+  .expanded > .nested {
+    display: block;
+  }
+  
+  .expanded > .folder > i {
+    transform: rotate(90deg);
+  }
+  
+  .file-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+  }
+  
+  .file-link:hover {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  .file-link i {
+    width: 18px;
+    text-align: center;
+  }
+  
+  .loading {
+    padding: 15px;
+    text-align: center;
+    color: #7f8c8d;
+    font-style: italic;
+  }
+  
+  .empty-folder {
+    padding: 15px;
+    text-align: center;
+    color: #95a5a6;
+    font-style: italic;
+  }
+  
+  footer {
+    background: #ecf0f1;
+    padding: 15px 20px;
+    text-align: center;
+    font-size: 13px;
+    color: #7f8c8d;
+    border-top: 1px solid #dce4e8;
+  }
+  
+  footer a {
+    color: #3498db;
+    text-decoration: none;
+  }
+  
+  footer a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Scrollbar styling */
+  .file-explorer::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .file-explorer::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+  
+  .file-explorer::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+  }
+  
+  .file-explorer::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+  }
 </style>
 </head>
 <body>
 
-<h2>Calculator Folder Explorer</h2>
-<ul id="fileList"></ul>
+<div class="container">
+  <header>
+    <i class="fas fa-folder-open"></i>
+    <h1>Calculator Folder Explorer</h1>
+  </header>
+  
+  <div class="breadcrumb">
+    <span>tevrasite</span> / <span>Tevra</span> / <span>calculator</span>
+  </div>
+  
+  <div class="file-explorer">
+    <ul class="file-list" id="fileList">
+      <li class="loading">
+        <i class="fas fa-spinner fa-spin"></i> Loading files...
+      </li>
+    </ul>
+  </div>
+  
+  <footer>
+    Repository: <a href="https://github.com/tevrasite/Tevra" target="_blank">github.com/tevrasite/Tevra</a>
+  </footer>
+</div>
 
 <script>
 const owner = "tevrasite";
@@ -29,7 +223,31 @@ const branch = "07fcf93090402bd5f96c39de79590f4d73d9bedd";
 
 const fileListUl = document.getElementById("fileList");
 
-// ফাইল ও ফোল্ডার লিস্ট ফেচ করার ফাংশন
+// Function to get file icon based on extension
+function getFileIcon(filename) {
+  const ext = filename.split('.').pop().toLowerCase();
+  const iconMap = {
+    'js': 'fa-file-code',
+    'html': 'fa-file-code',
+    'css': 'fa-file-code',
+    'json': 'fa-file-code',
+    'md': 'fa-file-alt',
+    'txt': 'fa-file-alt',
+    'pdf': 'fa-file-pdf',
+    'jpg': 'fa-file-image',
+    'jpeg': 'fa-file-image',
+    'png': 'fa-file-image',
+    'gif': 'fa-file-image',
+    'svg': 'fa-file-image',
+    'zip': 'fa-file-archive',
+    'rar': 'fa-file-archive',
+    '7z': 'fa-file-archive'
+  };
+  
+  return iconMap[ext] || 'fa-file';
+}
+
+// Fetch files and folders from GitHub API
 async function fetchFiles(folderPath) {
   const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${folderPath}?ref=${branch}`;
   try {
@@ -37,10 +255,10 @@ async function fetchFiles(folderPath) {
     const data = await res.json();
 
     if (Array.isArray(data)) {
-      // ফোল্ডারগুলো উপরে রাখতে sort
+      // Sort folders first, then files
       data.sort((a, b) => {
         if (a.type === b.type) return a.name.localeCompare(b.name);
-        return a.type === "dir" ? -1 : 1; // ফোল্ডার আগে
+        return a.type === "dir" ? -1 : 1;
       });
 
       return data;
@@ -53,36 +271,68 @@ async function fetchFiles(folderPath) {
   }
 }
 
-// লিস্ট বানানোর ফাংশন
+// Create the file/folder list
 async function createList(folderPath, parentUl) {
+  // Remove loading message if present
+  const loadingEl = parentUl.querySelector('.loading');
+  if (loadingEl) loadingEl.remove();
+  
   const files = await fetchFiles(folderPath);
+  
+  if (files.length === 0) {
+    const emptyMsg = document.createElement('li');
+    emptyMsg.className = 'empty-folder';
+    emptyMsg.innerHTML = '<i class="far fa-folder-open"></i> This folder is empty';
+    parentUl.appendChild(emptyMsg);
+    return;
+  }
 
   files.forEach(item => {
     const li = document.createElement("li");
 
     if (item.type === "dir") {
-      li.innerHTML = `<span class="folder">${item.name}/</span>`;
+      li.innerHTML = `
+        <div class="folder">
+          <i class="fas fa-folder"></i>
+          <span class="folder-name">${item.name}</span>
+        </div>
+      `;
+      
       const nestedUl = document.createElement("ul");
       nestedUl.classList.add("nested");
       li.appendChild(nestedUl);
 
-      // ক্লিক করলে expand/collapse
+      // Add loading element for nested folders
+      const loadingLi = document.createElement('li');
+      loadingLi.className = 'loading';
+      loadingLi.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+      nestedUl.appendChild(loadingLi);
+
+      // Click to expand/collapse
       li.querySelector(".folder").addEventListener("click", async (e) => {
-        e.stopPropagation(); // parent লিস্টে প্রভাব না পড়ুক
+        e.stopPropagation();
         li.classList.toggle("expanded");
-        if (nestedUl.childElementCount === 0) {
-          await createList(item.path, nestedUl); // সাবফোল্ডার লোড
+        
+        // Load subfolder contents if not already loaded
+        if (nestedUl.childElementCount === 1) { // Only has loading element
+          await createList(item.path, nestedUl);
         }
       });
     } else {
-      li.innerHTML = `<a href="${item.html_url}" target="_blank">${item.name}</a>`;
+      const fileIcon = getFileIcon(item.name);
+      li.innerHTML = `
+        <a href="${item.html_url}" target="_blank" class="file-link">
+          <i class="far ${fileIcon}"></i>
+          <span class="file-name">${item.name}</span>
+        </a>
+      `;
     }
 
     parentUl.appendChild(li);
   });
 }
 
-// মূল ফোল্ডার লোড করা
+// Load the main folder
 createList(path, fileListUl);
 </script>
 
