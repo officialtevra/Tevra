@@ -1,0 +1,243 @@
+/* ====== Profile Page Styles ====== */
+/* Base Styles */
+.profile-container {
+  max-width: 480px;
+  margin: 0 auto;
+  background-color: #121212;
+  color: #ffffff;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+/* Header Section */
+.profile-header {
+  position: relative;
+  padding: 1.5rem;
+  text-align: center;
+  background-color: #1e1e1e;
+  border-bottom: 1px solid #2d2d2d;
+}
+
+.profile-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.back-button {
+  position: absolute;
+  left: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #5e60ff;
+  font-size: 1.5rem;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.back-button:hover {
+  opacity: 0.8;
+}
+
+/* Main Content */
+.profile-main {
+  padding: 1.5rem;
+}
+
+.profile-card {
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Profile Information Section */
+.profile-section {
+  padding: 1.5rem;
+}
+
+.profile-field {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #2d2d2d;
+}
+
+.profile-field:last-child {
+  border-bottom: none;
+}
+
+.field-label {
+  color: #a0a0a0;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+/* Security Section */
+.security-section {
+  padding: 1.5rem;
+  border-top: 1px solid #2d2d2d;
+}
+
+.section-title {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* Form Styles */
+#mpinChangeForm,
+#editProfileForm {
+  padding: 1.5rem;
+  background-color: #252525;
+  margin-top: 1rem;
+  border-radius: 8px;
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: #c0c0c0;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #2d2d2d;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #5e60ff;
+  outline: none;
+}
+
+/* Select Dropdown Styling */
+.form-group select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23a0a0a0'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem;
+}
+
+/* Button Styles */
+.btn {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.btn.secondary {
+  background-color: #2d2d2d;
+  color: #ffffff;
+  width: 100%;
+  margin-bottom: 0.75rem;
+}
+
+.btn.secondary:hover {
+  background-color: #3a3a3a;
+}
+
+.btn[type="submit"] {
+  background: linear-gradient(135deg, #5e60ff, #3a3dff);
+  color: white;
+  width: 100%;
+}
+
+.btn[type="submit"]:hover {
+  background: linear-gradient(135deg, #4a4dff, #2e30ff);
+  box-shadow: 0 2px 12px rgba(94, 96, 255, 0.4);
+}
+
+/* Form Actions */
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.form-actions .btn {
+  flex: 1;
+}
+
+/* Utility Classes */
+.hidden {
+  display: none;
+}
+
+.gender-display {
+  text-transform: capitalize;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 480px) {
+  .profile-container {
+    border-radius: 0;
+  }
+  
+  .profile-main {
+    padding: 1rem;
+  }
+}
+
+/* body স্টাইল আপডেট করুন */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #000; /* সম্পূর্ণ কালো ব্যাকগ্রাউন্ড */
+  font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  color: #ffffff;
+  min-height: 100vh;
+}
+
+/* profile-container স্টাইল আপডেট করুন */
+.profile-container {
+  max-width: 480px;
+  margin: 0 auto;
+  background-color: #121212;
+  color: #ffffff;
+  min-height: 100vh;
+}
+
+/* লগআউট বাটনের জন্য নতুন স্টাইল যোগ করুন */
+.logout-btn {
+  display: block;
+  width: calc(100% - 3rem);
+  margin: 1.5rem auto;
+  padding: 0.75rem;
+  background-color: #ff3a3a;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+  background-color: #ff5252;
+  box-shadow: 0 2px 12px rgba(255, 58, 58, 0.4);
+}
+
