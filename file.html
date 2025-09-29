@@ -226,6 +226,14 @@
     background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
   }
   
+  .memory-card.local-file {
+    border: 2px dashed #27ae60;
+  }
+  
+  .memory-card.local-file::before {
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+  }
+  
   .memory-card:hover {
     transform: translateY(-8px);
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
@@ -234,6 +242,10 @@
   
   .memory-card.folder:hover {
     border-color: #f39c12;
+  }
+  
+  .memory-card.local-file:hover {
+    border-color: #27ae60;
   }
   
   .card-icon {
@@ -254,6 +266,10 @@
     color: #3498db;
   }
   
+  .local-file .card-icon {
+    color: #27ae60;
+  }
+  
   .card-content {
     text-align: center;
   }
@@ -264,6 +280,12 @@
     margin-bottom: 8px;
     color: #2c3e50;
     word-break: break-word;
+  }
+  
+  .card-name small {
+    font-size: 12px;
+    color: #27ae60;
+    font-weight: normal;
   }
   
   .card-info {
@@ -570,6 +592,9 @@
       <button class="action-btn" id="uploadBtn">
         <i class="fas fa-upload"></i> Upload
       </button>
+      <button class="action-btn" id="newFolderBtn">
+        <i class="fas fa-folder-plus"></i> New Folder
+      </button>
     </div>
   </header>
   
@@ -618,10 +643,24 @@
   <div class="modal-content">
     <button class="modal-close" id="closeModal">&times;</button>
     <h3>Upload Files</h3>
-    <p>You are about to upload files to the current folder. This is a demonstration and files will not actually be uploaded to GitHub.</p>
+    <p id="uploadModalText">You are about to upload <span id="fileCountText">0</span> file(s) to <strong id="currentPathText">calculator</strong>.</p>
     <div class="modal-buttons">
       <button class="modal-btn cancel" id="cancelUpload">Cancel</button>
-      <button class="modal-btn confirm" id="confirmUpload">Upload</button>
+      <button class="modal-btn confirm" id="confirmUpload">Upload Files</button>
+    </div>
+  </div>
+</div>
+
+<!-- New Folder Modal -->
+<div class="modal" id="folderModal">
+  <div class="modal-content">
+    <button class="modal-close" id="closeFolderModal">&times;</button>
+    <h3>Create New Folder</h3>
+    <p>Enter folder name:</p>
+    <input type="text" id="folderNameInput" placeholder="Folder name" style="width: 100%; padding: 12px; border: 2px solid #e9ecef; border-radius: 8px; font-size: 16px; margin: 15px 0;">
+    <div class="modal-buttons">
+      <button class="modal-btn cancel" id="cancelFolder">Cancel</button>
+      <button class="modal-btn confirm" id="confirmFolder">Create Folder</button>
     </div>
   </div>
 </div>
@@ -646,12 +685,18 @@ const fileGrid = document.getElementById("fileGrid");
 const breadcrumb = document.getElementById("breadcrumb");
 const backBtn = document.getElementById("backBtn");
 const uploadBtn = document.getElementById("uploadBtn");
+const newFolderBtn = document.getElementById("newFolderBtn");
 const uploadArea = document.getElementById("uploadArea");
 const fileInput = document.getElementById("fileInput");
 const uploadModal = document.getElementById("uploadModal");
+const folderModal = document.getElementById("folderModal");
 const cancelUpload = document.getElementById("cancelUpload");
 const confirmUpload = document.getElementById("confirmUpload");
 const closeModal = document.getElementById("closeModal");
+const closeFolderModal = document.getElementById("closeFolderModal");
+const folderNameInput = document.getElementById("folderNameInput");
+const cancelFolder = document.getElementById("cancelFolder");
+const confirmFolder = document.getElementById("confirmFolder");
 const fileInfoModal = document.getElementById("fileInfoModal");
 const closeFileModal = document.getElementById("closeFileModal");
 const folderCount = document.getElementById("folderCount");
@@ -659,6 +704,9 @@ const fileCount = document.getElementById("fileCount");
 const totalSize = document.getElementById("totalSize");
 const cardViewBtn = document.getElementById("cardViewBtn");
 const listViewBtn = document.getElementById("listViewBtn");
+const uploadModalText = document.getElementById("uploadModalText");
+const fileCountText = document.getElementById("fileCountText");
+const currentPathText = document.getElementById("currentPathText");
 
 let currentPath = basePath;
 let pathHistory = [basePath];
@@ -682,7 +730,13 @@ function getFileIcon(filename) {
     'svg': 'fa-file-image',
     'zip': 'fa-file-archive',
     'rar': 'fa-file-archive',
-    '7z': 'fa-file-archive'
+    '7z': 'fa-file-archive',
+    'doc': 'fa-file-word',
+    'docx': 'fa-file-word',
+    'xls': 'fa-file-excel',
+    'xlsx': 'fa-file-excel',
+    'ppt': 'fa-file-powerpoint',
+    'pptx': 'fa-file-powerpoint'
   };
   
   return iconMap[ext] || 'fa-file';
@@ -690,7 +744,7 @@ function getFileIcon(filename) {
 
 // Format file size
 function formatFileSize(bytes) {
-  if (bytes === 0) return '0 Bytes';
+  if (!bytes || bytes === 0) return '0 Bytes';
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -780,23 +834,12 @@ async function loadFiles() {
   // Clear grid
   fileGrid.innerHTML = '';
   
-  if (files.length === 0) {
-    fileGrid.innerHTML = `
-      <div class="empty-folder">
-        <i class="far fa-folder-open"></i>
-        <h3>This folder is empty</h3>
-        <p>Upload files to get started</p>
-      </div>
-    `;
-    updateStats(0, 0, 0);
-    return;
-  }
-
   // Count folders and files
   let folderCounter = 0;
   let fileCounter = 0;
   let totalBytes = 0;
   
+  // Load GitHub files
   files.forEach(item => {
     if (item.type === "dir") {
       folderCounter++;
@@ -808,6 +851,35 @@ async function loadFiles() {
     }
   });
   
+  // Load local files
+  const localFiles = getLocalFiles();
+  localFiles.forEach(file => {
+    if (file.path === currentPath) {
+      fileCounter++;
+      totalBytes += file.size || 0;
+      createLocalFileCard(file);
+    }
+  });
+  
+  // Load local folders
+  const localFolders = getLocalFolders();
+  localFolders.forEach(folder => {
+    if (folder.path === currentPath) {
+      folderCounter++;
+      createLocalFolderCard(folder);
+    }
+  });
+  
+  if (folderCounter === 0 && fileCounter === 0) {
+    fileGrid.innerHTML = `
+      <div class="empty-folder">
+        <i class="far fa-folder-open"></i>
+        <h3>This folder is empty</h3>
+        <p>Upload files or create folders to get started</p>
+      </div>
+    `;
+  }
+  
   updateStats(folderCounter, fileCounter, totalBytes);
 }
 
@@ -818,7 +890,41 @@ function updateStats(folders, files, bytes) {
   totalSize.textContent = formatFileSize(bytes);
 }
 
-// Create folder card
+// Get local files from localStorage
+function getLocalFiles() {
+  const localFiles = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key.startsWith('local_file_')) {
+      try {
+        const fileData = JSON.parse(localStorage.getItem(key));
+        localFiles.push(fileData);
+      } catch (e) {
+        console.error('Error parsing local file:', e);
+      }
+    }
+  }
+  return localFiles;
+}
+
+// Get local folders from localStorage
+function getLocalFolders() {
+  const localFolders = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key.startsWith('local_folder_')) {
+      try {
+        const folderData = JSON.parse(localStorage.getItem(key));
+        localFolders.push(folderData);
+      } catch (e) {
+        console.error('Error parsing local folder:', e);
+      }
+    }
+  }
+  return localFolders;
+}
+
+// Create folder card for GitHub folders
 function createFolderCard(item) {
   const card = document.createElement('div');
   card.className = 'memory-card folder';
@@ -828,13 +934,13 @@ function createFolderCard(item) {
     </div>
     <div class="card-content">
       <div class="card-name">${item.name}</div>
-      <div class="card-info">Folder</div>
+      <div class="card-info">GitHub Folder</div>
       <div class="card-actions">
         <button class="card-btn open" title="Open Folder">
           <i class="fas fa-folder-open"></i>
         </button>
-        <button class="card-btn download" title="Download Folder">
-          <i class="fas fa-download"></i>
+        <button class="card-btn info" title="Folder Info">
+          <i class="fas fa-info-circle"></i>
         </button>
       </div>
     </div>
@@ -847,16 +953,54 @@ function createFolderCard(item) {
     }
   });
   
-  // Download button
-  card.querySelector('.card-btn.download').addEventListener('click', (e) => {
+  // Info button
+  card.querySelector('.card-btn.info').addEventListener('click', (e) => {
     e.stopPropagation();
-    alert(`Downloading folder: ${item.name}\n\nNote: This is a demonstration. In a real application, this would download the folder.`);
+    showFolderInfo(item);
   });
   
   fileGrid.appendChild(card);
 }
 
-// Create file card
+// Create local folder card
+function createLocalFolderCard(folder) {
+  const card = document.createElement('div');
+  card.className = 'memory-card folder local-file';
+  card.innerHTML = `
+    <div class="card-icon">
+      <i class="fas fa-folder"></i>
+    </div>
+    <div class="card-content">
+      <div class="card-name">${folder.name} <small>(Local)</small></div>
+      <div class="card-info">Local Folder</div>
+      <div class="card-actions">
+        <button class="card-btn open" title="Open Folder">
+          <i class="fas fa-folder-open"></i>
+        </button>
+        <button class="card-btn delete" title="Delete Folder">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    </div>
+  `;
+  
+  // Open folder on click
+  card.addEventListener('click', (e) => {
+    if (!e.target.closest('.card-btn')) {
+      navigateToPath(folder.fullPath);
+    }
+  });
+  
+  // Delete button
+  card.querySelector('.card-btn.delete').addEventListener('click', (e) => {
+    e.stopPropagation();
+    deleteLocalFolder(folder.id);
+  });
+  
+  fileGrid.appendChild(card);
+}
+
+// Create file card for GitHub files
 function createFileCard(item) {
   const fileIcon = getFileIcon(item.name);
   const fileSize = formatFileSize(item.size || 0);
@@ -869,7 +1013,7 @@ function createFileCard(item) {
     </div>
     <div class="card-content">
       <div class="card-name">${item.name}</div>
-      <div class="card-info">${fileSize}</div>
+      <div class="card-info">${fileSize} • GitHub</div>
       <div class="card-actions">
         <button class="card-btn info" title="File Info">
           <i class="fas fa-info-circle"></i>
@@ -897,15 +1041,150 @@ function createFileCard(item) {
   // Download button
   card.querySelector('.card-btn.download').addEventListener('click', (e) => {
     e.stopPropagation();
-    // In a real application, this would download the file
-    // For demo, we'll just open in new tab
     window.open(item.download_url || item.html_url, '_blank');
   });
   
   fileGrid.appendChild(card);
 }
 
-// Show file information
+// Create local file card
+function createLocalFileCard(fileData) {
+  const fileIcon = getFileIcon(fileData.name);
+  const fileSize = formatFileSize(fileData.size);
+  
+  const card = document.createElement('div');
+  card.className = 'memory-card file local-file';
+  card.innerHTML = `
+    <div class="card-icon">
+      <i class="far ${fileIcon}"></i>
+    </div>
+    <div class="card-content">
+      <div class="card-name">${fileData.name} <small>(Local)</small></div>
+      <div class="card-info">${fileSize} • Local</div>
+      <div class="card-actions">
+        <button class="card-btn info" title="File Info">
+          <i class="fas fa-info-circle"></i>
+        </button>
+        <button class="card-btn download" title="Download File">
+          <i class="fas fa-download"></i>
+        </button>
+        <button class="card-btn delete" title="Delete File">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    </div>
+  `;
+  
+  // View file on click
+  card.addEventListener('click', (e) => {
+    if (!e.target.closest('.card-btn')) {
+      // For local files, download when clicked
+      downloadLocalFile(fileData);
+    }
+  });
+  
+  // Info button
+  card.querySelector('.card-btn.info').addEventListener('click', (e) => {
+    e.stopPropagation();
+    showLocalFileInfo(fileData);
+  });
+  
+  // Download button
+  card.querySelector('.card-btn.download').addEventListener('click', (e) => {
+    e.stopPropagation();
+    downloadLocalFile(fileData);
+  });
+  
+  // Delete button
+  card.querySelector('.card-btn.delete').addEventListener('click', (e) => {
+    e.stopPropagation();
+    deleteLocalFile(fileData.id);
+  });
+  
+  fileGrid.appendChild(card);
+}
+
+// Upload file to local storage
+function uploadToLocal(file, path) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const fileData = {
+        id: `local_file_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        content: e.target.result,
+        path: path,
+        uploadedAt: new Date().toISOString(),
+        isLocal: true
+      };
+      
+      localStorage.setItem(fileData.id, JSON.stringify(fileData));
+      resolve(fileData);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// Create local folder
+function createLocalFolder(folderName, path) {
+  const folderData = {
+    id: `local_folder_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    name: folderName,
+    path: path,
+    fullPath: path ? `${path}/${folderName}` : folderName,
+    createdAt: new Date().toISOString(),
+    isLocal: true
+  };
+  
+  localStorage.setItem(folderData.id, JSON.stringify(folderData));
+  return folderData;
+}
+
+// Download local file
+function downloadLocalFile(fileData) {
+  const link = document.createElement('a');
+  link.href = fileData.content;
+  link.download = fileData.name;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+// Delete local file
+function deleteLocalFile(fileId) {
+  if (confirm('Are you sure you want to delete this file?')) {
+    localStorage.removeItem(fileId);
+    loadFiles();
+  }
+}
+
+// Delete local folder
+function deleteLocalFolder(folderId) {
+  if (confirm('Are you sure you want to delete this folder and all its contents?')) {
+    // Delete the folder
+    localStorage.removeItem(folderId);
+    
+    // Delete all files in this folder
+    const folderData = JSON.parse(localStorage.getItem(folderId));
+    if (folderData) {
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith('local_file_')) {
+          const fileData = JSON.parse(localStorage.getItem(key));
+          if (fileData.path === folderData.fullPath) {
+            localStorage.removeItem(key);
+          }
+        }
+      }
+    }
+    
+    loadFiles();
+  }
+}
+
+// Show file information for GitHub files
 function showFileInfo(item) {
   const fileIcon = getFileIcon(item.name);
   const fileSize = formatFileSize(item.size || 0);
@@ -916,14 +1195,61 @@ function showFileInfo(item) {
     </div>
     <h3>${item.name}</h3>
     <div style="text-align: left; margin-top: 20px;">
-      <p><strong>Type:</strong> File</p>
+      <p><strong>Type:</strong> GitHub File</p>
       <p><strong>Size:</strong> ${fileSize}</p>
       <p><strong>Path:</strong> ${item.path}</p>
       <p><strong>SHA:</strong> ${item.sha.substring(0, 8)}...</p>
     </div>
     <div class="modal-buttons" style="margin-top: 25px;">
       <button class="modal-btn cancel" onclick="fileInfoModal.style.display='none'">Close</button>
-      <button class="modal-btn confirm" onclick="window.open('${item.html_url}', '_blank')">View File</button>
+      <button class="modal-btn confirm" onclick="window.open('${item.html_url}', '_blank')">View on GitHub</button>
+    </div>
+  `;
+  
+  fileInfoModal.style.display = 'flex';
+}
+
+// Show file information for local files
+function showLocalFileInfo(fileData) {
+  const fileIcon = getFileIcon(fileData.name);
+  const fileSize = formatFileSize(fileData.size);
+  const uploadDate = new Date(fileData.uploadedAt).toLocaleString();
+  
+  document.getElementById('fileModalContent').innerHTML = `
+    <div class="card-icon">
+      <i class="far ${fileIcon}"></i>
+    </div>
+    <h3>${fileData.name}</h3>
+    <div style="text-align: left; margin-top: 20px;">
+      <p><strong>Type:</strong> Local File</p>
+      <p><strong>Size:</strong> ${fileSize}</p>
+      <p><strong>Path:</strong> ${fileData.path}</p>
+      <p><strong>Uploaded:</strong> ${uploadDate}</p>
+    </div>
+    <div class="modal-buttons" style="margin-top: 25px;">
+      <button class="modal-btn cancel" onclick="fileInfoModal.style.display='none'">Close</button>
+      <button class="modal-btn confirm" onclick="downloadLocalFile(${JSON.stringify(fileData).replace(/"/g, '&quot;')})">Download File</button>
+    </div>
+  `;
+  
+  fileInfoModal.style.display = 'flex';
+}
+
+// Show folder information
+function showFolderInfo(item) {
+  document.getElementById('fileModalContent').innerHTML = `
+    <div class="card-icon">
+      <i class="fas fa-folder"></i>
+    </div>
+    <h3>${item.name}</h3>
+    <div style="text-align: left; margin-top: 20px;">
+      <p><strong>Type:</strong> GitHub Folder</p>
+      <p><strong>Path:</strong> ${item.path}</p>
+      <p><strong>SHA:</strong> ${item.sha.substring(0, 8)}...</p>
+    </div>
+    <div class="modal-buttons" style="margin-top: 25px;">
+      <button class="modal-btn cancel" onclick="fileInfoModal.style.display='none'">Close</button>
+      <button class="modal-btn confirm" onclick="window.open('${item.html_url}', '_blank')">View on GitHub</button>
     </div>
   `;
   
@@ -944,8 +1270,10 @@ function setupUpload() {
   
   // File input change
   fileInput.addEventListener('change', () => {
-    if (fileInput.files.length > 0) {
-      // Show upload confirmation modal
+    const files = fileInput.files;
+    if (files.length > 0) {
+      fileCountText.textContent = files.length;
+      currentPathText.textContent = currentPath;
       uploadModal.style.display = 'flex';
     }
   });
@@ -964,7 +1292,10 @@ function setupUpload() {
     e.preventDefault();
     uploadArea.classList.remove('dragover');
     fileInput.files = e.dataTransfer.files;
-    if (fileInput.files.length > 0) {
+    const files = fileInput.files;
+    if (files.length > 0) {
+      fileCountText.textContent = files.length;
+      currentPathText.textContent = currentPath;
       uploadModal.style.display = 'flex';
     }
   });
@@ -981,22 +1312,61 @@ function setupUpload() {
     fileInput.value = '';
   });
   
-  // Close file modal
-  closeFileModal.addEventListener('click', () => {
-    fileInfoModal.style.display = 'none';
-  });
-  
   // Confirm upload
-  confirmUpload.addEventListener('click', () => {
+  confirmUpload.addEventListener('click', async () => {
     const files = fileInput.files;
     if (files.length > 0) {
-      // In a real application, you would upload files to GitHub API here
-      // For this demo, we'll just show a success message
-      alert(`Successfully uploaded ${files.length} file(s) to ${currentPath}\n\nNote: This is a demonstration. Files were not actually uploaded.`);
+      // Upload each file
+      const uploadPromises = Array.from(files).map(file => 
+        uploadToLocal(file, currentPath)
+      );
       
-      // Reset file input and close modal
+      await Promise.all(uploadPromises);
+      
+      // Success message
+      alert(`Successfully uploaded ${files.length} file(s) to ${currentPath}`);
+      
+      // Reset and close
       fileInput.value = '';
       uploadModal.style.display = 'none';
+      
+      // Refresh file list
+      loadFiles();
+    }
+  });
+}
+
+// New folder functionality
+function setupNewFolder() {
+  newFolderBtn.addEventListener('click', () => {
+    folderNameInput.value = '';
+    folderModal.style.display = 'flex';
+    folderNameInput.focus();
+  });
+  
+  closeFolderModal.addEventListener('click', () => {
+    folderModal.style.display = 'none';
+  });
+  
+  cancelFolder.addEventListener('click', () => {
+    folderModal.style.display = 'none';
+  });
+  
+  confirmFolder.addEventListener('click', () => {
+    const folderName = folderNameInput.value.trim();
+    if (folderName) {
+      createLocalFolder(folderName, currentPath);
+      folderModal.style.display = 'none';
+      loadFiles();
+    } else {
+      alert('Please enter a folder name');
+    }
+  });
+  
+  // Allow pressing Enter to create folder
+  folderNameInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      confirmFolder.click();
     }
   });
 }
@@ -1018,17 +1388,22 @@ function setupViewToggle() {
       listViewBtn.classList.add('active');
       cardViewBtn.classList.remove('active');
       fileGrid.className = 'file-list-view';
-      // In a real implementation, you would change the layout here
       alert('List view would be implemented here');
     }
   });
 }
+
+// Close file info modal
+closeFileModal.addEventListener('click', () => {
+  fileInfoModal.style.display = 'none';
+});
 
 // Initialize the application
 function init() {
   updateBreadcrumb();
   loadFiles();
   setupUpload();
+  setupNewFolder();
   setupViewToggle();
   
   // Back button event
